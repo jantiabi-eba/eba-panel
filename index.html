@@ -37,7 +37,6 @@ header{background:#000;border-bottom:1px solid var(--border);padding:10px 18px;f
 .chip.uyari{border-color:var(--warn);background:rgba(245,158,11,.1)}
 .chip.uyari b{color:var(--warn)}
 .live-dot{width:7px;height:7px;border-radius:50%;background:var(--success);box-shadow:0 0 6px var(--success);animation:pulse 1.8s infinite}
-#syncChip.busy .live-dot{background:var(--warn);box-shadow:0 0 6px var(--warn);animation:pulse .9s infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
 .theme-switch{display:flex;gap:2px;background:var(--card);border:1px solid var(--border);padding:3px;border-radius:8px}
 .theme-switch button{background:transparent;border:0;cursor:pointer;font-size:14px;padding:4px 7px;border-radius:6px;line-height:1;color:var(--muted)}
@@ -319,10 +318,13 @@ table.mini tr:hover{background:var(--neon-soft)}
 .hava-ana{text-align:center;padding:10px 0;border-bottom:1px dashed var(--border);margin-bottom:10px}
 .hava-ana .ha-temp{font-size:32px;font-weight:900;color:var(--neon);letter-spacing:-1px}
 .hava-ana .ha-aciklama{font-size:11.5px;color:var(--muted);margin-top:2px;font-weight:700}
-.kur-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--border-soft);font-size:12.5px}
+.kur-row{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--border-soft);font-size:12.5px}
 .kur-row:last-child{border-bottom:0}
-.kur-row .kr-lbl{font-weight:800;color:var(--text);display:flex;align-items:center;gap:6px}
-.kur-row .kr-val{font-weight:900;color:var(--success);font-family:monospace}
+.kur-row .kr-lbl{font-weight:800;color:var(--text);display:flex;align-items:center;gap:6px;flex:0 0 auto}
+.kur-row .kr-vals{display:flex;gap:10px;font-family:monospace}
+.kur-row .kur-alis{color:var(--success);font-weight:900;font-size:12px}
+.kur-row .kur-satis{color:var(--danger);font-weight:900;font-size:12px}
+.kur-row .kur-baslik{font-size:9.5px;color:var(--dim);font-weight:700;text-transform:uppercase;display:block;text-align:center}
 .aktivite-item{padding:9px 10px;background:var(--card2);border-radius:6px;margin-bottom:6px;cursor:pointer;border-left:2px solid var(--border);transition:.15s}
 .aktivite-item:hover{background:var(--neon-soft);border-left-color:var(--neon)}
 .aktivite-item .ai-ust{display:flex;justify-content:space-between;align-items:center;gap:6px;margin-bottom:3px}
@@ -373,7 +375,7 @@ table.mini tr:hover{background:var(--neon-soft)}
 .btn-cikis:hover{background:rgba(239,68,68,.2);color:#fca5a5}
 
 /* ============================================================
-   MOBİL UYUMLULUK KATMANI — v8.4 (Daha kompakt & profesyonel)
+   MOBİL UYUMLULUK KATMANI — v8.4
    ============================================================ */
 html,body{height:100%}
 body{display:flex;flex-direction:column;height:100vh;height:100dvh;overflow:hidden;overscroll-behavior-y:contain}
@@ -392,7 +394,7 @@ main{padding-bottom:calc(14px + env(safe-area-inset-bottom))}
 }
 
 @media (max-width:768px){
-  /* ---- Header ultra kompakt ---- */
+  /* Header ultra kompakt */
   header{padding:6px 10px !important;padding-top:calc(6px + env(safe-area-inset-top)) !important}
   .header-inner{gap:6px !important}
   .brand{gap:8px !important}
@@ -413,26 +415,25 @@ main{padding-bottom:calc(14px + env(safe-area-inset-bottom))}
   #yedekChip{font-size:10px !important;padding:4px 8px !important}
   .head-tools .btn.sm[onclick*="kurtarEsitle"]{font-size:10px !important;padding:4px 8px !important;min-height:34px !important}
 
-  /* ---- Tabs daha ince ---- */
+  /* Tabs daha ince */
   nav.tabs{padding:0 4px !important}
   .tabs-inner{gap:1px !important}
   .tab{padding:7px 8px !important;font-size:11px !important;gap:3px !important;border-radius:0}
 
-  /* ---- Main padding ---- */
+  /* Main padding */
   main{padding:6px !important;padding-bottom:calc(6px + env(safe-area-inset-bottom)) !important}
 
-  /* ---- Ana sayfa mobilde sadece dashboard ---- */
+  /* Ana sayfa mobilde: takvim/hava/kur/bulut/son aktivite/uzun liste/kısayollar GİZLİ */
   .dash-3col{grid-template-columns:1fr !important;gap:8px !important}
   .dash-side{display:flex !important;flex-direction:column !important;gap:8px !important}
-  /* Takvim, hava, kurlar, bulut durumu mobilde gizli */
   .dash-side .mini-card:nth-child(1),
   .dash-side .mini-card:nth-child(2),
   .dash-side .mini-card:nth-child(3),
-  .dash-side .mini-card:nth-child(4){display:none !important}
-  .dash-side .mini-card:nth-child(5){display:none !important} /* Son aktiviteler */
-  .dash-side .mini-card:nth-child(6){display:none !important} /* Uzun liste */
-  .dash-side .mini-card:nth-child(7){display:block !important} /* Hızlı notlar */
-  .dash-side .mini-card:nth-child(8){display:none !important} /* Kısayollar */
+  .dash-side .mini-card:nth-child(4),
+  .dash-side .mini-card:nth-child(5),
+  .dash-side .mini-card:nth-child(6),
+  .dash-side .mini-card:nth-child(8){display:none !important}
+  .dash-side .mini-card:nth-child(7){display:block !important}
   .dash-mid{gap:8px !important}
   .dash-grid{grid-template-columns:repeat(2,1fr) !important;gap:6px !important;margin-bottom:0 !important}
   .dash-card{padding:8px 10px !important;border-radius:8px !important}
@@ -457,7 +458,7 @@ main{padding-bottom:calc(14px + env(safe-area-inset-bottom))}
   .hatirlatma-item .hi-sub{font-size:9.5px !important}
   .hatirlatma-item .hi-badge{font-size:9px !important;padding:1px 5px !important}
 
-  /* ---- Siparişler sayfası kompakt ---- */
+  /* Siparişler kompakt */
   .stat-pills{gap:3px !important;margin-bottom:6px !important;flex-wrap:nowrap !important;overflow-x:auto !important;-webkit-overflow-scrolling:touch !important;scrollbar-width:none !important}
   .stat-pills::-webkit-scrollbar{display:none !important}
   .stat-pill{padding:4px 9px !important;font-size:10.5px !important;border-radius:5px !important;min-height:0 !important;flex-shrink:0 !important;gap:6px !important}
@@ -481,7 +482,6 @@ main{padding-bottom:calc(14px + env(safe-area-inset-bottom))}
   #mobilFiltreBtn .aktif-filtre{display:none;background:#fff;color:var(--neon);font-size:9px;font-weight:900;padding:1px 5px;border-radius:7px;margin-left:3px;min-width:16px;text-align:center}
   #mobilFiltreBtn.aktif-var .aktif-filtre{display:inline-block !important}
 
-  /* Kart görünümü kompakt */
   .table-wrap tbody tr{padding:8px 10px !important;margin-bottom:6px !important;border-radius:7px !important;background:var(--card2) !important;border:1px solid var(--border) !important}
   .table-wrap tbody td{padding:3px 0 !important;padding-right:28px !important}
   .table-wrap tbody td:last-child{padding-right:0 !important}
@@ -500,7 +500,7 @@ main{padding-bottom:calc(14px + env(safe-area-inset-bottom))}
   .bulk-bar .bb-info{font-size:10.5px !important;margin-right:0 !important;width:100% !important;text-align:center !important;margin-bottom:3px !important}
   .bulk-bar .btn{font-size:9.5px !important;padding:4px 6px !important;flex:1 1 44% !important;justify-content:center !important;min-height:32px !important;border-radius:6px !important}
 
-  /* ---- Form ---- */
+  /* Form */
   .card{padding:10px !important;border-radius:8px !important;margin-bottom:8px !important}
   .card h2{font-size:12px !important;margin-bottom:10px !important}
   .section-sub{font-size:11px !important;margin:-4px 0 10px !important}
@@ -531,7 +531,7 @@ main{padding-bottom:calc(14px + env(safe-area-inset-bottom))}
   .action-row{gap:5px !important}
   .action-row .btn{flex:1 1 auto !important;justify-content:center !important;min-width:0 !important;font-size:10.5px !important;padding:6px 8px !important;border-radius:6px !important}
 
-  /* ---- Modallar ---- */
+  /* Modallar */
   .modal-overlay{padding:0 !important;align-items:stretch !important}
   .modal-card{max-width:100% !important;max-height:100dvh !important;height:100dvh !important;border-radius:0 !important;padding:14px !important;padding-bottom:calc(14px + env(safe-area-inset-bottom)) !important;gap:10px !important}
   .modal-card h3{position:sticky !important;top:-14px !important;background:var(--card) !important;margin:-14px -14px 0 -14px !important;padding:12px 14px !important;z-index:5 !important;font-size:14px !important}
@@ -757,9 +757,9 @@ main{padding-bottom:calc(14px + env(safe-area-inset-bottom))}
         <div class="mini-card">
           <h3><span class="ic">💵</span> Döviz Kurları</h3>
           <div id="kurPano">
-            <div class="kur-row"><span class="kr-lbl">🇺🇸 USD</span><span class="kr-val" id="kurUSD">--</span></div>
-            <div class="kur-row"><span class="kr-lbl">🇪🇺 EUR</span><span class="kr-val" id="kurEUR">--</span></div>
-            <div class="kur-row"><span class="kr-lbl">🇬🇧 GBP</span><span class="kr-val" id="kurGBP">--</span></div>
+            <div class="kur-row"><span class="kr-lbl">🇺🇸 USD</span><span class="kr-vals"><span class="kur-alis">--</span><span class="kur-satis">--</span></span></div>
+            <div class="kur-row"><span class="kr-lbl">🇪🇺 EUR</span><span class="kr-vals"><span class="kur-alis">--</span><span class="kur-satis">--</span></span></div>
+            <div class="kur-row"><span class="kr-lbl">🇬🇧 GBP</span><span class="kr-vals"><span class="kur-alis">--</span><span class="kur-satis">--</span></span></div>
           </div>
         </div>
         <div class="mini-card" style="border-left:3px solid var(--success)">
@@ -1290,7 +1290,8 @@ main{padding-bottom:calc(14px + env(safe-area-inset-bottom))}
 <script type="module">
 /* ============================================================
    ESKİŞEHİR BASKI ATÖLYESİ — v8.4
-   Firebase + Mobil Compact + Filtre Sheet + Kaldırılmış Takvim/Hava/Kur
+   Takvim + Hava + Döviz (Alış/Satış) geri eklendi
+   Mobilde gizli, masaüstünde aktif
    ============================================================ */
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
@@ -1362,6 +1363,7 @@ const TRASH_KEY = 'eba_trash';
 const DRAFT_KEY = 'eba_draft';
 const LAST_BACKUP_KEY = 'eba_last_backup';
 const HIZLI_NOT_KEY = 'eba_hizli_notlar';
+const TAKVIM_AY_KEY = 'eba_takvim_ay';
 
 const BASKI_TURLERI = ["DTF","Nakış","Flex","Reflektör","Süblimasyon","Özel İş"];
 const URUN_TURLERI = ["Tişört","Polar","Polar Şal","Yelek / İş Kıyafeti","Sweatshirt","Şapka","Çanta","Forma","Patch / Arma","Kupa Bardak","Kurdele","Müşteri Malzemesi","Diğer"];
@@ -1386,6 +1388,9 @@ let seciliSiparisler = new Set();
 let aktifRaporTipi = 'aylik';
 let taslakZamanlayici = null;
 let hizliNotlar = [];
+let takvimAy = null;
+let takvimSeciliGun = null;
+let kurVerisi = { USD: {alis:0, satis:0}, EUR: {alis:0, satis:0}, GBP: {alis:0, satis:0} };
 
 window.girisYap = async function() {
   const email = ($('loginEmail')?.value||'').trim();
@@ -1534,7 +1539,7 @@ function gercekZamanliDinle() {
       if (Array.isArray(d.trash)) trash = d.trash;
       if (Array.isArray(d.hizliNotlar)) hizliNotlar = d.hizliNotlar;
       if (d.ayarlar) ayarlar = d.ayarlar;
-      try { render(); renderDashboard(); renderCiro(); renderAktiviteAkisi(); renderUzunListesi(); renderHizliNotlar(); } catch(e) {}
+      try { render(); renderDashboard(); renderCiro(); takvimCiz(); renderAktiviteAkisi(); renderUzunListesi(); renderHizliNotlar(); } catch(e) {}
       bulutDurumYaz('✓ Uzaktan güncellendi', 'success');
       toast('🔄 Başka cihazdan güncellendi', 'success');
     }, err => { console.warn('onSnapshot:', err); });
@@ -1665,7 +1670,7 @@ window.yedekYukle = function(e) {
       if (Array.isArray(d.hizliNotlar)) hizliNotlar = d.hizliNotlar;
       musteriRehberiGuncelle();
       save();
-      render(); renderDashboard(); renderCiro(); renderAyarlar(); renderTrash();
+      render(); renderDashboard(); renderCiro(); takvimCiz(); renderAyarlar(); renderTrash();
       toast('⬆️ Yüklendi', 'success');
     } catch(err) { toast('Hata: ' + err.message, 'error'); }
   };
@@ -1698,7 +1703,7 @@ window.buluttanVeriCek = async function(manuel) {
       if (d.ayarlar) ayarlar = d.ayarlar;
       localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
       localStorage.setItem(CUSTOMERS_KEY, JSON.stringify(musteriler));
-      render(); renderDashboard(); renderCiro();
+      render(); renderDashboard(); renderCiro(); takvimCiz();
       bulutDurumYaz('✓ ' + state.orders.length + ' sipariş alındı', 'success');
       if (manuel) toast('✅ Bulut verileri çekildi', 'success');
     } else {
@@ -1722,8 +1727,8 @@ window.verileriKaydet = async function() {
 };
 
 window.kurtarEsitle = function() {
-  load();
-  render(); renderDashboard(); renderCiro(); renderAyarlar(); renderTrash();
+  load(); takvimYukle();
+  render(); renderDashboard(); renderCiro(); takvimCiz(); renderAyarlar(); renderTrash();
   renderAktiviteAkisi(); renderUzunListesi(); renderHizliNotlar();
   buluttanVeriCek(true);
 };
@@ -1746,7 +1751,7 @@ window.geminiVerisiAktar = function() {
   }
   if (!bulundu) { toast('Eski veri bulunamadı.', 'warn'); return; }
   musteriRehberiGuncelle();
-  save(); render(); renderDashboard(); renderCiro();
+  save(); render(); renderDashboard(); renderCiro(); takvimCiz();
   toast('✅ ' + state.orders.length + ' sipariş aktarıldı', 'success');
 };
 
@@ -1779,7 +1784,7 @@ document.querySelectorAll('.tab').forEach(tab => {
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     tab.classList.add('active');
     const pageEl = $('page-' + tab.dataset.page); if (pageEl) pageEl.classList.add('active');
-    if (tab.dataset.page === 'anasayfa') { renderDashboard(); renderAktiviteAkisi(); renderUzunListesi(); }
+    if (tab.dataset.page === 'anasayfa') { renderDashboard(); takvimCiz(); renderAktiviteAkisi(); renderUzunListesi(); }
     if (tab.dataset.page === 'panel') render();
     if (tab.dataset.page === 'ciro') renderCiro();
     if (tab.dataset.page === 'ayarlar') { renderAyarlar(); renderTrash(); yedekDurumGuncelle(); }
@@ -1788,6 +1793,149 @@ document.querySelectorAll('.tab').forEach(tab => {
 });
 window.goTab = function(name) { document.querySelectorAll('.tab').forEach(t => { if (t.dataset.page === name) t.click(); }); };
 
+/* ============ TAKVİM ============ */
+function takvimYukle() {
+  try { const raw = localStorage.getItem(TAKVIM_AY_KEY); if (raw) { const p = JSON.parse(raw); if (p && typeof p.yil === 'number') takvimAy = {yil:p.yil, ay:p.ay}; } } catch(e) {}
+  if (!takvimAy) { const d = new Date(); takvimAy = { yil: d.getFullYear(), ay: d.getMonth() }; }
+}
+
+window.takvimAyDegistir = function(delta) {
+  if (!takvimAy) takvimYukle();
+  let ay = takvimAy.ay + delta, yil = takvimAy.yil;
+  while (ay < 0) { ay += 12; yil--; } while (ay > 11) { ay -= 12; yil++; }
+  takvimAy = { yil, ay }; takvimSeciliGun = null;
+  try { localStorage.setItem(TAKVIM_AY_KEY, JSON.stringify(takvimAy)); } catch(e) {}
+  takvimCiz();
+  const det = $('takvimDetay'); if (det) det.innerHTML = '';
+};
+
+window.takvimBuguneDon = function() {
+  const d = new Date();
+  takvimAy = { yil: d.getFullYear(), ay: d.getMonth() };
+  takvimSeciliGun = d.getDate();
+  try { localStorage.setItem(TAKVIM_AY_KEY, JSON.stringify(takvimAy)); } catch(e) {}
+  takvimCiz(); takvimGunSecildi(d.getDate());
+};
+
+function takvimCiz() {
+  if (!takvimAy) takvimYukle();
+  const grid = $('takvimGrid'); if (!grid) return;
+  const ayYaz = $('takvimAyYaz');
+  const AY = ['Ocak','Şubat','Mart','Nisan','Mayıs','Haziran','Temmuz','Ağustos','Eylül','Ekim','Kasım','Aralık'];
+  if (ayYaz) ayYaz.textContent = AY[takvimAy.ay] + ' ' + takvimAy.yil;
+  const ilkGun = new Date(takvimAy.yil, takvimAy.ay, 1);
+  const sonGun = new Date(takvimAy.yil, takvimAy.ay + 1, 0).getDate();
+  let ilkHafta = ilkGun.getDay(); ilkHafta = (ilkHafta === 0) ? 6 : ilkHafta - 1;
+  const teslimGunleri = new Set();
+  state.orders.forEach(o => { if (!o.teslimTarihi) return; const p = o.teslimTarihi.split('-').map(Number); if (p[0] === takvimAy.yil && (p[1]-1) === takvimAy.ay) teslimGunleri.add(p[2]); });
+  const bd = new Date(); const bugunBuAy = (bd.getFullYear() === takvimAy.yil && bd.getMonth() === takvimAy.ay);
+  let html = '';
+  ['Pt','Sa','Ça','Pe','Cu','Ct','Pz'].forEach(g => { html += '<div class="takvim-gun-adi">' + g + '</div>'; });
+  for (let i = 0; i < ilkHafta; i++) html += '<div class="takvim-gun bos"></div>';
+  for (let g = 1; g <= sonGun; g++) {
+    const cls = [];
+    if (bugunBuAy && g === bd.getDate()) cls.push('bugun');
+    if (teslimGunleri.has(g)) cls.push('teslim-var');
+    if (takvimSeciliGun === g) cls.push('secili');
+    html += '<button type="button" class="takvim-gun ' + cls.join(' ') + '" onclick="takvimGunSecildi(' + g + ')">' + g + '</button>';
+  }
+  grid.innerHTML = html;
+}
+
+window.takvimGunSecildi = function(gun) {
+  takvimSeciliGun = gun; takvimCiz();
+  const detay = $('takvimDetay'); if (!detay) return;
+  const AY = ['Ocak','Şubat','Mart','Nisan','Mayıs','Haziran','Temmuz','Ağustos','Eylül','Ekim','Kasım','Aralık'];
+  const tarihStr = takvimAy.yil + '-' + String(takvimAy.ay+1).padStart(2,'0') + '-' + String(gun).padStart(2,'0');
+  const oGun = state.orders.filter(o => o.teslimTarihi === tarihStr);
+  if (!oGun.length) { detay.innerHTML = '<div style="font-size:11px;color:var(--muted);text-align:center;padding:8px">' + gun + ' ' + AY[takvimAy.ay] + ' · teslim yok</div>'; return; }
+  detay.innerHTML = '<div style="font-size:10.5px;color:var(--neon);font-weight:800;margin-bottom:6px">📅 ' + gun + ' ' + AY[takvimAy.ay] + ' · ' + oGun.length + ' teslim</div>' + oGun.map(o => '<div style="padding:6px 8px;background:var(--card2);border-radius:5px;margin-bottom:4px;cursor:pointer;font-size:11px" onclick="cariAcFromRow(\'' + escapeAttr(o.id) + '\')"><div style="font-weight:700">' + escapeHtml(o.firma||o.adSoyad) + '</div><div style="color:var(--neon);font-size:10px;font-family:monospace">' + o.takipNo + '</div></div>').join('');
+};
+
+/* ============ HAVA DURUMU ============ */
+function havaIkon(k) { if (k===0) return '☀️'; if (k<=2) return '🌤️'; if (k===3) return '☁️'; if (k>=45&&k<=48) return '🌫️'; if (k>=51&&k<=67) return '🌧️'; if (k>=71&&k<=77) return '❄️'; if (k>=80&&k<=82) return '🌧️'; if (k>=85&&k<=86) return '❄️'; if (k>=95) return '⛈️'; return '🌤️'; }
+function havaAciklama(k) { if (k===0) return 'Açık'; if (k<=2) return 'Az bulutlu'; if (k===3) return 'Bulutlu'; if (k>=45&&k<=48) return 'Puslu'; if (k>=51&&k<=67) return 'Yağmurlu'; if (k>=71&&k<=77) return 'Kar'; if (k>=80&&k<=82) return 'Sağanak'; if (k>=95) return 'Fırtına'; return '—'; }
+
+async function havaCek() {
+  try {
+    const r = await fetch('https://api.open-meteo.com/v1/forecast?latitude=39.7767&longitude=30.5206&current=temperature_2m,weather_code&daily=temperature_2m_max,temperature_2m_min,weather_code&timezone=auto&forecast_days=4');
+    const d = await r.json();
+    if (!d.current) return;
+    const ana = $('havaAna');
+    if (ana) ana.innerHTML = '<div style="font-size:34px">' + havaIkon(d.current.weather_code) + '</div><div class="ha-temp">' + Math.round(d.current.temperature_2m) + '°</div><div class="ha-aciklama">' + havaAciklama(d.current.weather_code) + ' · Eskişehir</div>';
+    const row = $('havaRow');
+    if (row && d.daily && d.daily.time && d.daily.time.length > 1) {
+      const gunAdlari = ['Yarın','+2','+3']; let html = '';
+      for (let i = 1; i <= 3 && i < d.daily.time.length; i++) {
+        html += '<div class="hava-gun"><div class="hg-gun">' + gunAdlari[i-1] + '</div><div class="hg-ic">' + havaIkon(d.daily.weather_code[i]) + '</div><div class="hg-temp">' + Math.round(d.daily.temperature_2m_max[i]) + '°</div><div class="hg-alt">' + Math.round(d.daily.temperature_2m_min[i]) + '°</div></div>';
+      }
+      row.innerHTML = html;
+    }
+  } catch(e) { console.warn('hava:', e); }
+}
+
+/* ============ DÖVİZ KURLARI (ALIŞ / SATIŞ) ============ */
+async function kurCek() {
+  try {
+    // 1. Önce genelpara.com (alış/satış verir)
+    const r = await fetch('https://api.genelpara.com/json/');
+    const d = await r.json();
+    if (d && d.USD && d.EUR && d.GBP) {
+      kurVerisi = {
+        USD: { alis: parseFloat(d.USD.alis) || 0, satis: parseFloat(d.USD.satis) || 0 },
+        EUR: { alis: parseFloat(d.EUR.alis) || 0, satis: parseFloat(d.EUR.satis) || 0 },
+        GBP: { alis: parseFloat(d.GBP.alis) || 0, satis: parseFloat(d.GBP.satis) || 0 }
+      };
+      kurPanoyuCiz();
+      return;
+    }
+  } catch(e) {
+    // 2. Yedek API — open.er-api.com (orta kur)
+    try {
+      const r2 = await fetch('https://open.er-api.com/v6/latest/TRY');
+      const d2 = await r2.json();
+      if (!d2.rates) return;
+      const usd = d2.rates.USD ? 1/d2.rates.USD : 0;
+      const eur = d2.rates.EUR ? 1/d2.rates.EUR : 0;
+      const gbp = d2.rates.GBP ? 1/d2.rates.GBP : 0;
+      kurVerisi = {
+        USD: { alis: usd * 0.995, satis: usd * 1.005 },
+        EUR: { alis: eur * 0.995, satis: eur * 1.005 },
+        GBP: { alis: gbp * 0.995, satis: gbp * 1.005 }
+      };
+      kurPanoyuCiz();
+    } catch(e2) { console.warn('kur:', e2); }
+  }
+}
+
+function kurPanoyuCiz() {
+  const el = $('kurPano');
+  if (!el) return;
+  el.innerHTML =
+    '<div class="kur-row">' +
+      '<span class="kr-lbl">🇺🇸 USD</span>' +
+      '<span class="kr-vals">' +
+        '<span><span class="kur-baslik">Alış</span><span class="kur-alis">' + kurVerisi.USD.alis.toFixed(2) + '</span></span>' +
+        '<span><span class="kur-baslik">Satış</span><span class="kur-satis">' + kurVerisi.USD.satis.toFixed(2) + '</span></span>' +
+      '</span>' +
+    '</div>' +
+    '<div class="kur-row">' +
+      '<span class="kr-lbl">🇪🇺 EUR</span>' +
+      '<span class="kr-vals">' +
+        '<span><span class="kur-baslik">Alış</span><span class="kur-alis">' + kurVerisi.EUR.alis.toFixed(2) + '</span></span>' +
+        '<span><span class="kur-baslik">Satış</span><span class="kur-satis">' + kurVerisi.EUR.satis.toFixed(2) + '</span></span>' +
+      '</span>' +
+    '</div>' +
+    '<div class="kur-row">' +
+      '<span class="kr-lbl">🇬🇧 GBP</span>' +
+      '<span class="kr-vals">' +
+        '<span><span class="kur-baslik">Alış</span><span class="kur-alis">' + kurVerisi.GBP.alis.toFixed(2) + '</span></span>' +
+        '<span><span class="kur-baslik">Satış</span><span class="kur-satis">' + kurVerisi.GBP.satis.toFixed(2) + '</span></span>' +
+      '</span>' +
+    '</div>';
+}
+
+/* ============ AKTİVİTE ============ */
 function renderAktiviteAkisi() {
   const box = $('aktiviteAkisi'); if (!box) return;
   const sayi = $('aktiviteSayi');
@@ -2331,7 +2479,7 @@ window.topluDurumDegistir = function(yeniDurum) {
   if (!sec.length) { toast('Hiç seçili değil', 'warn'); return; }
   if (!confirm(sec.length + ' siparişin durumu "' + (DURUM_LBL[yeniDurum]||yeniDurum) + '" olsun mu?')) return;
   sec.forEach(o => { o.durum = yeniDurum; if (yeniDurum === 'hazir') o.musteriBilgilendirildiHazir = false; o.guncelleme = Date.now(); });
-  save(); bulkSecimiTemizle(); render(); renderDashboard();
+  save(); bulkSecimiTemizle(); render(); renderDashboard(); takvimCiz();
   toast('✅ ' + sec.length + ' güncellendi', 'success');
 };
 
@@ -2341,7 +2489,7 @@ window.topluSil = function() {
   if (!confirm(sec.length + ' sipariş ÇÖP KUTUSUNA taşınacak. Onay?')) return;
   sec.forEach(o => { trash.push({ siparis: o, silinmeTarihi: Date.now() }); });
   state.orders = state.orders.filter(o => !seciliSiparisler.has(String(o.id)));
-  save(); bulkSecimiTemizle(); render(); renderDashboard(); renderAyarlar(); renderTrash();
+  save(); bulkSecimiTemizle(); render(); renderDashboard(); renderAyarlar(); renderTrash(); takvimCiz();
   toast('🗑️ ' + sec.length + ' çöp kutusuna atıldı', 'warn');
 };
 
@@ -2559,7 +2707,7 @@ window.cariMusteriBilgileriniKaydet = function() {
     });
   }
   musteriler[yeniTel] = yeniM;
-  save(); render(); renderDashboard(); cariGecmisiYenile(yeniTel);
+  save(); render(); renderDashboard(); takvimCiz(); cariGecmisiYenile(yeniTel);
   toast('✅ Güncellendi', 'success');
 };
 
@@ -2573,7 +2721,7 @@ window.cariPopupDurumlariKaydet = function() {
   o.personelId = $('cariQuickUsta')?.value || '';
   o.guncelleme = Date.now();
   if (eskiDurum !== o.durum && o.durum === 'hazir') o.musteriBilgilendirildiHazir = false;
-  save(); render(); renderDashboard(); cariGecmisiYenile(o.telefon);
+  save(); render(); renderDashboard(); takvimCiz(); cariGecmisiYenile(o.telefon);
   toast('✅ Güncellendi', 'success');
 };
 
@@ -2597,7 +2745,7 @@ window.cariPopupSiparisiSil = function() {
   trash.push({ siparis: o, silinmeTarihi: Date.now() });
   state.orders = state.orders.filter(x => String(x.id) !== String(o.id));
   seciliCariSiparisId = null;
-  save(); render(); renderDashboard(); renderTrash(); cariGecmisiYenile(o.telefon);
+  save(); render(); renderDashboard(); takvimCiz(); renderTrash(); cariGecmisiYenile(o.telefon);
   toast('🗑️ Çöp kutusuna taşındı', 'warn');
 };
 window.cariPopupMusteriyiSil = function() {
@@ -2629,7 +2777,7 @@ window.cariFaturaKaydet = function() {
   o.faturaTutar = parseFloat($('cariFaturaTutar')?.value) || 0;
   o.faturaNot = ($('cariFaturaNot')?.value||'').trim();
   o.guncelleme = Date.now();
-  save(); render(); renderDashboard(); faturaDurumGuncelle(true); cariGecmisiYenile(o.telefon);
+  save(); render(); renderDashboard(); takvimCiz(); faturaDurumGuncelle(true); cariGecmisiYenile(o.telefon);
   toast('🧾 Kaydedildi', 'success');
 };
 window.cariFaturaSil = function() {
@@ -2741,7 +2889,7 @@ window.musteriSil = function(tel) {
   silinecek.forEach(o => trash.push({ siparis: o, silinmeTarihi: Date.now() }));
   delete musteriler[tel];
   state.orders = state.orders.filter(o => o.telefon !== tel);
-  save(); render(); renderDashboard(); renderTrash(); musteriRehberiFiltrele();
+  save(); render(); renderDashboard(); takvimCiz(); renderTrash(); musteriRehberiFiltrele();
   toast('🗑️ Çöp kutusuna taşındı', 'warn');
 };
 
@@ -2773,7 +2921,7 @@ window.trashGeri = function(idx) {
   if (o.telefon && !musteriler[o.telefon]) {
     musteriler[o.telefon] = { musteriTuru: o.musteriTuru||'bireysel', adSoyad: o.adSoyad||'', firma: o.firma||'', vergiNo: o.vergiNo||'', telefon: o.telefon, email: o.email||'', adres: o.adres||'', etiketler: [], notlar: [] };
   }
-  save(); render(); renderDashboard(); renderTrash();
+  save(); render(); renderDashboard(); takvimCiz(); renderTrash();
   toast('↩️ Geri yüklendi: ' + o.takipNo, 'success');
 };
 window.trashKaliciSil = function(idx) {
@@ -3329,18 +3477,22 @@ async function baslatUygulama() {
     gizliMod = (g === null) ? true : (g === '1');
     applyGizliMod();
     await buluttanIlkYukleme();
+    takvimYukle();
     trashOtomatikTemizle();
     formuTemizle();
     formTaslakDinleyicileri();
     musteriRehberiGuncelle();
-    render(); renderDashboard(); renderCiro(); renderAyarlar(); renderTrash();
+    render(); renderDashboard(); renderCiro(); takvimCiz(); renderAyarlar(); renderTrash();
     renderHizliNotlar(); renderAktiviteAkisi(); renderUzunListesi(); renderBulut();
     personelSecenekleriGuncelle('f-personel');
     personelSecenekleriGuncelle('filterPersonel');
     mobilFiltreSayisiniGuncelle();
+    havaCek(); kurCek();
     yedekDurumGuncelle();
     setTimeout(taslakKontrolEt, 800);
     setTimeout(yedekUyariGoster, 1500);
+    setInterval(havaCek, 30*60*1000);
+    setInterval(kurCek, 60*60*1000);
     setInterval(() => { renderDashboard(); renderAktiviteAkisi(); renderUzunListesi(); }, 5*60*1000);
     setInterval(yedekDurumGuncelle, 60*60*1000);
     gercekZamanliDinle();
