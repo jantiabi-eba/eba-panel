@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Eskişehir Baskı Atölyesi — Yönetim Paneli v8.4</title>
+<title>Eskişehir Baskı Atölyesi — Yönetim Paneli v8.5</title>
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#ff2a2a">
 <link rel="icon" type="image/png" href="e-logo.png">
@@ -36,8 +36,6 @@ header{background:#000;border-bottom:1px solid var(--border);padding:10px 18px;f
 .chip:hover{border-color:var(--neon)}
 .chip.uyari{border-color:var(--warn);background:rgba(245,158,11,.1)}
 .chip.uyari b{color:var(--warn)}
-.live-dot{width:7px;height:7px;border-radius:50%;background:var(--success);box-shadow:0 0 6px var(--success);animation:pulse 1.8s infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
 .theme-switch{display:flex;gap:2px;background:var(--card);border:1px solid var(--border);padding:3px;border-radius:8px}
 .theme-switch button{background:transparent;border:0;cursor:pointer;font-size:14px;padding:4px 7px;border-radius:6px;line-height:1;color:var(--muted)}
 .theme-switch button:hover{background:var(--neon-soft);color:var(--text)}
@@ -203,10 +201,6 @@ input[type="date"]{color-scheme:dark}
 .toast.success{border-left-color:var(--success)}
 .toast.error{border-left-color:var(--danger)}
 .toast.warn{border-left-color:var(--warn)}
-.doc h3{font-size:14px;margin:16px 0 6px;color:var(--neon)}
-.doc p,.doc li{font-size:13px;margin-bottom:6px}
-.doc ul{padding-left:20px}
-.doc code{background:var(--card2);padding:2px 6px;border-radius:4px;font-size:12px;color:var(--neon)}
 .bar-row{display:flex;align-items:center;gap:10px;margin-bottom:9px;font-size:12.5px}
 .bar-row .lbl{width:100px;color:var(--muted);font-weight:700;font-size:12px}
 .bar{flex:1;height:20px;background:#0a0a0a;border-radius:6px;overflow:hidden;border:1px solid var(--border)}
@@ -226,7 +220,6 @@ input[type="date"]{color-scheme:dark}
 .hedef-bar > i{display:block;height:100%;background:linear-gradient(90deg,var(--success),#4ade80)}
 .hedef-bar.asim > i{background:linear-gradient(90deg,var(--neon),#ff6b6b)}
 .trend-canvas{width:100%;height:220px;background:#0a0a0a;border:1px solid var(--border);border-radius:var(--radiusSm)}
-.hidden{display:none!important}
 .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);backdrop-filter:blur(6px);z-index:200;justify-content:center;align-items:center;padding:14px}
 .modal-overlay.active{display:flex}
 .modal-card{background:#0d0d0d;border:1px solid var(--border);border-radius:var(--radius);padding:20px;width:100%;max-width:820px;max-height:92vh;overflow-y:auto;display:flex;flex-direction:column;gap:14px}
@@ -321,10 +314,10 @@ table.mini tr:hover{background:var(--neon-soft)}
 .kur-row{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--border-soft);font-size:12.5px}
 .kur-row:last-child{border-bottom:0}
 .kur-row .kr-lbl{font-weight:800;color:var(--text);display:flex;align-items:center;gap:6px;flex:0 0 auto}
-.kur-row .kr-vals{display:flex;gap:10px;font-family:monospace}
-.kur-row .kur-alis{color:var(--success);font-weight:900;font-size:12px}
-.kur-row .kur-satis{color:var(--danger);font-weight:900;font-size:12px}
-.kur-row .kur-baslik{font-size:9.5px;color:var(--dim);font-weight:700;text-transform:uppercase;display:block;text-align:center}
+.kur-row .kr-vals{display:flex;gap:12px;font-family:monospace}
+.kur-row .kur-alis{color:var(--success);font-weight:900;font-size:13px}
+.kur-row .kur-satis{color:var(--danger);font-weight:900;font-size:13px}
+.kur-row .kur-baslik{font-size:9px;color:var(--dim);font-weight:700;text-transform:uppercase;display:block;text-align:center;line-height:1}
 .aktivite-item{padding:9px 10px;background:var(--card2);border-radius:6px;margin-bottom:6px;cursor:pointer;border-left:2px solid var(--border);transition:.15s}
 .aktivite-item:hover{background:var(--neon-soft);border-left-color:var(--neon)}
 .aktivite-item .ai-ust{display:flex;justify-content:space-between;align-items:center;gap:6px;margin-bottom:3px}
@@ -345,10 +338,6 @@ table.mini tr:hover{background:var(--neon-soft)}
 .not-item-hizli .nih-tarih{font-size:10px;color:var(--dim);margin-top:4px}
 .not-item-hizli .nih-sil{position:absolute;top:6px;right:6px;background:transparent;border:0;color:var(--dim);cursor:pointer;font-size:12px;padding:2px 5px;border-radius:4px}
 .not-item-hizli .nih-sil:hover{color:var(--danger);background:rgba(239,68,68,.1)}
-.kisayol-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;font-size:11.5px;border-bottom:1px solid var(--border-soft)}
-.kisayol-row:last-child{border-bottom:0}
-.kisayol-row kbd{background:var(--card2);border:1px solid var(--border);border-bottom-width:2px;padding:2px 7px;border-radius:4px;font-family:monospace;font-size:10.5px;color:var(--neon);font-weight:800;min-width:36px;text-align:center;display:inline-block;margin-right:3px}
-.kisayol-row span{color:var(--muted);font-weight:700}
 #loginOverlay{position:fixed;inset:0;background:radial-gradient(900px 600px at 50% -20%,rgba(255,42,42,.18),transparent 60%),#000;z-index:10000;display:flex;align-items:center;justify-content:center;padding:20px}
 #loginOverlay.hidden{display:none}
 .login-box{background:#0d0d0d;border:1px solid var(--border);border-radius:16px;padding:34px 30px;width:100%;max-width:400px;box-shadow:0 20px 60px rgba(0,0,0,.8),0 0 0 1px rgba(255,42,42,.15)}
@@ -375,7 +364,7 @@ table.mini tr:hover{background:var(--neon-soft)}
 .btn-cikis:hover{background:rgba(239,68,68,.2);color:#fca5a5}
 
 /* ============================================================
-   MOBİL UYUMLULUK KATMANI — v8.4
+   MOBİL UYUMLULUK KATMANI — v8.5
    ============================================================ */
 html,body{height:100%}
 body{display:flex;flex-direction:column;height:100vh;height:100dvh;overflow:hidden;overscroll-behavior-y:contain}
@@ -394,7 +383,6 @@ main{padding-bottom:calc(14px + env(safe-area-inset-bottom))}
 }
 
 @media (max-width:768px){
-  /* Header ultra kompakt */
   header{padding:6px 10px !important;padding-top:calc(6px + env(safe-area-inset-top)) !important}
   .header-inner{gap:6px !important}
   .brand{gap:8px !important}
@@ -415,25 +403,16 @@ main{padding-bottom:calc(14px + env(safe-area-inset-bottom))}
   #yedekChip{font-size:10px !important;padding:4px 8px !important}
   .head-tools .btn.sm[onclick*="kurtarEsitle"]{font-size:10px !important;padding:4px 8px !important;min-height:34px !important}
 
-  /* Tabs daha ince */
   nav.tabs{padding:0 4px !important}
   .tabs-inner{gap:1px !important}
   .tab{padding:7px 8px !important;font-size:11px !important;gap:3px !important;border-radius:0}
 
-  /* Main padding */
   main{padding:6px !important;padding-bottom:calc(6px + env(safe-area-inset-bottom)) !important}
 
-  /* Ana sayfa mobilde: takvim/hava/kur/bulut/son aktivite/uzun liste/kısayollar GİZLİ */
+  /* Dashboard mobil */
   .dash-3col{grid-template-columns:1fr !important;gap:8px !important}
   .dash-side{display:flex !important;flex-direction:column !important;gap:8px !important}
-  .dash-side .mini-card:nth-child(1),
-  .dash-side .mini-card:nth-child(2),
-  .dash-side .mini-card:nth-child(3),
-  .dash-side .mini-card:nth-child(4),
-  .dash-side .mini-card:nth-child(5),
-  .dash-side .mini-card:nth-child(6),
-  .dash-side .mini-card:nth-child(8){display:none !important}
-  .dash-side .mini-card:nth-child(7){display:block !important}
+  .mini-card.mobil-gizle{display:none !important}
   .dash-mid{gap:8px !important}
   .dash-grid{grid-template-columns:repeat(2,1fr) !important;gap:6px !important;margin-bottom:0 !important}
   .dash-card{padding:8px 10px !important;border-radius:8px !important}
@@ -458,7 +437,7 @@ main{padding-bottom:calc(14px + env(safe-area-inset-bottom))}
   .hatirlatma-item .hi-sub{font-size:9.5px !important}
   .hatirlatma-item .hi-badge{font-size:9px !important;padding:1px 5px !important}
 
-  /* Siparişler kompakt */
+  /* Siparişler */
   .stat-pills{gap:3px !important;margin-bottom:6px !important;flex-wrap:nowrap !important;overflow-x:auto !important;-webkit-overflow-scrolling:touch !important;scrollbar-width:none !important}
   .stat-pills::-webkit-scrollbar{display:none !important}
   .stat-pill{padding:4px 9px !important;font-size:10.5px !important;border-radius:5px !important;min-height:0 !important;flex-shrink:0 !important;gap:6px !important}
@@ -573,93 +552,19 @@ main{padding-bottom:calc(14px + env(safe-area-inset-bottom))}
   .header-inner{gap:5px !important}
 }
 
-/* Mobil filtre sheet */
-#mobilFiltreOverlay{
-  display:none;
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.7);
-  z-index:9000;
-  backdrop-filter:blur(3px);
-  -webkit-backdrop-filter:blur(3px);
-}
+#mobilFiltreOverlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:9000;backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px)}
 #mobilFiltreOverlay.active{display:block}
-
-#mobilFiltrePanel{
-  display:none;
-  position:fixed;
-  left:0;
-  right:0;
-  bottom:0;
-  background:var(--card);
-  border-top:1px solid var(--border);
-  border-radius:16px 16px 0 0;
-  padding:16px 14px;
-  padding-bottom:calc(16px + env(safe-area-inset-bottom));
-  z-index:9001;
-  max-height:80vh;
-  overflow-y:auto;
-  box-shadow:0 -12px 40px rgba(0,0,0,.75);
-  animation:ebaSlideUp .25s cubic-bezier(.2,.9,.3,1);
-}
+#mobilFiltrePanel{display:none;position:fixed;left:0;right:0;bottom:0;background:var(--card);border-top:1px solid var(--border);border-radius:16px 16px 0 0;padding:16px 14px;padding-bottom:calc(16px + env(safe-area-inset-bottom));z-index:9001;max-height:80vh;overflow-y:auto;box-shadow:0 -12px 40px rgba(0,0,0,.75);animation:ebaSlideUp .25s cubic-bezier(.2,.9,.3,1)}
 #mobilFiltrePanel.active{display:block}
-#mobilFiltrePanel::before{
-  content:"";
-  display:block;
-  width:40px;
-  height:3px;
-  background:var(--muted);
-  border-radius:2px;
-  margin:0 auto 12px;
-  opacity:.4;
-}
-#mobilFiltrePanel h4{
-  font-size:11px;
-  font-weight:800;
-  text-transform:uppercase;
-  color:var(--muted);
-  letter-spacing:.5px;
-  margin-bottom:12px;
-  display:flex;
-  align-items:center;
-  gap:5px;
-}
+#mobilFiltrePanel::before{content:"";display:block;width:40px;height:3px;background:var(--muted);border-radius:2px;margin:0 auto 12px;opacity:.4}
+#mobilFiltrePanel h4{font-size:11px;font-weight:800;text-transform:uppercase;color:var(--muted);letter-spacing:.5px;margin-bottom:12px;display:flex;align-items:center;gap:5px}
 #mobilFiltrePanel label.fld{margin-bottom:10px;font-size:11px;font-weight:700;color:var(--muted);display:flex;flex-direction:column;gap:4px}
-#mobilFiltrePanel select{
-  background:var(--card2) !important;
-  border:1px solid var(--border) !important;
-  color:var(--text) !important;
-  padding:10px 11px !important;
-  border-radius:7px !important;
-  font-size:15px !important;
-  width:100% !important;
-  font-family:inherit !important;
-}
-#mobilFiltrePanel .filter-actions{
-  display:flex;
-  gap:7px;
-  margin-top:14px;
-  position:sticky;
-  bottom:0;
-  background:var(--card);
-  padding-top:10px;
-}
-#mobilFiltrePanel .filter-actions .btn{
-  flex:1;
-  justify-content:center;
-  min-height:42px;
-  font-size:12px;
-  border-radius:8px;
-}
-
-@keyframes ebaSlideUp{
-  from{transform:translateY(100%)}
-  to{transform:translateY(0)}
-}
-
+#mobilFiltrePanel select{background:var(--card2) !important;border:1px solid var(--border) !important;color:var(--text) !important;padding:10px 11px !important;border-radius:7px !important;font-size:15px !important;width:100% !important;font-family:inherit !important}
+#mobilFiltrePanel .filter-actions{display:flex;gap:7px;margin-top:14px;position:sticky;bottom:0;background:var(--card);padding-top:10px}
+#mobilFiltrePanel .filter-actions .btn{flex:1;justify-content:center;min-height:42px;font-size:12px;border-radius:8px}
+@keyframes ebaSlideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
 @media (min-width:769px){
-  #mobilFiltreOverlay,
-  #mobilFiltrePanel{display:none !important}
+  #mobilFiltreOverlay,#mobilFiltrePanel{display:none !important}
   #mobilFiltreBtn{display:none !important}
 }
 </style>
@@ -695,7 +600,7 @@ main{padding-bottom:calc(14px + env(safe-area-inset-bottom))}
       </div>
       <div>
         <h1>ESKİŞEHİR BASKI ATÖLYESİ</h1>
-        <div class="ver">YÖNETİM PANELİ · v8.4</div>
+        <div class="ver">YÖNETİM PANELİ · v8.5</div>
       </div>
     </div>
     <div class="head-tools">
@@ -723,7 +628,8 @@ main{padding-bottom:calc(14px + env(safe-area-inset-bottom))}
     <button class="tab active" data-page="anasayfa">🏠 Ana Sayfa</button>
     <button class="tab" data-page="panel">📊 Siparişler</button>
     <button class="tab" data-page="ekle">➕ Ekle</button>
-    <button class="tab" data-page="rehber">📖 Rehber</button>
+    <button class="tab" data-page="musteri-rehber">👥 Müşteri Rehberi</button>
+    <button class="tab" data-page="rapor">📈 Rapor</button>
     <button class="tab gizli" data-page="ciro">💰 Ciro</button>
     <button class="tab" data-page="ayarlar">⚙️ Ayarlar</button>
     <button class="tab" data-page="bulut">☁️ Bulut</button>
@@ -736,7 +642,7 @@ main{padding-bottom:calc(14px + env(safe-area-inset-bottom))}
   <div class="page-scroll">
     <div class="dash-3col">
       <aside class="dash-side">
-        <div class="mini-card">
+        <div class="mini-card mobil-gizle">
           <div class="takvim-head">
             <button onclick="takvimAyDegistir(-1)">◀</button>
             <div class="ay-yaz" id="takvimAyYaz">—</div>
@@ -749,20 +655,20 @@ main{padding-bottom:calc(14px + env(safe-area-inset-bottom))}
           </div>
           <div id="takvimDetay" style="margin-top:10px"></div>
         </div>
-        <div class="mini-card">
+        <div class="mini-card mobil-gizle">
           <h3><span class="ic">⛅</span> Hava Durumu</h3>
           <div class="hava-ana" id="havaAna"><div class="ha-temp">--°</div><div class="ha-aciklama">Eskişehir</div></div>
           <div class="hava-row" id="havaRow"></div>
         </div>
-        <div class="mini-card">
+        <div class="mini-card mobil-gizle">
           <h3><span class="ic">💵</span> Döviz Kurları</h3>
           <div id="kurPano">
-            <div class="kur-row"><span class="kr-lbl">🇺🇸 USD</span><span class="kr-vals"><span class="kur-alis">--</span><span class="kur-satis">--</span></span></div>
-            <div class="kur-row"><span class="kr-lbl">🇪🇺 EUR</span><span class="kr-vals"><span class="kur-alis">--</span><span class="kur-satis">--</span></span></div>
-            <div class="kur-row"><span class="kr-lbl">🇬🇧 GBP</span><span class="kr-vals"><span class="kur-alis">--</span><span class="kur-satis">--</span></span></div>
+            <div class="kur-row"><span class="kr-lbl">🇺🇸 USD</span><span class="kr-vals"><span><span class="kur-baslik">Alış</span><span class="kur-alis">--</span></span><span><span class="kur-baslik">Satış</span><span class="kur-satis">--</span></span></span></div>
+            <div class="kur-row"><span class="kr-lbl">🇪🇺 EUR</span><span class="kr-vals"><span><span class="kur-baslik">Alış</span><span class="kur-alis">--</span></span><span><span class="kur-baslik">Satış</span><span class="kur-satis">--</span></span></span></div>
+            <div class="kur-row"><span class="kr-lbl">🇬🇧 GBP</span><span class="kr-vals"><span><span class="kur-baslik">Alış</span><span class="kur-alis">--</span></span><span><span class="kur-baslik">Satış</span><span class="kur-satis">--</span></span></span></div>
           </div>
         </div>
-        <div class="mini-card" style="border-left:3px solid var(--success)">
+        <div class="mini-card mobil-gizle" style="border-left:3px solid var(--success)">
           <h3><span class="ic">☁️</span> Bulut Durumu</h3>
           <div id="bulutDurumMini" style="font-size:12px;color:var(--muted)">Bağlanıyor...</div>
         </div>
@@ -792,18 +698,18 @@ main{padding-bottom:calc(14px + env(safe-area-inset-bottom))}
           <div class="action-row">
             <button class="btn primary" onclick="musteriSecAc()">👥 Kayıtlı Müşteri</button>
             <button class="btn" onclick="goTab('ekle')">➕ Yeni Sipariş</button>
-            <button class="btn" onclick="rehberAc()">👥 Rehber</button>
-            <button class="btn" onclick="raporModalAc()">📊 Rapor</button>
+            <button class="btn" onclick="goTab('musteri-rehber')">👥 Müşteri Rehberi</button>
+            <button class="btn" onclick="goTab('rapor')">📈 Rapor</button>
             <button class="btn gizli" onclick="goTab('ciro')">💰 Ciro</button>
           </div>
         </div>
       </div>
       <aside class="dash-side">
-        <div class="mini-card">
+        <div class="mini-card mobil-gizle">
           <h3><span class="ic">📋</span> Son Aktiviteler <span class="badge-mini" id="aktiviteSayi">0</span></h3>
           <div id="aktiviteAkisi" style="max-height:280px;overflow-y:auto"></div>
         </div>
-        <div class="mini-card">
+        <div class="mini-card mobil-gizle">
           <h3><span class="ic">🕐</span> İletişime Geçilecekler <span class="badge-mini" id="uzunSayi">0</span></h3>
           <div id="uzunListesi" style="max-height:240px;overflow-y:auto"></div>
         </div>
@@ -812,14 +718,6 @@ main{padding-bottom:calc(14px + env(safe-area-inset-bottom))}
           <textarea id="hizliNotInput" class="not-yazma" placeholder="Not yaz..." rows="3"></textarea>
           <button type="button" class="btn sm primary" style="margin-top:8px;width:100%;justify-content:center" onclick="hizliNotEkle()">💾 Notu Kaydet</button>
           <div id="hizliNotlarListe" style="margin-top:12px;max-height:200px;overflow-y:auto"></div>
-        </div>
-        <div class="mini-card">
-          <h3><span class="ic">⌨️</span> Kısayollar</h3>
-          <div class="kisayol-row"><span><kbd>Ctrl</kbd>+<kbd>S</kbd></span><span>Kaydet</span></div>
-          <div class="kisayol-row"><span><kbd>Ctrl</kbd>+<kbd>K</kbd></span><span>Ara</span></div>
-          <div class="kisayol-row"><span><kbd>N</kbd></span><span>Yeni Sipariş</span></div>
-          <div class="kisayol-row"><span><kbd>R</kbd></span><span>Rapor</span></div>
-          <div class="kisayol-row"><span><kbd>Esc</kbd></span><span>Kapat</span></div>
         </div>
       </aside>
     </div>
@@ -1009,20 +907,32 @@ main{padding-bottom:calc(14px + env(safe-area-inset-bottom))}
   </div>
 </section>
 
-<section class="page" id="page-rehber">
+<section class="page" id="page-musteri-rehber">
   <div class="page-scroll">
-    <div class="card doc">
-      <h2><span class="ic">📖</span> Kullanım Rehberi</h2>
-      <h3>Bulut Senkronizasyon</h3>
-      <p>Verileriniz Firebase bulutunda güvende. Telefondan, tabletten, her yerden giriş yapabilirsiniz.</p>
-      <h3>Kısayollar</h3>
-      <ul>
-        <li><code>Ctrl + S</code> — Kaydet</li>
-        <li><code>Ctrl + K</code> — Ara</li>
-        <li><code>N</code> — Yeni sipariş</li>
-        <li><code>R</code> — Rapor</li>
-        <li><code>Esc</code> — Kapat</li>
-      </ul>
+    <div class="card">
+      <h2><span class="ic">👥</span> Müşteri Rehberi <span id="pageRehberCount" style="color:var(--neon);font-size:12px;margin-left:auto">0 kişi</span></h2>
+      <div class="action-row" style="margin-bottom:12px">
+        <input type="text" id="pageRehberSearch" placeholder="🔍 İsim, firma, telefon ara..." style="flex:1;min-width:200px" oninput="renderMusteriRehberPage()">
+        <button class="btn primary" onclick="musteriSecAc()">➕ Yeni Sipariş için Seç</button>
+      </div>
+      <div id="pageRehberList" style="border:1px solid var(--border);border-radius:var(--radiusSm);max-height:calc(100vh - 320px);overflow-y:auto"></div>
+    </div>
+  </div>
+</section>
+
+<section class="page" id="page-rapor">
+  <div class="page-scroll">
+    <div class="card">
+      <h2><span class="ic">📈</span> Rapor</h2>
+      <div class="action-row" style="margin-bottom:14px">
+        <button class="btn" id="pageRaporBtnHafta" onclick="pageRaporTipiSec('haftalik')">📅 Bu Hafta</button>
+        <button class="btn primary" id="pageRaporBtnAy" onclick="pageRaporTipiSec('aylik')">📊 Bu Ay</button>
+        <button class="btn" id="pageRaporBtnTum" onclick="pageRaporTipiSec('tumu')">📈 Tümü</button>
+      </div>
+      <div class="rapor-onizleme" id="pageRaporOnizleme" style="max-height:none"></div>
+      <div class="action-row" style="margin-top:14px">
+        <button class="btn primary" onclick="raporYazdir()">🖨️ Yazdır / PDF</button>
+      </div>
     </div>
   </div>
 </section>
@@ -1046,14 +956,6 @@ main{padding-bottom:calc(14px + env(safe-area-inset-bottom))}
     <div class="card"><h2><span class="ic">📈</span> Trend</h2><canvas id="trendCanvas" class="trend-canvas"></canvas></div>
     <div class="card"><h2><span class="ic">📊</span> Aylık Ciro</h2><div id="monthlyBars"></div></div>
     <div class="card"><h2><span class="ic">🏆</span> En İyi Müşteriler</h2><div id="topCustomers"></div></div>
-    <div class="card">
-      <h2><span class="ic">📄</span> Rapor İndir</h2>
-      <div class="action-row">
-        <button class="btn primary" onclick="raporModalAc('aylik')">📊 Bu Ay</button>
-        <button class="btn" onclick="raporModalAc('haftalik')">📅 Bu Hafta</button>
-        <button class="btn" onclick="raporModalAc('tumu')">📈 Tümü</button>
-      </div>
-    </div>
   </div>
 </section>
 
@@ -1271,7 +1173,7 @@ main{padding-bottom:calc(14px + env(safe-area-inset-bottom))}
 
 <div class="modal-overlay" id="raporModal">
   <div class="modal-card" style="max-width:780px">
-    <h3><span>📊 Rapor</span><button class="modal-close" onclick="raporModalKapat()">✕</button></h3>
+    <h3><span>📈 Rapor</span><button class="modal-close" onclick="raporModalKapat()">✕</button></h3>
     <div class="action-row" style="margin-bottom:6px">
       <button class="btn" id="raporBtnHafta" onclick="raporTipiSec('haftalik')">📅 Bu Hafta</button>
       <button class="btn primary" id="raporBtnAy" onclick="raporTipiSec('aylik')">📊 Bu Ay</button>
@@ -1289,9 +1191,9 @@ main{padding-bottom:calc(14px + env(safe-area-inset-bottom))}
 
 <script type="module">
 /* ============================================================
-   ESKİŞEHİR BASKI ATÖLYESİ — v8.4
-   Takvim + Hava + Döviz (Alış/Satış) geri eklendi
-   Mobilde gizli, masaüstünde aktif
+   ESKİŞEHİR BASKI ATÖLYESİ — v8.5
+   Firebase + Takvim + Hava + Döviz (Alış/Satış)
+   Mobil gizleme: .mobil-gizle class'ı
    ============================================================ */
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
@@ -1390,7 +1292,7 @@ let taslakZamanlayici = null;
 let hizliNotlar = [];
 let takvimAy = null;
 let takvimSeciliGun = null;
-let kurVerisi = { USD: {alis:0, satis:0}, EUR: {alis:0, satis:0}, GBP: {alis:0, satis:0} };
+let kurVerisi = { USD:{alis:0,satis:0}, EUR:{alis:0,satis:0}, GBP:{alis:0,satis:0} };
 
 window.girisYap = async function() {
   const email = ($('loginEmail')?.value||'').trim();
@@ -1640,7 +1542,7 @@ function yedekUyariGoster() {
 
 window.yedekIndir = function() {
   try {
-    const data = { version: '8.4.0', tarih: new Date().toISOString(), orders: state.orders, musteriler, sablonlar, personel, hedef, trash, hizliNotlar, ayarlar };
+    const data = { version: '8.5.0', tarih: new Date().toISOString(), orders: state.orders, musteriler, sablonlar, personel, hedef, trash, hizliNotlar, ayarlar };
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
@@ -1786,6 +1688,8 @@ document.querySelectorAll('.tab').forEach(tab => {
     const pageEl = $('page-' + tab.dataset.page); if (pageEl) pageEl.classList.add('active');
     if (tab.dataset.page === 'anasayfa') { renderDashboard(); takvimCiz(); renderAktiviteAkisi(); renderUzunListesi(); }
     if (tab.dataset.page === 'panel') render();
+    if (tab.dataset.page === 'musteri-rehber') renderMusteriRehberPage();
+    if (tab.dataset.page === 'rapor') renderRaporPage();
     if (tab.dataset.page === 'ciro') renderCiro();
     if (tab.dataset.page === 'ayarlar') { renderAyarlar(); renderTrash(); yedekDurumGuncelle(); }
     if (tab.dataset.page === 'bulut') { renderBulut(); bulutDurumYaz('Bağlı', 'success'); }
@@ -1852,7 +1756,7 @@ window.takvimGunSecildi = function(gun) {
   detay.innerHTML = '<div style="font-size:10.5px;color:var(--neon);font-weight:800;margin-bottom:6px">📅 ' + gun + ' ' + AY[takvimAy.ay] + ' · ' + oGun.length + ' teslim</div>' + oGun.map(o => '<div style="padding:6px 8px;background:var(--card2);border-radius:5px;margin-bottom:4px;cursor:pointer;font-size:11px" onclick="cariAcFromRow(\'' + escapeAttr(o.id) + '\')"><div style="font-weight:700">' + escapeHtml(o.firma||o.adSoyad) + '</div><div style="color:var(--neon);font-size:10px;font-family:monospace">' + o.takipNo + '</div></div>').join('');
 };
 
-/* ============ HAVA DURUMU ============ */
+/* ============ HAVA ============ */
 function havaIkon(k) { if (k===0) return '☀️'; if (k<=2) return '🌤️'; if (k===3) return '☁️'; if (k>=45&&k<=48) return '🌫️'; if (k>=51&&k<=67) return '🌧️'; if (k>=71&&k<=77) return '❄️'; if (k>=80&&k<=82) return '🌧️'; if (k>=85&&k<=86) return '❄️'; if (k>=95) return '⛈️'; return '🌤️'; }
 function havaAciklama(k) { if (k===0) return 'Açık'; if (k<=2) return 'Az bulutlu'; if (k===3) return 'Bulutlu'; if (k>=45&&k<=48) return 'Puslu'; if (k>=51&&k<=67) return 'Yağmurlu'; if (k>=71&&k<=77) return 'Kar'; if (k>=80&&k<=82) return 'Sağanak'; if (k>=95) return 'Fırtına'; return '—'; }
 
@@ -1874,10 +1778,9 @@ async function havaCek() {
   } catch(e) { console.warn('hava:', e); }
 }
 
-/* ============ DÖVİZ KURLARI (ALIŞ / SATIŞ) ============ */
+/* ============ DÖVİZ KURU (ALIŞ / SATIŞ) ============ */
 async function kurCek() {
   try {
-    // 1. Önce genelpara.com (alış/satış verir)
     const r = await fetch('https://api.genelpara.com/json/');
     const d = await r.json();
     if (d && d.USD && d.EUR && d.GBP) {
@@ -1890,7 +1793,6 @@ async function kurCek() {
       return;
     }
   } catch(e) {
-    // 2. Yedek API — open.er-api.com (orta kur)
     try {
       const r2 = await fetch('https://open.er-api.com/v6/latest/TRY');
       const d2 = await r2.json();
@@ -1909,30 +1811,11 @@ async function kurCek() {
 }
 
 function kurPanoyuCiz() {
-  const el = $('kurPano');
-  if (!el) return;
+  const el = $('kurPano'); if (!el) return;
   el.innerHTML =
-    '<div class="kur-row">' +
-      '<span class="kr-lbl">🇺🇸 USD</span>' +
-      '<span class="kr-vals">' +
-        '<span><span class="kur-baslik">Alış</span><span class="kur-alis">' + kurVerisi.USD.alis.toFixed(2) + '</span></span>' +
-        '<span><span class="kur-baslik">Satış</span><span class="kur-satis">' + kurVerisi.USD.satis.toFixed(2) + '</span></span>' +
-      '</span>' +
-    '</div>' +
-    '<div class="kur-row">' +
-      '<span class="kr-lbl">🇪🇺 EUR</span>' +
-      '<span class="kr-vals">' +
-        '<span><span class="kur-baslik">Alış</span><span class="kur-alis">' + kurVerisi.EUR.alis.toFixed(2) + '</span></span>' +
-        '<span><span class="kur-baslik">Satış</span><span class="kur-satis">' + kurVerisi.EUR.satis.toFixed(2) + '</span></span>' +
-      '</span>' +
-    '</div>' +
-    '<div class="kur-row">' +
-      '<span class="kr-lbl">🇬🇧 GBP</span>' +
-      '<span class="kr-vals">' +
-        '<span><span class="kur-baslik">Alış</span><span class="kur-alis">' + kurVerisi.GBP.alis.toFixed(2) + '</span></span>' +
-        '<span><span class="kur-baslik">Satış</span><span class="kur-satis">' + kurVerisi.GBP.satis.toFixed(2) + '</span></span>' +
-      '</span>' +
-    '</div>';
+    '<div class="kur-row"><span class="kr-lbl">🇺🇸 USD</span><span class="kr-vals"><span><span class="kur-baslik">Alış</span><span class="kur-alis">' + kurVerisi.USD.alis.toFixed(2) + '</span></span><span><span class="kur-baslik">Satış</span><span class="kur-satis">' + kurVerisi.USD.satis.toFixed(2) + '</span></span></span></div>' +
+    '<div class="kur-row"><span class="kr-lbl">🇪🇺 EUR</span><span class="kr-vals"><span><span class="kur-baslik">Alış</span><span class="kur-alis">' + kurVerisi.EUR.alis.toFixed(2) + '</span></span><span><span class="kur-baslik">Satış</span><span class="kur-satis">' + kurVerisi.EUR.satis.toFixed(2) + '</span></span></span></div>' +
+    '<div class="kur-row"><span class="kr-lbl">🇬🇧 GBP</span><span class="kr-vals"><span><span class="kur-baslik">Alış</span><span class="kur-alis">' + kurVerisi.GBP.alis.toFixed(2) + '</span></span><span><span class="kur-baslik">Satış</span><span class="kur-satis">' + kurVerisi.GBP.satis.toFixed(2) + '</span></span></span></div>';
 }
 
 /* ============ AKTİVİTE ============ */
@@ -2316,6 +2199,48 @@ const DURUM_LBL = { yeni:'Yeni', hazirlaniyor:'Hazırlanıyor', hazir:'Hazır', 
 const ONCELIK_LBL = { normal:'Normal', vip:'VIP', acil:'Acil' };
 const KANAL_LBL = { atölye:'🏢 Atölye', web:'🌐 Web', instagram:'📸 Instagram', whatsapp:'💬 WhatsApp', telefon:'📞 Telefon' };
 const ODEME_LBL = { kart:'💳 Kart', havale:'🏦 Havale', nakit:'💵 Nakit' };
+
+/* ============ MÜŞTERİ REHBER SAYFASI ============ */
+window.renderMusteriRehberPage = function() {
+  const q = ($('pageRehberSearch')?.value||'').toLowerCase().trim();
+  const tekiller = {};
+  Object.values(musteriler).forEach(m => { if (m && m.telefon) tekiller[m.telefon] = m; });
+  const list = Object.values(tekiller).filter(m =>
+    (m.adSoyad||'').toLowerCase().includes(q) ||
+    (m.firma||'').toLowerCase().includes(q) ||
+    (m.telefon||'').includes(q) ||
+    (m.email||'').toLowerCase().includes(q)
+  ).sort((a, b) => {
+    const aSon = Math.max(0, ...state.orders.filter(o => o.telefon === a.telefon).map(o => o.olusturma || 0));
+    const bSon = Math.max(0, ...state.orders.filter(o => o.telefon === b.telefon).map(o => o.olusturma || 0));
+    return bSon - aSon;
+  });
+  if ($('pageRehberCount')) $('pageRehberCount').textContent = list.length + ' kişi';
+  const box = $('pageRehberList'); if (!box) return;
+  if (!list.length) { box.innerHTML = '<div style="padding:30px;text-align:center;color:var(--muted)">📭 Müşteri bulunamadı</div>'; return; }
+  box.innerHTML = list.map(m => {
+    const sipSay = state.orders.filter(o => o.telefon === m.telefon).length;
+    const sonSip = state.orders.filter(o => o.telefon === m.telefon).sort((a, b) => (b.olusturma||0) - (a.olusturma||0))[0];
+    const sonTarih = sonSip ? new Date(sonSip.olusturma).toLocaleDateString('tr-TR') : '—';
+    const borc = state.orders.filter(o => o.telefon === m.telefon && o.odemeDurumu !== 'alindi').reduce((s,o) => s + (o.netTutar||0), 0);
+    const etk = (m.etiketler||[]).map(e => ETIKET_TIPLERI[e] ? '<span class="etiket ' + e + '">' + ETIKET_TIPLERI[e] + '</span>' : '').join('');
+    return '<div class="rehber-item"><div style="flex:1;min-width:0"><div class="nm">' + escapeHtml(m.firma||m.adSoyad||'-') + '</div>' + (m.firma && m.adSoyad ? '<div class="sub">Yetkili: ' + escapeHtml(m.adSoyad) + '</div>' : '') + '<span class="tel">📞 ' + escapeHtml(m.telefon||'-') + '</span><div style="margin-top:4px;font-size:11px;color:var(--muted)">📦 ' + sipSay + ' sipariş · Son: ' + sonTarih + (borc > 0 ? ' · <span style="color:var(--danger);font-weight:700">Borç: ' + fmt(borc) + '</span>' : '') + '</div><div style="margin-top:4px">' + etk + '</div></div><div style="display:flex;gap:6px;flex-wrap:wrap"><button type="button" class="btn sm primary" onclick="musteriSecVeDoldur(\'' + escapeAttr(m.telefon) + '\')">➕ Sipariş</button><button type="button" class="btn sm" onclick="cariModalAcRehberden(\'' + escapeAttr(m.telefon) + '\')">Cari</button><button type="button" class="btn sm danger" onclick="musteriSil(\'' + escapeAttr(m.telefon) + '\')">Sil</button></div></div>';
+  }).join('');
+};
+
+/* ============ RAPOR SAYFASI ============ */
+window.renderRaporPage = function() { pageRaporTipiSec(aktifRaporTipi); };
+window.pageRaporTipiSec = function(tip) {
+  aktifRaporTipi = tip;
+  ['pageRaporBtnHafta','pageRaporBtnAy','pageRaporBtnTum','raporBtnHafta','raporBtnAy','raporBtnTum'].forEach(id => { const el = $(id); if (el) el.className = 'btn'; });
+  const map = { haftalik:'pageRaporBtnHafta', aylik:'pageRaporBtnAy', tumu:'pageRaporBtnTum' };
+  const mapModal = { haftalik:'raporBtnHafta', aylik:'raporBtnAy', tumu:'raporBtnTum' };
+  const aktifBtn = $(map[tip]); if (aktifBtn) aktifBtn.className = 'btn primary';
+  const aktifBtnModal = $(mapModal[tip]); if (aktifBtnModal) aktifBtnModal.className = 'btn primary';
+  const html = raporHTML(tip);
+  if ($('pageRaporOnizleme')) $('pageRaporOnizleme').innerHTML = html;
+  if ($('raporOnizleme')) $('raporOnizleme').innerHTML = html;
+};
 
 /* ============ MOBİL FİLTRE SHEET ============ */
 window.mobilFiltreAc = function() {
@@ -2841,7 +2766,7 @@ function cariGecmisiYenile(tel) {
   }).join('') : '<tr><td colspan="7" style="text-align:center;padding:16px;color:var(--muted)">Kayıt yok</td></tr>';
 }
 
-window.rehberAc = function() { musteriRehberiGuncelle(); musteriRehberiFiltrele(); $('musteriModal').classList.add('active'); };
+window.rehberAc = function() { goTab('musteri-rehber'); };
 window.musteriRehberiKapat = function() { $('musteriModal').classList.remove('active'); };
 
 function musteriRehberiFiltrele() {
@@ -2890,6 +2815,7 @@ window.musteriSil = function(tel) {
   delete musteriler[tel];
   state.orders = state.orders.filter(o => o.telefon !== tel);
   save(); render(); renderDashboard(); takvimCiz(); renderTrash(); musteriRehberiFiltrele();
+  if ($('pageRehberList')) renderMusteriRehberPage();
   toast('🗑️ Çöp kutusuna taşındı', 'warn');
 };
 
@@ -2986,13 +2912,7 @@ function raporHTML(tip) {
 
 window.raporModalAc = function(tip) { aktifRaporTipi = tip || 'aylik'; raporTipiSec(aktifRaporTipi); $('raporModal').classList.add('active'); };
 window.raporModalKapat = function() { $('raporModal').classList.remove('active'); };
-window.raporTipiSec = function(tip) {
-  aktifRaporTipi = tip;
-  ['raporBtnHafta','raporBtnAy','raporBtnTum'].forEach(id => { const el = $(id); if (el) el.className = 'btn'; });
-  const map = { haftalik:'raporBtnHafta', aylik:'raporBtnAy', tumu:'raporBtnTum' };
-  const aktifBtn = $(map[tip]); if (aktifBtn) aktifBtn.className = 'btn primary';
-  if ($('raporOnizleme')) $('raporOnizleme').innerHTML = raporHTML(tip);
-};
+window.raporTipiSec = function(tip) { pageRaporTipiSec(tip); };
 window.raporYazdir = function() {
   const html = '<!DOCTYPE html><html lang="tr"><head><meta charset="UTF-8"><title>Rapor</title><style>body{font-family:Segoe UI,Arial,sans-serif;color:#111;background:#fff;padding:24px;font-size:13px}h4{font-size:14px;margin:18px 0 10px;border-bottom:2px solid #111;padding-bottom:6px}.rapor-bolum{margin-bottom:18px}.rapor-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px}.rapor-kutu{border:1px solid #ccc;border-radius:6px;padding:10px;background:#f8f8f8}.rk-lbl{font-size:10.5px;color:#666;text-transform:uppercase;font-weight:700}.rk-val{font-size:18px;font-weight:900;margin-top:4px}.rapor-liste{border:1px solid #ccc;border-radius:6px;padding:10px;background:#f8f8f8}.rl-item{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid #eee}.rl-item:last-child{border-bottom:0}@media print{body{padding:0}}</style></head><body>' + raporHTML(aktifRaporTipi) + '<script>window.onload=()=>setTimeout(()=>window.print(),400);<\/script></body></html>';
   const w = window.open('', '_blank', 'width=900,height=1000');
@@ -3457,7 +3377,7 @@ document.addEventListener('keydown', e => {
   if (e.ctrlKey && tus === 's') { e.preventDefault(); if ($('page-ekle').classList.contains('active')) siparisKaydet(); }
   if (e.ctrlKey && tus === 'k') { e.preventDefault(); goTab('panel'); if ($('searchBox')) $('searchBox').focus(); }
   if (!e.ctrlKey && !e.altKey && tus === 'n' && !yaziliyor) { e.preventDefault(); goTab('ekle'); }
-  if (!e.ctrlKey && !e.altKey && tus === 'r' && !yaziliyor) { e.preventDefault(); raporModalAc(); }
+  if (!e.ctrlKey && !e.altKey && tus === 'r' && !yaziliyor) { e.preventDefault(); goTab('rapor'); }
   if (e.key === 'Escape') {
     if ($('mobilFiltrePanel')?.classList.contains('active')) mobilFiltreKapat();
     if (editingId) duzenlemeIptal();
@@ -3496,7 +3416,7 @@ async function baslatUygulama() {
     setInterval(() => { renderDashboard(); renderAktiviteAkisi(); renderUzunListesi(); }, 5*60*1000);
     setInterval(yedekDurumGuncelle, 60*60*1000);
     gercekZamanliDinle();
-    console.log('✅ v8.4 hazır — ' + state.orders.length + ' sipariş');
+    console.log('✅ v8.5 hazır — ' + state.orders.length + ' sipariş');
   } catch(e) { console.error('baslatUygulama:', e); }
 }
 </script>
