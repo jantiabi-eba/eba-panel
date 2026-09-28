@@ -1,12 +1,11 @@
-
 <!DOCTYPE html>
 <html lang="tr" data-theme="dark">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Eskişehir Baskı Atölyesi — Yönetim Paneli v8.3</title>
+<title>Eskişehir Baskı Atölyesi — Yönetim Paneli v8.4</title>
 <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="##0a0a0a">
+<meta name="theme-color" content="#ff2a2a">
 <link rel="icon" type="image/png" href="e-logo.png">
 <link rel="apple-touch-icon" href="e-logo.png">
 <style>
@@ -374,7 +373,7 @@ table.mini tr:hover{background:var(--neon-soft)}
 .btn-cikis:hover{background:rgba(239,68,68,.2);color:#fca5a5}
 
 /* ============================================================
-   MOBİL UYUMLULUK KATMANI — v8.2
+   MOBİL UYUMLULUK KATMANI — v8.4 (Daha kompakt & profesyonel)
    ============================================================ */
 html,body{height:100%}
 body{display:flex;flex-direction:column;height:100vh;height:100dvh;overflow:hidden;overscroll-behavior-y:contain}
@@ -393,46 +392,122 @@ main{padding-bottom:calc(14px + env(safe-area-inset-bottom))}
 }
 
 @media (max-width:768px){
-  header{padding:8px 10px}
-  .header-inner{gap:8px}
-  .brand{flex:1;min-width:0}
-  .brand .logo{width:38px;height:38px;font-size:18px;border-radius:8px}
-  .brand h1{font-size:12.5px}
-  .brand .ver{font-size:9.5px}
-  .head-tools{width:100%;gap:6px;justify-content:flex-start;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding-bottom:2px}
-  .head-tools::-webkit-scrollbar{display:none}
-  .head-tools > *{flex-shrink:0}
-  #kullaniciBadge{max-width:130px;font-size:10.5px;padding:5px 9px}
-  .btn-cikis{padding:5px 9px;font-size:10.5px}
-  .btn-bildirim{padding:6px 10px;font-size:12px}
-  .chip{padding:5px 9px;font-size:11px}
-  .chip .k{display:none}
-  .btn-gizle{padding:5px 9px;font-size:11px}
-  #gizleText{display:none}
-  .theme-switch{padding:2px}
-  .theme-switch button{padding:5px 6px;font-size:12px}
+  /* ---- Header ultra kompakt ---- */
+  header{padding:6px 10px !important;padding-top:calc(6px + env(safe-area-inset-top)) !important}
+  .header-inner{gap:6px !important}
+  .brand{gap:8px !important}
+  .brand .logo{width:30px !important;height:30px !important;font-size:14px !important;border-radius:6px !important}
+  .brand h1{font-size:11px !important;letter-spacing:0 !important}
+  .brand .ver{font-size:8.5px !important;opacity:.8}
+  .head-tools{gap:4px !important}
+  .head-tools #kullaniciBadge{display:none !important}
+  .head-tools .btn-cikis{display:none !important}
+  .btn-bildirim{padding:5px 8px !important;font-size:11px !important;min-height:34px !important;border-radius:6px !important}
+  .btn-bildirim .bildirim-sayi{font-size:9px !important;padding:1px 5px !important;min-width:16px !important}
+  .chip{padding:4px 8px !important;font-size:10.5px !important;min-height:34px !important;border-radius:6px !important}
+  .chip .k{display:none !important}
+  .btn-gizle{padding:4px 8px !important;font-size:10.5px !important;min-height:34px !important;border-radius:6px !important}
+  #gizleText{display:none !important}
+  .theme-switch{padding:2px !important;border-radius:6px !important}
+  .theme-switch button{padding:4px 5px !important;font-size:11px !important;min-height:30px !important;border-radius:5px !important}
+  #yedekChip{font-size:10px !important;padding:4px 8px !important}
+  .head-tools .btn.sm[onclick*="kurtarEsitle"]{font-size:10px !important;padding:4px 8px !important;min-height:34px !important}
 
-  nav.tabs{padding:0 8px}
-  .tabs-inner{gap:2px}
-  .tab{padding:10px 12px;font-size:12px;gap:4px}
+  /* ---- Tabs daha ince ---- */
+  nav.tabs{padding:0 4px !important}
+  .tabs-inner{gap:1px !important}
+  .tab{padding:7px 8px !important;font-size:11px !important;gap:3px !important;border-radius:0}
 
-  main{padding:10px}
+  /* ---- Main padding ---- */
+  main{padding:6px !important;padding-bottom:calc(6px + env(safe-area-inset-bottom)) !important}
 
-  .card{padding:12px;border-radius:9px}
-  .card h2{font-size:13px}
-  .mini-card{padding:12px}
-  .grid{gap:10px}
-  .grid.cols-2,.grid.cols-3{grid-template-columns:1fr}
+  /* ---- Ana sayfa mobilde sadece dashboard ---- */
+  .dash-3col{grid-template-columns:1fr !important;gap:8px !important}
+  .dash-side{display:flex !important;flex-direction:column !important;gap:8px !important}
+  /* Takvim, hava, kurlar, bulut durumu mobilde gizli */
+  .dash-side .mini-card:nth-child(1),
+  .dash-side .mini-card:nth-child(2),
+  .dash-side .mini-card:nth-child(3),
+  .dash-side .mini-card:nth-child(4){display:none !important}
+  .dash-side .mini-card:nth-child(5){display:none !important} /* Son aktiviteler */
+  .dash-side .mini-card:nth-child(6){display:none !important} /* Uzun liste */
+  .dash-side .mini-card:nth-child(7){display:block !important} /* Hızlı notlar */
+  .dash-side .mini-card:nth-child(8){display:none !important} /* Kısayollar */
+  .dash-mid{gap:8px !important}
+  .dash-grid{grid-template-columns:repeat(2,1fr) !important;gap:6px !important;margin-bottom:0 !important}
+  .dash-card{padding:8px 10px !important;border-radius:8px !important}
+  .dash-card .dc-icon{font-size:14px !important;margin-bottom:2px !important}
+  .dash-card .dc-lbl{font-size:9px !important;letter-spacing:.3px !important}
+  .dash-card .dc-val{font-size:17px !important;margin-top:2px !important;letter-spacing:-.5px !important}
+  .dash-row{grid-template-columns:1fr !important;gap:8px !important}
+  .dash-list-card{padding:10px !important}
+  .dash-list-card h3{font-size:11.5px !important;margin-bottom:8px !important}
+  .dash-list-card .list-scroll{max-height:160px !important}
+  .dash-row-item{padding:6px 2px !important}
+  .dash-row-item .dr-title{font-size:11.5px !important}
+  .dash-row-item .dr-sub{font-size:10px !important}
+  .dash-row-item .dr-val{font-size:11.5px !important}
+  .mini-card{padding:10px !important;border-radius:8px !important}
+  .mini-card h3{font-size:11px !important;margin-bottom:8px !important}
+  .not-yazma{min-height:44px !important;font-size:12px !important;padding:7px 9px !important}
+  .hatirlatma-kart{padding:10px !important;margin-bottom:8px !important}
+  .hatirlatma-kart h3{font-size:11.5px !important;margin-bottom:8px !important}
+  .hatirlatma-item{padding:6px 8px !important}
+  .hatirlatma-item .hi-title{font-size:11px !important}
+  .hatirlatma-item .hi-sub{font-size:9.5px !important}
+  .hatirlatma-item .hi-badge{font-size:9px !important;padding:1px 5px !important}
 
-  .dash-grid{grid-template-columns:repeat(2,1fr);gap:8px}
-  .dash-card{padding:11px}
-  .dash-card .dc-val{font-size:20px}
-  .dash-card .dc-icon{font-size:17px}
-  .dash-row{grid-template-columns:1fr;gap:10px}
-  .dash-3col{grid-template-columns:1fr;gap:10px}
-  .dash-side{display:flex!important;flex-direction:column;gap:10px}
+  /* ---- Siparişler sayfası kompakt ---- */
+  .stat-pills{gap:3px !important;margin-bottom:6px !important;flex-wrap:nowrap !important;overflow-x:auto !important;-webkit-overflow-scrolling:touch !important;scrollbar-width:none !important}
+  .stat-pills::-webkit-scrollbar{display:none !important}
+  .stat-pill{padding:4px 9px !important;font-size:10.5px !important;border-radius:5px !important;min-height:0 !important;flex-shrink:0 !important;gap:6px !important}
+  .stat-pill .cnt{padding:1px 5px !important;font-size:9.5px !important;background:rgba(255,255,255,.1) !important;border-radius:8px !important}
 
-  .kalem-row{flex-direction:column;gap:8px}
+  #page-panel .table-header{padding:6px 8px !important;gap:5px !important;background:var(--card) !important;border-bottom:1px solid var(--border) !important}
+  #page-panel .table-header h2{font-size:11px !important;gap:4px !important}
+  #page-panel .table-header h2 span{font-size:10px !important}
+
+  #page-panel .filters{display:grid !important;grid-template-columns:1fr auto !important;gap:5px !important;align-items:center !important}
+  #page-panel .filters #searchBox{grid-column:1/2 !important;max-width:none !important;font-size:14px !important;padding:7px 10px !important;height:38px !important;border-radius:7px !important}
+  #page-panel .filters #mobilFiltreBtn{grid-column:2/3 !important;display:inline-flex !important;align-items:center !important;justify-content:center !important;height:38px !important;padding:0 10px !important;font-size:11px !important;gap:4px !important;white-space:nowrap !important;border-radius:7px !important}
+  #page-panel .filters #filterPriority,
+  #page-panel .filters #filterPayment,
+  #page-panel .filters #filterPersonel,
+  #page-panel .filters .btn.ghost,
+  #page-panel .filters .btn.sm.primary[onclick*="musteriSecAc"],
+  #page-panel .filters .btn.sm[onclick*="topluListe"],
+  #page-panel .filters .btn.sm[onclick*="exportCSV"]{display:none !important}
+
+  #mobilFiltreBtn .aktif-filtre{display:none;background:#fff;color:var(--neon);font-size:9px;font-weight:900;padding:1px 5px;border-radius:7px;margin-left:3px;min-width:16px;text-align:center}
+  #mobilFiltreBtn.aktif-var .aktif-filtre{display:inline-block !important}
+
+  /* Kart görünümü kompakt */
+  .table-wrap tbody tr{padding:8px 10px !important;margin-bottom:6px !important;border-radius:7px !important;background:var(--card2) !important;border:1px solid var(--border) !important}
+  .table-wrap tbody td{padding:3px 0 !important;padding-right:28px !important}
+  .table-wrap tbody td:last-child{padding-right:0 !important}
+  .table-wrap tbody td:first-child{top:7px !important;right:7px !important}
+  .table-wrap tbody td:first-child .row-check{width:18px !important;height:18px !important}
+  .table-wrap tbody td[data-label]::before{font-size:9px !important;margin-bottom:1px !important}
+  .cust-name{font-size:12.5px !important}
+  .cust-sub{font-size:10px !important}
+  .cust-takip{font-size:10px !important}
+  .kalem-ozet{font-size:10.5px !important;line-height:1.35 !important}
+  .badge{font-size:9px !important;padding:2px 6px !important}
+  .tutar{font-size:13px !important}
+  .tutar-indirim{font-size:9.5px !important}
+
+  .bulk-bar{padding:5px 8px !important;gap:4px !important}
+  .bulk-bar .bb-info{font-size:10.5px !important;margin-right:0 !important;width:100% !important;text-align:center !important;margin-bottom:3px !important}
+  .bulk-bar .btn{font-size:9.5px !important;padding:4px 6px !important;flex:1 1 44% !important;justify-content:center !important;min-height:32px !important;border-radius:6px !important}
+
+  /* ---- Form ---- */
+  .card{padding:10px !important;border-radius:8px !important;margin-bottom:8px !important}
+  .card h2{font-size:12px !important;margin-bottom:10px !important}
+  .section-sub{font-size:11px !important;margin:-4px 0 10px !important}
+  .grid{gap:8px !important}
+  .grid.cols-2,.grid.cols-3{grid-template-columns:1fr !important}
+
+  .kalem-row{flex-direction:column !important;gap:6px !important}
   .kalem-row .f,
   .kalem-row .f.f-baski,
   .kalem-row .f.f-urun,
@@ -442,204 +517,63 @@ main{padding-bottom:calc(14px + env(safe-area-inset-bottom))}
   .kalem-row .f.f-detay,
   .kalem-row .f.f-adet,
   .kalem-row .f.f-fiyat,
-  .kalem-row .f.f-tutar{flex:1 1 auto;min-width:0;width:100%}
-  .kalem-card{padding:10px}
-  .kalem-sil{height:40px;padding:0 14px;font-size:16px}
+  .kalem-row .f.f-tutar{flex:1 1 auto !important;min-width:0 !important;width:100% !important}
+  .kalem-card{padding:8px !important}
+  .kalem-sil{height:36px !important;padding:0 12px !important;font-size:14px !important;border-radius:6px !important}
 
-  input,select,textarea{font-size:16px !important;padding:11px 12px}
+  input,select,textarea{font-size:16px !important;padding:9px 10px !important;border-radius:6px !important}
   .kalem-row select,.kalem-row input{font-size:16px !important}
-  .kalem-tutar{height:42px;font-size:14px}
+  .kalem-tutar{height:38px !important;font-size:13px !important}
 
-  .stat-pills{overflow-x:auto;flex-wrap:nowrap;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding-bottom:4px}
-  .stat-pills::-webkit-scrollbar{display:none}
-  .stat-pill{padding:8px 12px;font-size:12px;white-space:nowrap;flex-shrink:0}
+  .toggle-group{gap:4px !important}
+  .toggle-group label{padding:6px 10px !important;font-size:11px !important;border-radius:6px !important}
 
-  .table-header{padding:10px 12px;gap:8px}
-  .table-header h2{font-size:13px}
-  .filters{gap:6px}
-  .filters input,.filters select{max-width:none;flex:1 1 140px;font-size:14px}
-  .filters .btn{flex:1 1 auto;justify-content:center}
+  .action-row{gap:5px !important}
+  .action-row .btn{flex:1 1 auto !important;justify-content:center !important;min-width:0 !important;font-size:10.5px !important;padding:6px 8px !important;border-radius:6px !important}
 
-  .bulk-bar{padding:8px 10px;gap:6px}
-  .bulk-bar .btn{flex:1 1 44%;font-size:11px;justify-content:center}
+  /* ---- Modallar ---- */
+  .modal-overlay{padding:0 !important;align-items:stretch !important}
+  .modal-card{max-width:100% !important;max-height:100dvh !important;height:100dvh !important;border-radius:0 !important;padding:14px !important;padding-bottom:calc(14px + env(safe-area-inset-bottom)) !important;gap:10px !important}
+  .modal-card h3{position:sticky !important;top:-14px !important;background:var(--card) !important;margin:-14px -14px 0 -14px !important;padding:12px 14px !important;z-index:5 !important;font-size:14px !important}
+  .cari-tab-bar{overflow-x:auto !important;flex-wrap:nowrap !important;-webkit-overflow-scrolling:touch !important;scrollbar-width:none !important;margin:0 -14px 4px -14px !important;padding:0 14px !important}
+  .cari-tab-bar::-webkit-scrollbar{display:none !important}
+  .cari-tab{white-space:nowrap !important;padding:7px 10px !important;font-size:11px !important;flex-shrink:0 !important}
+  .cari-stats{grid-template-columns:1fr !important;gap:5px !important;text-align:left !important;padding:9px !important}
+  .cari-stats > div{display:flex !important;justify-content:space-between !important;align-items:center !important}
+  .cari-stats .lbl{font-size:9.5px !important}
+  .cari-stats .val{font-size:13px !important;margin-top:0 !important}
+  .invoice-box{grid-template-columns:1fr !important}
+  table.mini{font-size:11px !important}
+  table.mini th,table.mini td{padding:6px 7px !important;white-space:nowrap !important}
 
-  .table-wrap{overflow-x:hidden}
-  .table-wrap table{min-width:0;width:100%}
-  .table-wrap thead{display:none}
-  .table-wrap tbody,
-  .table-wrap tr,
-  .table-wrap td{display:block;width:100%}
-
-  .table-wrap tbody tr{position:relative;background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:10px;cursor:pointer}
-  .table-wrap tbody tr:hover{background:var(--card2)}
-  .table-wrap tbody tr.secili{background:var(--neon-soft) !important;border-color:var(--neon)}
-  .table-wrap tbody tr.acil{box-shadow:none;border-left:4px solid var(--danger)}
-  .table-wrap tbody tr.vip{box-shadow:none;border-left:4px solid var(--warn)}
-  .table-wrap tbody tr.normal{box-shadow:none;border-left:4px solid var(--success)}
-
-  .table-wrap tbody td{padding:6px 0;padding-right:34px;border:0;text-align:left !important;vertical-align:top}
-  .table-wrap tbody td:last-child{padding-right:0}
-
-  .table-wrap tbody td[data-label]::before{content:attr(data-label);display:block;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.4px;color:var(--muted);margin-bottom:3px}
-
-  .table-wrap tbody td:first-child{position:absolute;top:10px;right:10px;width:auto;padding:0;z-index:1}
-  .table-wrap tbody td:first-child .row-check{width:22px;height:22px}
-
-  .table-wrap tbody td .tutar{text-align:left;font-size:16px}
-  .table-wrap tbody td .tutar-indirim{text-align:left}
-  .table-wrap tbody td > div[style*="align-items:flex-end"]{align-items:flex-start !important;margin-top:6px}
-  .cust-name{font-size:14.5px}
-
-  .modal-overlay{padding:0;align-items:stretch}
-  .modal-card{max-width:100% !important;max-height:100dvh !important;height:100dvh;border-radius:0;padding:16px;padding-bottom:calc(16px + env(safe-area-inset-bottom));gap:12px}
-  .modal-card h3{position:sticky;top:-16px;background:var(--card);margin:-16px -16px 0 -16px;padding:14px 16px;z-index:5}
-
-  .cari-tab-bar{overflow-x:auto;flex-wrap:nowrap;-webkit-overflow-scrolling:touch;scrollbar-width:none;margin:0 -16px 6px -16px;padding:0 16px}
-  .cari-tab-bar::-webkit-scrollbar{display:none}
-  .cari-tab{white-space:nowrap;padding:9px 12px;font-size:12px;flex-shrink:0}
-  .cari-stats{grid-template-columns:1fr;gap:6px;text-align:left}
-  .cari-stats > div{display:flex;justify-content:space-between;align-items:center}
-  .cari-stats .lbl{font-size:10.5px}
-  .cari-stats .val{font-size:14px;margin-top:0}
-  .invoice-box{grid-template-columns:1fr}
-  table.mini{font-size:11.5px}
-  table.mini th,table.mini td{padding:7px 8px;white-space:nowrap}
-
-  #loginOverlay{padding:14px}
-  .login-box{padding:26px 20px;border-radius:12px}
-  .login-box .lg-logo{width:64px;height:64px;font-size:32px;border-radius:14px}
-  .login-box h2{font-size:16px}
+  #loginOverlay{padding:12px !important}
+  .login-box{padding:22px 18px !important;border-radius:12px !important}
+  .login-box .lg-logo{width:56px !important;height:56px !important;font-size:28px !important;border-radius:12px !important}
+  .login-box h2{font-size:15px !important}
   .login-box .lg-fld input{font-size:16px !important}
 
-  #toasts{left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom))}
-  .toast{min-width:0;width:100%}
+  #toasts{left:10px !important;right:10px !important;bottom:calc(10px + env(safe-area-inset-bottom)) !important}
+  .toast{min-width:0 !important;width:100% !important;font-size:12px !important;padding:9px 12px !important}
 
-  .takvim-gun{padding:8px 2px;font-size:12.5px}
-  .hava-gun .hg-ic{font-size:20px}
-
-  .action-row{gap:6px}
-  .action-row .btn{flex:1 1 auto;justify-content:center;min-width:0}
-
-  .rapor-grid{grid-template-columns:repeat(2,1fr)}
-  .rapor-kutu{padding:9px}
-  .rapor-kutu .rk-val{font-size:16px}
+  .rapor-grid{grid-template-columns:repeat(2,1fr) !important}
+  .rapor-kutu{padding:8px !important}
+  .rapor-kutu .rk-val{font-size:15px !important}
 }
 
 @media (max-width:380px){
-  .dash-grid{grid-template-columns:1fr}
-  .head-tools{gap:4px}
-  .brand h1{font-size:11.5px}
-  .tab{padding:9px 10px;font-size:11.5px}
-  .stat-pill{padding:7px 10px;font-size:11.5px}
+  .dash-grid{grid-template-columns:1fr !important}
+  .head-tools{gap:3px !important}
+  .brand h1{font-size:10px !important}
+  .tab{padding:6px 7px !important;font-size:10px !important}
+  .stat-pill{padding:3px 7px !important;font-size:10px !important}
 }
 
 @media (max-width:900px) and (orientation:landscape){
-  main{padding:8px}
-  .header-inner{gap:6px}
+  main{padding:6px !important}
+  .header-inner{gap:5px !important}
 }
 
-/* ============================================================
-   MOBİL COMPACT MOD v8.3 — SADECE MOBİL
-   Masaüstü görünümü etkilenmez.
-   ============================================================ */
-@media (max-width:768px){
-
-  /* Header — kompakt */
-  header{padding:6px 10px !important;padding-top:calc(6px + env(safe-area-inset-top)) !important}
-  .header-inner{gap:6px !important}
-  .brand{gap:8px !important}
-  .brand .logo{width:32px !important;height:32px !important;font-size:16px !important;border-radius:7px !important}
-  .brand h1{font-size:12px !important;letter-spacing:.2px !important}
-  .brand .ver{font-size:9px !important}
-  .head-tools{gap:5px !important}
-  .head-tools #kullaniciBadge{display:none !important}
-  .head-tools .btn-cikis{display:none !important}
-
-  /* Tabs — daha ince */
-  nav.tabs{padding:0 6px !important}
-  .tabs-inner{gap:2px !important}
-  .tab{padding:8px 10px !important;font-size:11.5px !important;gap:4px !important}
-
-  /* Main padding azalt */
-  main{padding:8px !important;padding-bottom:calc(8px + env(safe-area-inset-bottom)) !important}
-
-  /* Stat pills — kompakt yatay scroll */
-  .stat-pills{gap:4px !important;margin-bottom:8px !important;flex-wrap:nowrap !important;overflow-x:auto !important;-webkit-overflow-scrolling:touch !important;scrollbar-width:none !important}
-  .stat-pills::-webkit-scrollbar{display:none !important}
-  .stat-pill{padding:5px 10px !important;font-size:11px !important;border-radius:6px !important;min-height:0 !important;flex-shrink:0 !important}
-  .stat-pill .cnt{padding:1px 6px !important;font-size:10.5px !important;background:rgba(255,255,255,.1) !important}
-
-  /* Siparişler sayfasındaki table-header sadeleşsin */
-  #page-panel .table-header{padding:8px 10px !important;gap:6px !important;background:var(--card) !important;border-bottom:1px solid var(--border) !important}
-  #page-panel .table-header h2{font-size:12px !important;gap:6px !important}
-
-  /* Filtreler — mobilde arama + filtre butonu yan yana */
-  #page-panel .filters{
-    display:grid !important;
-    grid-template-columns:1fr auto !important;
-    gap:6px !important;
-    align-items:center !important;
-  }
-  #page-panel .filters #searchBox{
-    grid-column:1/2 !important;
-    max-width:none !important;
-    font-size:15px !important;
-    padding:8px 11px !important;
-    height:40px !important;
-  }
-  #page-panel .filters #mobilFiltreBtn{
-    grid-column:2/3 !important;
-    display:inline-flex !important;
-    align-items:center !important;
-    justify-content:center !important;
-    height:40px !important;
-    padding:0 12px !important;
-    font-size:12px !important;
-    gap:5px !important;
-    white-space:nowrap !important;
-  }
-  /* Masaüstü filtrelerini mobilde gizle — sadece sheet'te görünecek */
-  #page-panel .filters #filterPriority,
-  #page-panel .filters #filterPayment,
-  #page-panel .filters #filterPersonel,
-  #page-panel .filters .btn.ghost,
-  #page-panel .filters .btn.sm.primary[onclick*="musteriSecAc"],
-  #page-panel .filters .btn.sm[onclick*="topluListe"],
-  #page-panel .filters .btn.sm[onclick*="exportCSV"]{
-    display:none !important;
-  }
-
-  /* Filtre butonu aktif filtre sayısı rozeti */
-  #mobilFiltreBtn .aktif-filtre{
-    display:none;
-    background:#fff;
-    color:var(--neon);
-    font-size:10px;
-    font-weight:900;
-    padding:1px 6px;
-    border-radius:8px;
-    margin-left:4px;
-    min-width:18px;
-    text-align:center;
-  }
-  #mobilFiltreBtn.aktif-var .aktif-filtre{display:inline-block !important}
-
-  /* Kart görünümü — daha kompakt */
-  .table-wrap tbody tr{padding:10px !important;margin-bottom:8px !important;border-radius:8px !important}
-  .table-wrap tbody td{padding:4px 0 !important;padding-right:32px !important}
-  .table-wrap tbody td:last-child{padding-right:0 !important}
-  .table-wrap tbody td:first-child{top:8px !important;right:8px !important}
-  .table-wrap tbody td:first-child .row-check{width:20px !important;height:20px !important}
-  .cust-name{font-size:13.5px !important}
-  .kalem-ozet{font-size:11.5px !important;line-height:1.4 !important}
-
-  /* Toplu seçim çubuğu mobilde daha kompakt */
-  .bulk-bar{padding:6px 10px !important;gap:5px !important}
-  .bulk-bar .bb-info{font-size:11.5px !important;margin-right:0 !important;width:100% !important;text-align:center !important;margin-bottom:4px !important}
-  .bulk-bar .btn{font-size:10.5px !important;padding:5px 8px !important;flex:1 1 44% !important;justify-content:center !important;min-height:34px !important}
-}
-
-/* Mobil filtre sheet — sadece mobilde aktif olur (JS kontrol eder) */
+/* Mobil filtre sheet */
 #mobilFiltreOverlay{
   display:none;
   position:fixed;
@@ -660,8 +594,8 @@ main{padding-bottom:calc(14px + env(safe-area-inset-bottom))}
   background:var(--card);
   border-top:1px solid var(--border);
   border-radius:16px 16px 0 0;
-  padding:18px 16px;
-  padding-bottom:calc(18px + env(safe-area-inset-bottom));
+  padding:16px 14px;
+  padding-bottom:calc(16px + env(safe-area-inset-bottom));
   z-index:9001;
   max-height:80vh;
   overflow-y:auto;
@@ -672,50 +606,50 @@ main{padding-bottom:calc(14px + env(safe-area-inset-bottom))}
 #mobilFiltrePanel::before{
   content:"";
   display:block;
-  width:44px;
-  height:4px;
+  width:40px;
+  height:3px;
   background:var(--muted);
   border-radius:2px;
-  margin:0 auto 14px;
+  margin:0 auto 12px;
   opacity:.4;
 }
 #mobilFiltrePanel h4{
-  font-size:12px;
+  font-size:11px;
   font-weight:800;
   text-transform:uppercase;
   color:var(--muted);
   letter-spacing:.5px;
-  margin-bottom:14px;
+  margin-bottom:12px;
   display:flex;
   align-items:center;
-  gap:6px;
+  gap:5px;
 }
-#mobilFiltrePanel label.fld{margin-bottom:12px;font-size:12px;font-weight:700;color:var(--muted);display:flex;flex-direction:column;gap:5px}
+#mobilFiltrePanel label.fld{margin-bottom:10px;font-size:11px;font-weight:700;color:var(--muted);display:flex;flex-direction:column;gap:4px}
 #mobilFiltrePanel select{
   background:var(--card2) !important;
   border:1px solid var(--border) !important;
   color:var(--text) !important;
-  padding:11px 12px !important;
-  border-radius:8px !important;
+  padding:10px 11px !important;
+  border-radius:7px !important;
   font-size:15px !important;
   width:100% !important;
   font-family:inherit !important;
 }
 #mobilFiltrePanel .filter-actions{
   display:flex;
-  gap:8px;
-  margin-top:16px;
+  gap:7px;
+  margin-top:14px;
   position:sticky;
   bottom:0;
   background:var(--card);
-  padding-top:12px;
+  padding-top:10px;
 }
 #mobilFiltrePanel .filter-actions .btn{
   flex:1;
   justify-content:center;
-  min-height:44px;
-  font-size:13px;
-  border-radius:9px;
+  min-height:42px;
+  font-size:12px;
+  border-radius:8px;
 }
 
 @keyframes ebaSlideUp{
@@ -723,7 +657,6 @@ main{padding-bottom:calc(14px + env(safe-area-inset-bottom))}
   to{transform:translateY(0)}
 }
 
-/* Masaüstünde mobil filtre paneli ASLA görünmez */
 @media (min-width:769px){
   #mobilFiltreOverlay,
   #mobilFiltrePanel{display:none !important}
@@ -762,7 +695,7 @@ main{padding-bottom:calc(14px + env(safe-area-inset-bottom))}
       </div>
       <div>
         <h1>ESKİŞEHİR BASKI ATÖLYESİ</h1>
-        <div class="ver">YÖNETİM PANELİ · v8.3</div>
+        <div class="ver">YÖNETİM PANELİ · v8.4</div>
       </div>
     </div>
     <div class="head-tools">
@@ -1356,8 +1289,8 @@ main{padding-bottom:calc(14px + env(safe-area-inset-bottom))}
 
 <script type="module">
 /* ============================================================
-   ESKİŞEHİR BASKI ATÖLYESİ — v8.3
-   Firebase + Mobil Compact + Filtre Sheet
+   ESKİŞEHİR BASKI ATÖLYESİ — v8.4
+   Firebase + Mobil Compact + Filtre Sheet + Kaldırılmış Takvim/Hava/Kur
    ============================================================ */
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
@@ -1429,7 +1362,6 @@ const TRASH_KEY = 'eba_trash';
 const DRAFT_KEY = 'eba_draft';
 const LAST_BACKUP_KEY = 'eba_last_backup';
 const HIZLI_NOT_KEY = 'eba_hizli_notlar';
-const TAKVIM_AY_KEY = 'eba_takvim_ay';
 
 const BASKI_TURLERI = ["DTF","Nakış","Flex","Reflektör","Süblimasyon","Özel İş"];
 const URUN_TURLERI = ["Tişört","Polar","Polar Şal","Yelek / İş Kıyafeti","Sweatshirt","Şapka","Çanta","Forma","Patch / Arma","Kupa Bardak","Kurdele","Müşteri Malzemesi","Diğer"];
@@ -1453,8 +1385,6 @@ let trash = [];
 let seciliSiparisler = new Set();
 let aktifRaporTipi = 'aylik';
 let taslakZamanlayici = null;
-let takvimAy = null;
-let takvimSeciliGun = null;
 let hizliNotlar = [];
 
 window.girisYap = async function() {
@@ -1604,7 +1534,7 @@ function gercekZamanliDinle() {
       if (Array.isArray(d.trash)) trash = d.trash;
       if (Array.isArray(d.hizliNotlar)) hizliNotlar = d.hizliNotlar;
       if (d.ayarlar) ayarlar = d.ayarlar;
-      try { render(); renderDashboard(); renderCiro(); takvimCiz(); renderAktiviteAkisi(); renderUzunListesi(); renderHizliNotlar(); } catch(e) {}
+      try { render(); renderDashboard(); renderCiro(); renderAktiviteAkisi(); renderUzunListesi(); renderHizliNotlar(); } catch(e) {}
       bulutDurumYaz('✓ Uzaktan güncellendi', 'success');
       toast('🔄 Başka cihazdan güncellendi', 'success');
     }, err => { console.warn('onSnapshot:', err); });
@@ -1705,7 +1635,7 @@ function yedekUyariGoster() {
 
 window.yedekIndir = function() {
   try {
-    const data = { version: '8.3.0', tarih: new Date().toISOString(), orders: state.orders, musteriler, sablonlar, personel, hedef, trash, hizliNotlar, ayarlar };
+    const data = { version: '8.4.0', tarih: new Date().toISOString(), orders: state.orders, musteriler, sablonlar, personel, hedef, trash, hizliNotlar, ayarlar };
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
@@ -1735,7 +1665,7 @@ window.yedekYukle = function(e) {
       if (Array.isArray(d.hizliNotlar)) hizliNotlar = d.hizliNotlar;
       musteriRehberiGuncelle();
       save();
-      render(); renderDashboard(); renderCiro(); takvimCiz(); renderAyarlar(); renderTrash();
+      render(); renderDashboard(); renderCiro(); renderAyarlar(); renderTrash();
       toast('⬆️ Yüklendi', 'success');
     } catch(err) { toast('Hata: ' + err.message, 'error'); }
   };
@@ -1768,7 +1698,7 @@ window.buluttanVeriCek = async function(manuel) {
       if (d.ayarlar) ayarlar = d.ayarlar;
       localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
       localStorage.setItem(CUSTOMERS_KEY, JSON.stringify(musteriler));
-      render(); renderDashboard(); renderCiro(); takvimCiz();
+      render(); renderDashboard(); renderCiro();
       bulutDurumYaz('✓ ' + state.orders.length + ' sipariş alındı', 'success');
       if (manuel) toast('✅ Bulut verileri çekildi', 'success');
     } else {
@@ -1792,8 +1722,8 @@ window.verileriKaydet = async function() {
 };
 
 window.kurtarEsitle = function() {
-  load(); takvimYukle();
-  render(); renderDashboard(); renderCiro(); takvimCiz(); renderAyarlar(); renderTrash();
+  load();
+  render(); renderDashboard(); renderCiro(); renderAyarlar(); renderTrash();
   renderAktiviteAkisi(); renderUzunListesi(); renderHizliNotlar();
   buluttanVeriCek(true);
 };
@@ -1816,7 +1746,7 @@ window.geminiVerisiAktar = function() {
   }
   if (!bulundu) { toast('Eski veri bulunamadı.', 'warn'); return; }
   musteriRehberiGuncelle();
-  save(); render(); renderDashboard(); renderCiro(); takvimCiz();
+  save(); render(); renderDashboard(); renderCiro();
   toast('✅ ' + state.orders.length + ' sipariş aktarıldı', 'success');
 };
 
@@ -1849,7 +1779,7 @@ document.querySelectorAll('.tab').forEach(tab => {
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     tab.classList.add('active');
     const pageEl = $('page-' + tab.dataset.page); if (pageEl) pageEl.classList.add('active');
-    if (tab.dataset.page === 'anasayfa') { renderDashboard(); takvimCiz(); renderAktiviteAkisi(); renderUzunListesi(); }
+    if (tab.dataset.page === 'anasayfa') { renderDashboard(); renderAktiviteAkisi(); renderUzunListesi(); }
     if (tab.dataset.page === 'panel') render();
     if (tab.dataset.page === 'ciro') renderCiro();
     if (tab.dataset.page === 'ayarlar') { renderAyarlar(); renderTrash(); yedekDurumGuncelle(); }
@@ -1857,99 +1787,6 @@ document.querySelectorAll('.tab').forEach(tab => {
   });
 });
 window.goTab = function(name) { document.querySelectorAll('.tab').forEach(t => { if (t.dataset.page === name) t.click(); }); };
-
-function takvimYukle() {
-  try { const raw = localStorage.getItem(TAKVIM_AY_KEY); if (raw) { const p = JSON.parse(raw); if (p && typeof p.yil === 'number') takvimAy = {yil:p.yil, ay:p.ay}; } } catch(e) {}
-  if (!takvimAy) { const d = new Date(); takvimAy = { yil: d.getFullYear(), ay: d.getMonth() }; }
-}
-
-window.takvimAyDegistir = function(delta) {
-  if (!takvimAy) takvimYukle();
-  let ay = takvimAy.ay + delta, yil = takvimAy.yil;
-  while (ay < 0) { ay += 12; yil--; } while (ay > 11) { ay -= 12; yil++; }
-  takvimAy = { yil, ay }; takvimSeciliGun = null;
-  try { localStorage.setItem(TAKVIM_AY_KEY, JSON.stringify(takvimAy)); } catch(e) {}
-  takvimCiz();
-  const det = $('takvimDetay'); if (det) det.innerHTML = '';
-};
-
-window.takvimBuguneDon = function() {
-  const d = new Date();
-  takvimAy = { yil: d.getFullYear(), ay: d.getMonth() };
-  takvimSeciliGun = d.getDate();
-  try { localStorage.setItem(TAKVIM_AY_KEY, JSON.stringify(takvimAy)); } catch(e) {}
-  takvimCiz(); takvimGunSecildi(d.getDate());
-};
-
-function takvimCiz() {
-  if (!takvimAy) takvimYukle();
-  const grid = $('takvimGrid'); if (!grid) return;
-  const ayYaz = $('takvimAyYaz');
-  const AY = ['Ocak','Şubat','Mart','Nisan','Mayıs','Haziran','Temmuz','Ağustos','Eylül','Ekim','Kasım','Aralık'];
-  if (ayYaz) ayYaz.textContent = AY[takvimAy.ay] + ' ' + takvimAy.yil;
-  const ilkGun = new Date(takvimAy.yil, takvimAy.ay, 1);
-  const sonGun = new Date(takvimAy.yil, takvimAy.ay + 1, 0).getDate();
-  let ilkHafta = ilkGun.getDay(); ilkHafta = (ilkHafta === 0) ? 6 : ilkHafta - 1;
-  const teslimGunleri = new Set();
-  state.orders.forEach(o => { if (!o.teslimTarihi) return; const p = o.teslimTarihi.split('-').map(Number); if (p[0] === takvimAy.yil && (p[1]-1) === takvimAy.ay) teslimGunleri.add(p[2]); });
-  const bd = new Date(); const bugunBuAy = (bd.getFullYear() === takvimAy.yil && bd.getMonth() === takvimAy.ay);
-  let html = '';
-  ['Pt','Sa','Ça','Pe','Cu','Ct','Pz'].forEach(g => { html += '<div class="takvim-gun-adi">' + g + '</div>'; });
-  for (let i = 0; i < ilkHafta; i++) html += '<div class="takvim-gun bos"></div>';
-  for (let g = 1; g <= sonGun; g++) {
-    const cls = [];
-    if (bugunBuAy && g === bd.getDate()) cls.push('bugun');
-    if (teslimGunleri.has(g)) cls.push('teslim-var');
-    if (takvimSeciliGun === g) cls.push('secili');
-    html += '<button type="button" class="takvim-gun ' + cls.join(' ') + '" onclick="takvimGunSecildi(' + g + ')">' + g + '</button>';
-  }
-  grid.innerHTML = html;
-}
-
-window.takvimGunSecildi = function(gun) {
-  takvimSeciliGun = gun; takvimCiz();
-  const detay = $('takvimDetay'); if (!detay) return;
-  const AY = ['Ocak','Şubat','Mart','Nisan','Mayıs','Haziran','Temmuz','Ağustos','Eylül','Ekim','Kasım','Aralık'];
-  const tarihStr = takvimAy.yil + '-' + String(takvimAy.ay+1).padStart(2,'0') + '-' + String(gun).padStart(2,'0');
-  const oGun = state.orders.filter(o => o.teslimTarihi === tarihStr);
-  if (!oGun.length) { detay.innerHTML = '<div style="font-size:11px;color:var(--muted);text-align:center;padding:8px">' + gun + ' ' + AY[takvimAy.ay] + ' · teslim yok</div>'; return; }
-  detay.innerHTML = '<div style="font-size:10.5px;color:var(--neon);font-weight:800;margin-bottom:6px">📅 ' + gun + ' ' + AY[takvimAy.ay] + ' · ' + oGun.length + ' teslim</div>' + oGun.map(o => '<div style="padding:6px 8px;background:var(--card2);border-radius:5px;margin-bottom:4px;cursor:pointer;font-size:11px" onclick="cariAcFromRow(\'' + escapeAttr(o.id) + '\')"><div style="font-weight:700">' + escapeHtml(o.firma||o.adSoyad) + '</div><div style="color:var(--neon);font-size:10px;font-family:monospace">' + o.takipNo + '</div></div>').join('');
-};
-
-function havaIkon(k) { if (k===0) return '☀️'; if (k<=2) return '🌤️'; if (k===3) return '☁️'; if (k>=45&&k<=48) return '🌫️'; if (k>=51&&k<=67) return '🌧️'; if (k>=71&&k<=77) return '❄️'; if (k>=80&&k<=82) return '🌧️'; if (k>=85&&k<=86) return '❄️'; if (k>=95) return '⛈️'; return '🌤️'; }
-function havaAciklama(k) { if (k===0) return 'Açık'; if (k<=2) return 'Az bulutlu'; if (k===3) return 'Bulutlu'; if (k>=45&&k<=48) return 'Puslu'; if (k>=51&&k<=67) return 'Yağmurlu'; if (k>=71&&k<=77) return 'Kar'; if (k>=80&&k<=82) return 'Sağanak'; if (k>=95) return 'Fırtına'; return '—'; }
-
-async function havaCek() {
-  try {
-    const r = await fetch('https://api.open-meteo.com/v1/forecast?latitude=39.7767&longitude=30.5206&current=temperature_2m,weather_code&daily=temperature_2m_max,temperature_2m_min,weather_code&timezone=auto&forecast_days=4');
-    const d = await r.json();
-    if (!d.current) return;
-    const ana = $('havaAna');
-    if (ana) ana.innerHTML = '<div style="font-size:34px">' + havaIkon(d.current.weather_code) + '</div><div class="ha-temp">' + Math.round(d.current.temperature_2m) + '°</div><div class="ha-aciklama">' + havaAciklama(d.current.weather_code) + ' · Eskişehir</div>';
-    const row = $('havaRow');
-    if (row && d.daily && d.daily.time && d.daily.time.length > 1) {
-      const gunAdlari = ['Yarın','+2','+3']; let html = '';
-      for (let i = 1; i <= 3 && i < d.daily.time.length; i++) {
-        html += '<div class="hava-gun"><div class="hg-gun">' + gunAdlari[i-1] + '</div><div class="hg-ic">' + havaIkon(d.daily.weather_code[i]) + '</div><div class="hg-temp">' + Math.round(d.daily.temperature_2m_max[i]) + '°</div><div class="hg-alt">' + Math.round(d.daily.temperature_2m_min[i]) + '°</div></div>';
-      }
-      row.innerHTML = html;
-    }
-  } catch(e) { console.warn('hava:', e); }
-}
-
-async function kurCek() {
-  try {
-    const r = await fetch('https://open.er-api.com/v6/latest/TRY');
-    const d = await r.json();
-    if (!d.rates) return;
-    const usd = d.rates.USD ? 1/d.rates.USD : 0;
-    const eur = d.rates.EUR ? 1/d.rates.EUR : 0;
-    const gbp = d.rates.GBP ? 1/d.rates.GBP : 0;
-    if ($('kurUSD')) $('kurUSD').textContent = usd ? usd.toFixed(2) + ' ₺' : '--';
-    if ($('kurEUR')) $('kurEUR').textContent = eur ? eur.toFixed(2) + ' ₺' : '--';
-    if ($('kurGBP')) $('kurGBP').textContent = gbp ? gbp.toFixed(2) + ' ₺' : '--';
-  } catch(e) { console.warn('kur:', e); }
-}
 
 function renderAktiviteAkisi() {
   const box = $('aktiviteAkisi'); if (!box) return;
@@ -2494,7 +2331,7 @@ window.topluDurumDegistir = function(yeniDurum) {
   if (!sec.length) { toast('Hiç seçili değil', 'warn'); return; }
   if (!confirm(sec.length + ' siparişin durumu "' + (DURUM_LBL[yeniDurum]||yeniDurum) + '" olsun mu?')) return;
   sec.forEach(o => { o.durum = yeniDurum; if (yeniDurum === 'hazir') o.musteriBilgilendirildiHazir = false; o.guncelleme = Date.now(); });
-  save(); bulkSecimiTemizle(); render(); renderDashboard(); takvimCiz();
+  save(); bulkSecimiTemizle(); render(); renderDashboard();
   toast('✅ ' + sec.length + ' güncellendi', 'success');
 };
 
@@ -2504,7 +2341,7 @@ window.topluSil = function() {
   if (!confirm(sec.length + ' sipariş ÇÖP KUTUSUNA taşınacak. Onay?')) return;
   sec.forEach(o => { trash.push({ siparis: o, silinmeTarihi: Date.now() }); });
   state.orders = state.orders.filter(o => !seciliSiparisler.has(String(o.id)));
-  save(); bulkSecimiTemizle(); render(); renderDashboard(); renderAyarlar(); renderTrash(); takvimCiz();
+  save(); bulkSecimiTemizle(); render(); renderDashboard(); renderAyarlar(); renderTrash();
   toast('🗑️ ' + sec.length + ' çöp kutusuna atıldı', 'warn');
 };
 
@@ -2722,7 +2559,7 @@ window.cariMusteriBilgileriniKaydet = function() {
     });
   }
   musteriler[yeniTel] = yeniM;
-  save(); render(); renderDashboard(); takvimCiz(); cariGecmisiYenile(yeniTel);
+  save(); render(); renderDashboard(); cariGecmisiYenile(yeniTel);
   toast('✅ Güncellendi', 'success');
 };
 
@@ -2736,7 +2573,7 @@ window.cariPopupDurumlariKaydet = function() {
   o.personelId = $('cariQuickUsta')?.value || '';
   o.guncelleme = Date.now();
   if (eskiDurum !== o.durum && o.durum === 'hazir') o.musteriBilgilendirildiHazir = false;
-  save(); render(); renderDashboard(); takvimCiz(); cariGecmisiYenile(o.telefon);
+  save(); render(); renderDashboard(); cariGecmisiYenile(o.telefon);
   toast('✅ Güncellendi', 'success');
 };
 
@@ -2760,7 +2597,7 @@ window.cariPopupSiparisiSil = function() {
   trash.push({ siparis: o, silinmeTarihi: Date.now() });
   state.orders = state.orders.filter(x => String(x.id) !== String(o.id));
   seciliCariSiparisId = null;
-  save(); render(); renderDashboard(); takvimCiz(); renderTrash(); cariGecmisiYenile(o.telefon);
+  save(); render(); renderDashboard(); renderTrash(); cariGecmisiYenile(o.telefon);
   toast('🗑️ Çöp kutusuna taşındı', 'warn');
 };
 window.cariPopupMusteriyiSil = function() {
@@ -2792,7 +2629,7 @@ window.cariFaturaKaydet = function() {
   o.faturaTutar = parseFloat($('cariFaturaTutar')?.value) || 0;
   o.faturaNot = ($('cariFaturaNot')?.value||'').trim();
   o.guncelleme = Date.now();
-  save(); render(); renderDashboard(); takvimCiz(); faturaDurumGuncelle(true); cariGecmisiYenile(o.telefon);
+  save(); render(); renderDashboard(); faturaDurumGuncelle(true); cariGecmisiYenile(o.telefon);
   toast('🧾 Kaydedildi', 'success');
 };
 window.cariFaturaSil = function() {
@@ -2904,7 +2741,7 @@ window.musteriSil = function(tel) {
   silinecek.forEach(o => trash.push({ siparis: o, silinmeTarihi: Date.now() }));
   delete musteriler[tel];
   state.orders = state.orders.filter(o => o.telefon !== tel);
-  save(); render(); renderDashboard(); takvimCiz(); renderTrash(); musteriRehberiFiltrele();
+  save(); render(); renderDashboard(); renderTrash(); musteriRehberiFiltrele();
   toast('🗑️ Çöp kutusuna taşındı', 'warn');
 };
 
@@ -2936,7 +2773,7 @@ window.trashGeri = function(idx) {
   if (o.telefon && !musteriler[o.telefon]) {
     musteriler[o.telefon] = { musteriTuru: o.musteriTuru||'bireysel', adSoyad: o.adSoyad||'', firma: o.firma||'', vergiNo: o.vergiNo||'', telefon: o.telefon, email: o.email||'', adres: o.adres||'', etiketler: [], notlar: [] };
   }
-  save(); render(); renderDashboard(); takvimCiz(); renderTrash();
+  save(); render(); renderDashboard(); renderTrash();
   toast('↩️ Geri yüklendi: ' + o.takipNo, 'success');
 };
 window.trashKaliciSil = function(idx) {
@@ -3492,26 +3329,22 @@ async function baslatUygulama() {
     gizliMod = (g === null) ? true : (g === '1');
     applyGizliMod();
     await buluttanIlkYukleme();
-    takvimYukle();
     trashOtomatikTemizle();
     formuTemizle();
     formTaslakDinleyicileri();
     musteriRehberiGuncelle();
-    render(); renderDashboard(); renderCiro(); takvimCiz(); renderAyarlar(); renderTrash();
+    render(); renderDashboard(); renderCiro(); renderAyarlar(); renderTrash();
     renderHizliNotlar(); renderAktiviteAkisi(); renderUzunListesi(); renderBulut();
     personelSecenekleriGuncelle('f-personel');
     personelSecenekleriGuncelle('filterPersonel');
     mobilFiltreSayisiniGuncelle();
-    havaCek(); kurCek();
     yedekDurumGuncelle();
     setTimeout(taslakKontrolEt, 800);
     setTimeout(yedekUyariGoster, 1500);
-    setInterval(havaCek, 30*60*1000);
-    setInterval(kurCek, 60*60*1000);
     setInterval(() => { renderDashboard(); renderAktiviteAkisi(); renderUzunListesi(); }, 5*60*1000);
     setInterval(yedekDurumGuncelle, 60*60*1000);
     gercekZamanliDinle();
-    console.log('✅ v8.3 hazır — ' + state.orders.length + ' sipariş');
+    console.log('✅ v8.4 hazır — ' + state.orders.length + ' sipariş');
   } catch(e) { console.error('baslatUygulama:', e); }
 }
 </script>
