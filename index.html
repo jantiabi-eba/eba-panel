@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Eskişehir Baskı Atölyesi — Yönetim Paneli v8.7</title>
+<title>Eskişehir Baskı Atölyesi — Yönetim Paneli v8.8</title>
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#000000">
 <link rel="icon" type="image/png" href="e-logo.png">
@@ -361,132 +361,48 @@ table.mini tr:hover{background:var(--neon-soft)}
 #kullaniciBadge .u-mail{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--muted)}
 .btn-cikis{background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.35);color:#f87171;padding:6px 10px;border-radius:8px;cursor:pointer;font-size:11.5px;font-weight:700;font-family:inherit}
 .btn-cikis:hover{background:rgba(239,68,68,.2);color:#fca5a5}
-
-/* ============================================================
-   MOBİL HEADER — sadece mobilde görünür
-   ============================================================ */
 .mobil-header{display:none}
 .mobil-tabbar{display:none}
 .mobil-gorunum{display:none}
 .mobil-menu-overlay{display:none}
-
-/* ============================================================
-   MOBİL UYUMLULUK — v8.7
-   ============================================================ */
 html,body{height:100%}
 body{display:flex;flex-direction:column;height:100vh;height:100dvh;overflow:hidden;overscroll-behavior-y:contain}
 header,nav.tabs{flex-shrink:0}
 main{flex:1 1 auto;min-height:0;height:auto !important}
 header{padding-top:calc(10px + env(safe-area-inset-top))}
 main{padding-bottom:calc(14px + env(safe-area-inset-bottom))}
-
 @media (max-width:768px){
-  /* Masaüstü header ve tab gizle */
   header:not(.mobil-header){display:none !important}
   nav.tabs{display:none !important}
   #hatirlatmaPanel{display:none !important}
   .btn-bildirim{display:none !important}
   .dash-3col,.dash-mid,.dash-side{overflow-x:hidden;max-width:100%}
-
-  /* MOBİL HEADER */
-  .mobil-header{
-    display:flex !important;
-    background:#0a0a0a;
-    border-bottom:1px solid var(--border);
-    padding:10px 14px;
-    padding-top:calc(10px + env(safe-area-inset-top));
-    align-items:center;
-    gap:10px;
-    flex-shrink:0;
-    position:sticky;
-    top:0;
-    z-index:100;
-  }
-  .mobil-header .m-logo{
-    width:32px;height:32px;background:var(--neon);border-radius:8px;
-    display:grid;place-items:center;font-size:15px;flex-shrink:0;
-    overflow:hidden;padding:2px;
-  }
+  .mobil-header{display:flex !important;background:#0a0a0a;border-bottom:1px solid var(--border);padding:10px 14px;padding-top:calc(10px + env(safe-area-inset-top));align-items:center;gap:10px;flex-shrink:0;position:sticky;top:0;z-index:100}
+  .mobil-header .m-logo{width:32px;height:32px;background:var(--neon);border-radius:8px;display:grid;place-items:center;font-size:15px;flex-shrink:0;overflow:hidden;padding:2px}
   .mobil-header .m-logo img{width:100%;height:100%;object-fit:contain;border-radius:6px}
-  .mobil-header .m-title{
-    flex:1;min-width:0;
-    font-size:11px;font-weight:800;letter-spacing:.2px;
-    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-    line-height:1.15;
-  }
-  .mobil-header .m-title small{
-    display:block;font-size:8.5px;color:var(--muted);
-    font-weight:600;letter-spacing:.5px;margin-top:1px;
-  }
-  .mobil-header .m-icon{
-    width:34px;height:34px;border-radius:8px;
-    background:transparent;border:0;color:var(--text);
-    font-size:16px;display:grid;place-items:center;
-    cursor:pointer;font-family:inherit;
-    transition:.15s;flex-shrink:0;
-  }
+  .mobil-header .m-title{flex:1;min-width:0;font-size:11px;font-weight:800;letter-spacing:.2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.15}
+  .mobil-header .m-title small{display:block;font-size:8.5px;color:var(--muted);font-weight:600;letter-spacing:.5px;margin-top:1px}
+  .mobil-header .m-icon{width:34px;height:34px;border-radius:8px;background:transparent;border:0;color:var(--text);font-size:16px;display:grid;place-items:center;cursor:pointer;font-family:inherit;transition:.15s;flex-shrink:0}
   .mobil-header .m-icon:hover,.mobil-header .m-icon:active{background:var(--card2);color:var(--neon)}
-
-  /* MOBİL TAB BAR (alt sabit) */
-  .mobil-tabbar{
-    display:grid !important;
-    grid-template-columns:repeat(5,1fr);
-    gap:2px;
-    background:#0a0a0a;
-    border-top:1px solid var(--border);
-    padding:6px 6px calc(6px + env(safe-area-inset-bottom));
-    position:fixed;
-    bottom:0;left:0;right:0;
-    z-index:99;
-  }
-  .mobil-tabbar .mt{
-    background:transparent;border:0;color:var(--muted);
-    font-family:inherit;font-size:9.5px;font-weight:700;
-    display:flex;flex-direction:column;align-items:center;gap:3px;
-    padding:6px 2px;border-radius:9px;cursor:pointer;
-    transition:.15s;min-height:52px;justify-content:center;
-  }
+  .mobil-tabbar{display:grid !important;grid-template-columns:repeat(5,1fr);gap:2px;background:#0a0a0a;border-top:1px solid var(--border);padding:6px 6px calc(6px + env(safe-area-inset-bottom));position:fixed;bottom:0;left:0;right:0;z-index:99}
+  .mobil-tabbar .mt{background:transparent;border:0;color:var(--muted);font-family:inherit;font-size:9.5px;font-weight:700;display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 2px;border-radius:9px;cursor:pointer;transition:.15s;min-height:52px;justify-content:center}
   .mobil-tabbar .mt .ic{font-size:17px;line-height:1}
   .mobil-tabbar .mt.active{color:var(--neon);background:var(--neon-soft)}
-  .mobil-tabbar .mt.center{
-    position:relative;
-  }
-  .mobil-tabbar .mt.center .ic{
-    background:var(--neon);color:#fff;
-    width:40px;height:40px;border-radius:50%;
-    display:grid;place-items:center;font-size:22px;
-    margin-top:-14px;
-    box-shadow:0 4px 14px rgba(255,42,42,.45);
-    font-weight:400;
-  }
+  .mobil-tabbar .mt.center{position:relative}
+  .mobil-tabbar .mt.center .ic{background:var(--neon);color:#fff;width:40px;height:40px;border-radius:50%;display:grid;place-items:center;font-size:22px;margin-top:-14px;box-shadow:0 4px 14px rgba(255,42,42,.45);font-weight:400}
   .mobil-tabbar .mt.center:active .ic{background:var(--neon-hover);transform:scale(.95)}
   .mobil-tabbar .mt.center span:last-child{font-size:9px;margin-top:2px}
-
-  /* Main */
-  main{
-    padding:0 !important;
-    padding-bottom:calc(66px + env(safe-area-inset-bottom)) !important;
-    overflow-x:hidden;
-  }
+  main{padding:0 !important;padding-bottom:calc(66px + env(safe-area-inset-bottom)) !important;overflow-x:hidden}
   .page-scroll{padding:0 !important;overflow-x:hidden}
   .page{padding:0 !important}
-
-  /* MOBİL ANA SAYFA GÖRÜNÜM */
   .mobil-gorunum{display:block !important}
   .masaustu-gorunum{display:none !important}
-
   .m-body{padding:14px}
   .m-greet{font-size:20px;font-weight:800;letter-spacing:-.5px;margin-bottom:2px}
   .m-greet-sub{font-size:11.5px;color:var(--muted);margin-bottom:16px}
   .m-greet-sub b{color:var(--neon);font-weight:800}
-
-  /* KPI GRID */
   .m-kpi{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}
-  .m-kpi .k{
-    background:var(--card);border:1px solid var(--border);
-    border-radius:11px;padding:12px;position:relative;overflow:hidden;
-    cursor:pointer;transition:.15s;
-  }
+  .m-kpi .k{background:var(--card);border:1px solid var(--border);border-radius:11px;padding:12px;position:relative;overflow:hidden;cursor:pointer;transition:.15s}
   .m-kpi .k:active{transform:scale(.98)}
   .m-kpi .k::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--neon)}
   .m-kpi .k.b::before{background:var(--info)}
@@ -499,141 +415,55 @@ main{padding-bottom:calc(14px + env(safe-area-inset-bottom))}
   .m-kpi .k.g .num{color:var(--success)}
   .m-kpi .k.r .num{color:var(--danger)}
   .m-kpi .lbl{font-size:9.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;font-weight:800}
-
-  /* MOBİL SECTIONS */
-  .m-section{
-    background:var(--card);border:1px solid var(--border);
-    border-radius:11px;padding:12px;margin-bottom:10px;
-  }
-  .m-section-head{
-    display:flex;justify-content:space-between;align-items:center;
-    margin-bottom:10px;
-  }
+  .m-section{background:var(--card);border:1px solid var(--border);border-radius:11px;padding:12px;margin-bottom:10px}
+  .m-section-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
   .m-section-head h3{font-size:12.5px;font-weight:800;display:flex;align-items:center;gap:5px}
-  .m-section-head .badge{
-    background:var(--card2);color:var(--muted);font-size:10px;
-    padding:2px 7px;border-radius:8px;font-weight:800;
-  }
-  .m-section-head .more{
-    background:transparent;border:0;color:var(--neon);
-    font-size:11px;font-weight:800;font-family:inherit;cursor:pointer;
-  }
-  .m-row{
-    display:flex;justify-content:space-between;align-items:center;
-    gap:8px;padding:8px 0;border-bottom:1px solid var(--border-soft);
-    cursor:pointer;
-  }
+  .m-section-head .badge{background:var(--card2);color:var(--muted);font-size:10px;padding:2px 7px;border-radius:8px;font-weight:800}
+  .m-section-head .more{background:transparent;border:0;color:var(--neon);font-size:11px;font-weight:800;font-family:inherit;cursor:pointer}
+  .m-row{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--border-soft);cursor:pointer}
   .m-row:last-child{border-bottom:0;padding-bottom:0}
   .m-row:first-of-type{padding-top:0}
   .m-row .r-main{min-width:0;flex:1}
-  .m-row .r-title{
-    font-size:12.5px;font-weight:700;
-    overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
-  }
-  .m-row .r-sub{
-    font-size:10.5px;color:var(--muted);margin-top:2px;
-    overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
-  }
-  .m-row .r-time{
-    color:var(--neon);font-weight:800;font-size:11.5px;
-    font-family:ui-monospace,monospace;flex-shrink:0;
-  }
-  .m-badge{
-    font-size:9px;padding:3px 7px;border-radius:5px;
-    font-weight:800;text-transform:uppercase;flex-shrink:0;
-    letter-spacing:.3px;
-  }
+  .m-row .r-title{font-size:12.5px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .m-row .r-sub{font-size:10.5px;color:var(--muted);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .m-row .r-time{color:var(--neon);font-weight:800;font-size:11.5px;font-family:ui-monospace,monospace;flex-shrink:0}
+  .m-badge{font-size:9px;padding:3px 7px;border-radius:5px;font-weight:800;text-transform:uppercase;flex-shrink:0;letter-spacing:.3px}
   .m-badge.yeni{background:rgba(56,189,248,.12);color:#38bdf8}
   .m-badge.hazirlaniyor{background:rgba(245,158,11,.12);color:#fbbf24}
   .m-badge.hazir{background:rgba(34,197,94,.12);color:#4ade80}
   .m-badge.teslim{background:rgba(82,82,91,.2);color:var(--dim)}
-
-  /* MOBİL HIZLI NOTLAR */
   .m-notes{padding:14px}
   .m-notes h3{font-size:12.5px;font-weight:800;margin-bottom:10px}
-  .m-note-input{
-    width:100%;background:var(--card2);border:1px solid var(--border);
-    border-radius:9px;padding:10px 12px;color:var(--text);
-    font-size:13px;font-family:inherit;outline:none;
-    resize:none;min-height:48px;
-  }
+  .m-note-input{width:100%;background:var(--card2);border:1px solid var(--border);border-radius:9px;padding:10px 12px;color:var(--text);font-size:13px;font-family:inherit;outline:none;resize:none;min-height:48px}
   .m-note-input:focus{border-color:var(--neon)}
   .m-note-input::placeholder{color:var(--dim)}
-  .m-note-btn{
-    width:100%;margin-top:8px;background:var(--neon);color:#fff;
-    border:0;padding:10px;border-radius:9px;
-    font-size:12px;font-weight:800;font-family:inherit;cursor:pointer;
-  }
+  .m-note-btn{width:100%;margin-top:8px;background:var(--neon);color:#fff;border:0;padding:10px;border-radius:9px;font-size:12px;font-weight:800;font-family:inherit;cursor:pointer}
   .m-note-btn:active{background:var(--neon-hover)}
   .m-note-list{margin-top:12px}
-  .m-note-item{
-    display:flex;justify-content:space-between;align-items:flex-start;
-    gap:8px;padding:9px 10px;background:var(--card2);
-    border-radius:8px;margin-bottom:6px;font-size:11.5px;
-    line-height:1.4;position:relative;
-  }
+  .m-note-item{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;padding:9px 10px;background:var(--card2);border-radius:8px;margin-bottom:6px;font-size:11.5px;line-height:1.4;position:relative}
   .m-note-item .txt{flex:1;color:var(--text);padding-right:22px}
   .m-note-item .meta{font-size:9.5px;color:var(--dim);margin-top:3px}
-  .m-note-item .sil{
-    position:absolute;top:6px;right:6px;
-    background:transparent;border:0;color:var(--dim);
-    cursor:pointer;font-size:12px;padding:2px 5px;border-radius:4px;
-  }
+  .m-note-item .sil{position:absolute;top:6px;right:6px;background:transparent;border:0;color:var(--dim);cursor:pointer;font-size:12px;padding:2px 5px;border-radius:4px}
   .m-note-item .sil:active{color:var(--danger);background:rgba(239,68,68,.1)}
-
-  /* MOBİL MENÜ OVERLAY (hamburger) */
-  .mobil-menu-overlay{
-    display:none;
-    position:fixed;inset:0;
-    background:rgba(0,0,0,.75);
-    backdrop-filter:blur(4px);
-    z-index:500;
-  }
+  .mobil-menu-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);backdrop-filter:blur(4px);z-index:500}
   .mobil-menu-overlay.active{display:block}
-  .mobil-menu-panel{
-    position:absolute;right:0;top:0;bottom:0;
-    width:260px;max-width:80vw;
-    background:var(--card);
-    border-left:1px solid var(--border);
-    padding:20px 16px;
-    padding-top:calc(20px + env(safe-area-inset-top));
-    padding-bottom:calc(20px + env(safe-area-inset-bottom));
-    display:flex;flex-direction:column;gap:4px;
-    overflow-y:auto;
-    animation:mSlideIn .25s cubic-bezier(.2,.9,.3,1);
-  }
+  .mobil-menu-panel{position:absolute;right:0;top:0;bottom:0;width:260px;max-width:80vw;background:var(--card);border-left:1px solid var(--border);padding:20px 16px;padding-top:calc(20px + env(safe-area-inset-top));padding-bottom:calc(20px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:4px;overflow-y:auto;animation:mSlideIn .25s cubic-bezier(.2,.9,.3,1)}
   @keyframes mSlideIn{from{transform:translateX(100%)}to{transform:translateX(0)}}
-  .mobil-menu-panel h4{
-    font-size:10.5px;color:var(--muted);text-transform:uppercase;
-    letter-spacing:.6px;font-weight:800;margin:8px 0 4px;
-    padding-left:12px;
-  }
+  .mobil-menu-panel h4{font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;font-weight:800;margin:8px 0 4px;padding-left:12px}
   .mobil-menu-panel h4:first-child{margin-top:0}
-  .mobil-menu-panel button{
-    background:transparent;border:0;color:var(--text);
-    padding:11px 12px;border-radius:9px;
-    font-size:13px;font-weight:700;font-family:inherit;
-    display:flex;align-items:center;gap:10px;cursor:pointer;
-    text-align:left;transition:.15s;width:100%;
-  }
+  .mobil-menu-panel button{background:transparent;border:0;color:var(--text);padding:11px 12px;border-radius:9px;font-size:13px;font-weight:700;font-family:inherit;display:flex;align-items:center;gap:10px;cursor:pointer;text-align:left;transition:.15s;width:100%}
   .mobil-menu-panel button:hover,.mobil-menu-panel button:active{background:var(--card2);color:var(--neon)}
   .mobil-menu-panel button.tehlike{color:#f87171}
   .mobil-menu-panel button.tehlike:hover{background:rgba(239,68,68,.1);color:#fca5a5}
   .mobil-menu-panel button .mi{font-size:16px;width:20px;text-align:center;flex-shrink:0}
-  .mobil-menu-panel .m-user{
-    background:var(--card2);border-radius:10px;padding:11px 12px;
-    margin-bottom:12px;font-size:11.5px;
-  }
+  .mobil-menu-panel .m-user{background:var(--card2);border-radius:10px;padding:11px 12px;margin-bottom:12px;font-size:11.5px}
   .mobil-menu-panel .m-user .lbl{color:var(--muted);font-size:9.5px;text-transform:uppercase;font-weight:800;letter-spacing:.5px;margin-bottom:3px}
   .mobil-menu-panel .m-user .email{color:var(--text);font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-
-  /* Form, kart ve diğer sayfalar mobilde normal şekilde çalışsın */
   .card{padding:12px !important;border-radius:9px !important;margin-bottom:10px !important}
   .card h2{font-size:12.5px !important;margin-bottom:10px !important}
   .section-sub{font-size:11px !important;margin:-4px 0 10px !important}
   .grid{gap:8px !important}
   .grid.cols-2,.grid.cols-3{grid-template-columns:1fr !important}
-
   .kalem-row{flex-direction:column !important;gap:6px !important}
   .kalem-row .f,
   .kalem-row .f.f-baski,
@@ -647,28 +477,21 @@ main{padding-bottom:calc(14px + env(safe-area-inset-bottom))}
   .kalem-row .f.f-tutar{flex:1 1 auto !important;min-width:0 !important;width:100% !important}
   .kalem-card{padding:10px !important;border-radius:8px !important}
   .kalem-sil{height:38px !important;padding:0 14px !important;font-size:14px !important;border-radius:7px !important}
-
   input,select,textarea{font-size:16px !important;padding:10px 11px !important;border-radius:7px !important}
   .kalem-row select,.kalem-row input{font-size:16px !important}
   .kalem-tutar{height:40px !important;font-size:13px !important}
-
   .toggle-group{gap:5px !important}
   .toggle-group label{padding:7px 11px !important;font-size:11px !important;border-radius:7px !important}
-
   .action-row{gap:6px !important}
   .action-row .btn{flex:1 1 auto !important;justify-content:center !important;min-width:0 !important;font-size:11px !important;padding:7px 9px !important;border-radius:7px !important}
-
-  /* Filtre satırı (Siparişler sayfası) */
   .stat-pills{gap:4px !important;margin-bottom:8px !important;padding:10px 10px 0 !important;flex-wrap:nowrap !important;overflow-x:auto !important;-webkit-overflow-scrolling:touch !important;scrollbar-width:none !important}
   .stat-pills::-webkit-scrollbar{display:none !important}
   .stat-pill{padding:5px 11px !important;font-size:11px !important;border-radius:7px !important;min-height:0 !important;flex-shrink:0 !important;gap:7px !important}
   .stat-pill .cnt{padding:1px 6px !important;font-size:10px !important;background:rgba(255,255,255,.1) !important;border-radius:9px !important}
-
   #page-panel .table-panel{border-radius:0 !important;border:0 !important;background:transparent !important}
   #page-panel .table-header{padding:10px !important;gap:6px !important;background:var(--card) !important;border-radius:10px !important;margin:10px !important;border:1px solid var(--border) !important}
   #page-panel .table-header h2{font-size:12px !important;gap:5px !important}
   #page-panel .table-header h2 span{font-size:10.5px !important}
-
   #page-panel .filters{display:grid !important;grid-template-columns:1fr auto !important;gap:6px !important;align-items:center !important}
   #page-panel .filters #searchBox{grid-column:1/2 !important;max-width:none !important;font-size:14px !important;padding:9px 11px !important;height:40px !important;border-radius:8px !important}
   #page-panel .filters #mobilFiltreBtn{grid-column:2/3 !important;display:inline-flex !important;align-items:center !important;justify-content:center !important;height:40px !important;padding:0 12px !important;font-size:11.5px !important;gap:4px !important;white-space:nowrap !important;border-radius:8px !important}
@@ -679,22 +502,15 @@ main{padding-bottom:calc(14px + env(safe-area-inset-bottom))}
   #page-panel .filters .btn.sm.primary[onclick*="musteriSecAc"],
   #page-panel .filters .btn.sm[onclick*="topluListe"],
   #page-panel .filters .btn.sm[onclick*="exportCSV"]{display:none !important}
-
   #mobilFiltreBtn .aktif-filtre{display:none;background:#fff;color:var(--neon);font-size:10px;font-weight:900;padding:1px 6px;border-radius:8px;margin-left:4px;min-width:17px;text-align:center}
   #mobilFiltreBtn.aktif-var .aktif-filtre{display:inline-block !important}
-
-  /* Tablo -> Kart görünümü */
   .table-wrap{padding:0 10px 10px !important;overflow-x:hidden !important}
   .table-wrap table{min-width:0 !important;width:100% !important}
   .table-wrap thead{display:none !important}
   .table-wrap tbody,
   .table-wrap tr,
   .table-wrap td{display:block !important;width:100% !important}
-  .table-wrap tbody tr{
-    background:var(--card) !important;border:1px solid var(--border) !important;
-    border-radius:11px !important;padding:12px !important;
-    margin-bottom:9px !important;position:relative !important;
-  }
+  .table-wrap tbody tr{background:var(--card) !important;border:1px solid var(--border) !important;border-radius:11px !important;padding:12px !important;margin-bottom:9px !important;position:relative !important}
   .table-wrap tbody tr:hover{background:var(--card) !important}
   .table-wrap tbody tr.acil{box-shadow:none !important;border-left:3px solid var(--danger) !important}
   .table-wrap tbody tr.vip{box-shadow:none !important;border-left:3px solid var(--warn) !important}
@@ -708,12 +524,9 @@ main{padding-bottom:calc(14px + env(safe-area-inset-bottom))}
   .table-wrap tbody td .tutar-indirim{text-align:left !important}
   .cust-name{font-size:14px !important}
   .kalem-ozet{font-size:11.5px !important;line-height:1.4 !important}
-
   .bulk-bar{padding:10px !important;gap:6px !important;border-radius:10px !important;margin:0 10px 10px !important}
   .bulk-bar .bb-info{font-size:11.5px !important;margin-right:0 !important;width:100% !important;text-align:center !important;margin-bottom:5px !important}
   .bulk-bar .btn{font-size:10.5px !important;padding:6px 8px !important;flex:1 1 44% !important;justify-content:center !important;min-height:34px !important;border-radius:7px !important}
-
-  /* Modallar */
   .modal-overlay{padding:0 !important;align-items:stretch !important}
   .modal-card{max-width:100% !important;max-height:100dvh !important;height:100dvh !important;border-radius:0 !important;padding:16px !important;padding-bottom:calc(16px + env(safe-area-inset-bottom)) !important;gap:12px !important}
   .modal-card h3{position:sticky !important;top:-16px !important;background:var(--card) !important;margin:-16px -16px 0 -16px !important;padding:14px 16px !important;z-index:5 !important;font-size:14px !important}
@@ -727,34 +540,27 @@ main{padding-bottom:calc(14px + env(safe-area-inset-bottom))}
   .invoice-box{grid-template-columns:1fr !important}
   table.mini{font-size:11px !important}
   table.mini th,table.mini td{padding:7px 8px !important;white-space:nowrap !important}
-
   #loginOverlay{padding:14px !important}
   .login-box{padding:24px 20px !important;border-radius:14px !important}
   .login-box .lg-logo{width:60px !important;height:60px !important;font-size:30px !important;border-radius:13px !important}
   .login-box h2{font-size:16px !important}
   .login-box .lg-fld input{font-size:16px !important}
-
   #toasts{left:12px !important;right:12px !important;bottom:calc(76px + env(safe-area-inset-bottom)) !important}
   .toast{min-width:0 !important;width:100% !important;font-size:12.5px !important;padding:10px 13px !important}
-
   .rapor-grid{grid-template-columns:repeat(2,1fr) !important}
   .rapor-kutu{padding:9px !important}
   .rapor-kutu .rk-val{font-size:15px !important}
-
   .dash-row-item{padding:8px 4px !important}
   .dash-row-item .dr-title{font-size:12.5px !important}
   .dash-row-item .dr-sub{font-size:10.5px !important}
-
   .rehber-item{padding:12px !important}
 }
-
 @media (min-width:769px){
   #mobilFiltreOverlay,#mobilFiltrePanel{display:none !important}
   #mobilFiltreBtn{display:none !important}
   .mobil-header,.mobil-tabbar,.mobil-gorunum,.mobil-menu-overlay{display:none !important}
   .masaustu-gorunum{display:block !important}
 }
-
 @media (hover:none){
   .btn,.btn-gizle,.btn-bildirim,.chip,.tab,.stat-pill,.theme-switch button,.btn-cikis,.modal-close,.kalem-sil{min-height:40px}
   .btn.sm{min-height:36px}
@@ -762,7 +568,6 @@ main{padding-bottom:calc(14px + env(safe-area-inset-bottom))}
   -webkit-tap-highlight-color:transparent;
   .tab,.btn,.chip,.dash-row-item,.rehber-item{-webkit-tap-highlight-color:rgba(255,42,42,.12)}
 }
-
 #mobilFiltreOverlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:9000;backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px)}
 #mobilFiltreOverlay.active{display:block}
 #mobilFiltrePanel{display:none;position:fixed;left:0;right:0;bottom:0;background:var(--card);border-top:1px solid var(--border);border-radius:16px 16px 0 0;padding:16px 14px;padding-bottom:calc(16px + env(safe-area-inset-bottom));z-index:9001;max-height:80vh;overflow-y:auto;box-shadow:0 -12px 40px rgba(0,0,0,.75);animation:ebaSlideUp .25s cubic-bezier(.2,.9,.3,1)}
@@ -774,6 +579,7 @@ main{padding-bottom:calc(14px + env(safe-area-inset-bottom))}
 #mobilFiltrePanel .filter-actions{display:flex;gap:8px;margin-top:14px;position:sticky;bottom:0;background:var(--card);padding-top:10px}
 #mobilFiltrePanel .filter-actions .btn{flex:1;justify-content:center;min-height:44px;font-size:13px;border-radius:9px}
 @keyframes ebaSlideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+#musteriOtomatikBilgi{transition:all .2s ease}
 </style>
 </head>
 <body>
@@ -799,7 +605,6 @@ main{padding-bottom:calc(14px + env(safe-area-inset-bottom))}
   </div>
 </div>
 
-<!-- MASAÜSTÜ HEADER -->
 <header>
   <div class="header-inner">
     <div class="brand">
@@ -808,7 +613,7 @@ main{padding-bottom:calc(14px + env(safe-area-inset-bottom))}
       </div>
       <div>
         <h1>ESKİŞEHİR BASKI ATÖLYESİ</h1>
-        <div class="ver">YÖNETİM PANELİ · v8.7</div>
+        <div class="ver">YÖNETİM PANELİ · v8.8</div>
       </div>
     </div>
     <div class="head-tools">
@@ -831,7 +636,6 @@ main{padding-bottom:calc(14px + env(safe-area-inset-bottom))}
   </div>
 </header>
 
-<!-- MASAÜSTÜ TABS -->
 <nav class="tabs">
   <div class="tabs-inner">
     <button class="tab active" data-page="anasayfa">🏠 Ana Sayfa</button>
@@ -845,7 +649,6 @@ main{padding-bottom:calc(14px + env(safe-area-inset-bottom))}
   </div>
 </nav>
 
-<!-- MOBİL HEADER -->
 <header class="mobil-header">
   <div class="m-logo">
     <img src="e-logo.png" alt="EBA" onerror="this.style.display='none';this.parentElement.innerHTML='🖨️'">
@@ -862,8 +665,6 @@ main{padding-bottom:calc(14px + env(safe-area-inset-bottom))}
 
 <section class="page active" id="page-anasayfa">
   <div class="page-scroll">
-
-    <!-- MASAÜSTÜ ANASAYFA GÖRÜNÜMÜ -->
     <div class="masaustu-gorunum">
       <div class="dash-3col">
         <aside class="dash-side">
@@ -947,67 +748,36 @@ main{padding-bottom:calc(14px + env(safe-area-inset-bottom))}
         </aside>
       </div>
     </div>
-
-    <!-- MOBİL ANASAYFA GÖRÜNÜMÜ -->
     <div class="mobil-gorunum">
       <div class="m-body">
         <div class="m-greet" id="mGreet">Günaydın 👋</div>
         <div class="m-greet-sub" id="mGreetSub">Yükleniyor...</div>
-
         <div class="m-kpi">
-          <div class="k b" onclick="dashboardStatFiltrele('Tumu');goTab('panel')">
-            <div class="num" id="m-acik">0</div>
-            <div class="lbl">Aktif İş</div>
-          </div>
-          <div class="k y" onclick="dashboardStatFiltrele('hazirlaniyor');goTab('panel')">
-            <div class="num" id="m-prep">0</div>
-            <div class="lbl">Hazırlanıyor</div>
-          </div>
-          <div class="k r" onclick="dashboardStatFiltrele('acil');goTab('panel')">
-            <div class="num" id="m-acil">0</div>
-            <div class="lbl">Acil</div>
-          </div>
-          <div class="k g" onclick="dashboardStatFiltrele('teslim');goTab('panel')">
-            <div class="num" id="m-done">0</div>
-            <div class="lbl">Teslim</div>
-          </div>
+          <div class="k b" onclick="dashboardStatFiltrele('Tumu');goTab('panel')"><div class="num" id="m-acik">0</div><div class="lbl">Aktif İş</div></div>
+          <div class="k y" onclick="dashboardStatFiltrele('hazirlaniyor');goTab('panel')"><div class="num" id="m-prep">0</div><div class="lbl">Hazırlanıyor</div></div>
+          <div class="k r" onclick="dashboardStatFiltrele('acil');goTab('panel')"><div class="num" id="m-acil">0</div><div class="lbl">Acil</div></div>
+          <div class="k g" onclick="dashboardStatFiltrele('teslim');goTab('panel')"><div class="num" id="m-done">0</div><div class="lbl">Teslim</div></div>
         </div>
-
         <div class="m-section">
-          <div class="m-section-head">
-            <h3>🔥 Aktif İşler</h3>
-            <button class="more" onclick="goTab('panel')">Tümü →</button>
-          </div>
+          <div class="m-section-head"><h3>🔥 Aktif İşler</h3><button class="more" onclick="goTab('panel')">Tümü →</button></div>
           <div id="m-aktifListe"></div>
         </div>
-
         <div class="m-section">
-          <div class="m-section-head">
-            <h3>🚚 Bugün Teslim</h3>
-            <button class="more" onclick="goTab('panel')">Tümü →</button>
-          </div>
+          <div class="m-section-head"><h3>🚚 Bugün Teslim</h3><button class="more" onclick="goTab('panel')">Tümü →</button></div>
           <div id="m-bugunTeslimListe"></div>
         </div>
-
         <div class="m-section">
-          <div class="m-section-head">
-            <h3>🆕 Son Siparişler</h3>
-            <button class="more" onclick="goTab('panel')">Tümü →</button>
-          </div>
+          <div class="m-section-head"><h3>🆕 Son Siparişler</h3><button class="more" onclick="goTab('panel')">Tümü →</button></div>
           <div id="m-sonSiparisListe"></div>
         </div>
-
         <div class="m-section">
-          <div class="m-section-head">
-            <h3>📝 Hızlı Notlar</h3>
-          </div>
+          <div class="m-section-head"><h3>📝 Hızlı Notlar</h3></div>
           <textarea id="mHizliNotInput" class="m-note-input" placeholder="Not yaz..." rows="2"></textarea>
           <button type="button" class="m-note-btn" onclick="hizliNotEkle()">💾 Notu Kaydet</button>
           <div class="m-note-list" id="mHizliNotlarListe"></div>
         </div>
       </div>
     </div>
-
   </div>
 </section>
 
@@ -1129,7 +899,9 @@ main{padding-bottom:calc(14px + env(safe-area-inset-bottom))}
       <div class="grid cols-3" style="margin-bottom:14px">
         <label class="fld">İsim Soyisim *<input type="text" id="f-ad" placeholder="Ad Soyad"></label>
         <label class="fld" id="firmaWrap" style="display:none">Firma Adı<input type="text" id="f-firma" placeholder="Firma / Kurum"></label>
-        <label class="fld">Telefon *<input type="tel" id="f-tel" placeholder="05xx xxx xx xx"></label>
+        <label class="fld">Telefon *<input type="tel" id="f-tel" placeholder="05xx xxx xx xx" oninput="musteriOtomatikAra()">
+          <div id="musteriOtomatikBilgi" style="display:none;margin-top:6px;padding:8px 10px;background:var(--card2);border:1px solid var(--border);border-radius:6px;font-size:11.5px"></div>
+        </label>
         <label class="fld">E-posta<input type="email" id="f-mail" placeholder="ornek@mail.com"></label>
         <label class="fld">Tahmini Teslim<input type="date" id="f-tarih"></label>
         <label class="fld">Sipariş Kanalı
@@ -1321,7 +1093,6 @@ main{padding-bottom:calc(14px + env(safe-area-inset-bottom))}
 
 </main>
 
-<!-- MOBİL TAB BAR (alt sabit) -->
 <nav class="mobil-tabbar">
   <button class="mt active" data-mtab="anasayfa" onclick="mobilTabSec('anasayfa')"><span class="ic">🏠</span><span>Ana</span></button>
   <button class="mt" data-mtab="panel" onclick="mobilTabSec('panel')"><span class="ic">📋</span><span>Sipariş</span></button>
@@ -1330,7 +1101,6 @@ main{padding-bottom:calc(14px + env(safe-area-inset-bottom))}
   <button class="mt" data-mtab="menu" onclick="mobilMenuAc()"><span class="ic">☰</span><span>Menü</span></button>
 </nav>
 
-<!-- MOBİL MENÜ OVERLAY -->
 <div class="mobil-menu-overlay" id="mobilMenuOverlay" onclick="mobilMenuKapat()">
   <div class="mobil-menu-panel" onclick="event.stopPropagation()">
     <div class="m-user">
@@ -1519,12 +1289,11 @@ main{padding-bottom:calc(14px + env(safe-area-inset-bottom))}
 
 <script type="module">
 /* ============================================================
-   ESKİŞEHİR BASKI ATÖLYESİ — v8.7
-   Mobil tasarım revize edildi (masaüstü değişmedi)
-   - Mobil header: sade (logo + 🔍 + ☰)
-   - Mobil alt tab bar: Ana / Sipariş / + / Müşteri / Menü
-   - Mobil ana sayfa: karşılama + KPI + aktif + bugün + notlar
-   - Yatay kayma engellendi
+   ESKİŞEHİR BASKI ATÖLYESİ — v8.8
+   - Telefon → müşteri otomatik tanıma ✅
+   - Mobil dokunmatik kontrol güçlendirildi ✅
+   - Tüm modallar body kilitleme ✅
+   - cariAcFromRow bug temizlendi ✅
    ============================================================ */
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
@@ -1875,7 +1644,7 @@ function yedekUyariGoster() {
 
 window.yedekIndir = function() {
   try {
-    const data = { version: '8.7.0', tarih: new Date().toISOString(), orders: state.orders, musteriler, sablonlar, personel, hedef, trash, hizliNotlar, ayarlar };
+    const data = { version: '8.8.0', tarih: new Date().toISOString(), orders: state.orders, musteriler, sablonlar, personel, hedef, trash, hizliNotlar, ayarlar };
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
@@ -1994,6 +1763,11 @@ function setTheme(t) {
   document.documentElement.setAttribute('data-theme', t);
   localStorage.setItem('eba_theme', t);
   document.querySelectorAll('[data-theme-btn]').forEach(b => b.classList.toggle('active', b.dataset.themeBtn === t));
+  const metaTheme = document.querySelector('meta[name="theme-color"]');
+  if (metaTheme) {
+    const renkler = { dark:'#000000', light:'#f8fafc', galaxy:'#0a0616', forest:'#0a1108' };
+    metaTheme.setAttribute('content', renkler[t] || '#000000');
+  }
 }
 document.querySelectorAll('[data-theme-btn]').forEach(b => b.addEventListener('click', () => setTheme(b.dataset.themeBtn)));
 setTheme(localStorage.getItem('eba_theme') || 'dark');
@@ -2012,7 +1786,6 @@ window.toggleGizliMod = function() {
   toast(gizliMod ? '🙈 Gizlendi' : '👁️ Açık', 'success');
 };
 
-/* MASAÜSTÜ TAB SİSTEMİ */
 document.querySelectorAll('.tab').forEach(tab => {
   tab.addEventListener('click', () => {
     if (gizliMod && tab.dataset.page === 'ciro') { toast('💰 Gizli modda kapalı', 'warn'); return; }
@@ -2035,7 +1808,6 @@ window.goTab = function(name) {
   document.querySelectorAll('.tab').forEach(t => { if (t.dataset.page === name) t.click(); });
 };
 
-/* MOBİL TAB SİSTEMİ */
 window.mobilTabSec = function(name) {
   if (name === 'menu') { mobilMenuAc(); return; }
   if (gizliMod && name === 'ciro') { toast('💰 Gizli modda kapalı', 'warn'); return; }
@@ -2080,28 +1852,22 @@ window.mobilAraAc = function() {
   setTimeout(() => { const s = $('searchBox'); if (s) s.focus(); }, 200);
 };
 
-/* MOBİL ANA SAYFA RENDER */
 function renderMobilAnasayfa() {
   const o = state.orders;
   const acik = o.filter(x => x.durum === 'yeni' || x.durum === 'hazirlaniyor').length;
   const prep = o.filter(x => x.durum === 'hazirlaniyor').length;
   const acil = o.filter(x => x.oncelik === 'acil' && x.durum !== 'teslim').length;
   const done = o.filter(x => x.durum === 'teslim').length;
-
   if ($('m-acik')) $('m-acik').textContent = acik;
   if ($('m-prep')) $('m-prep').textContent = prep;
   if ($('m-acil')) $('m-acil').textContent = acil;
   if ($('m-done')) $('m-done').textContent = done;
-
-  // Karşılama
   const saat = new Date().getHours();
   const selam = saat < 6 ? 'İyi geceler' : saat < 12 ? 'Günaydın' : saat < 18 ? 'İyi günler' : 'İyi akşamlar';
   if ($('mGreet')) $('mGreet').textContent = selam + ' 👋';
   const bugunStr = new Date().toLocaleDateString('tr-TR', {day:'numeric', month:'long', year:'numeric', weekday:'long'});
   const bugunGirilen = o.filter(x => { const d = new Date(x.olusturma); const b = new Date(); return d.toDateString() === b.toDateString(); }).length;
   if ($('mGreetSub')) $('mGreetSub').innerHTML = escapeHtml(bugunStr) + ' · Bugün <b>' + bugunGirilen + ' sipariş</b> girdin';
-
-  // Aktif işler
   const aktifListe = o.filter(x => x.durum === 'yeni' || x.durum === 'hazirlaniyor').sort((a,b) => (b.olusturma||0)-(a.olusturma||0)).slice(0,4);
   const al = $('m-aktifListe');
   if (al) {
@@ -2111,8 +1877,6 @@ function renderMobilAnasayfa() {
       return '<div class="m-row" onclick="cariAcFromRow(\'' + escapeAttr(x.id) + '\')"><div class="r-main"><div class="r-title">' + escapeHtml(x.firma||x.adSoyad) + '</div><div class="r-sub">' + x.takipNo + ' · ' + escapeHtml(oz) + '</div></div><span class="m-badge ' + x.durum + '">' + (DURUM_LBL[x.durum]||x.durum) + '</span></div>';
     }).join('');
   }
-
-  // Bugün teslim
   const bugunD = new Date(); bugunD.setHours(0,0,0,0);
   const bugunStr2 = bugunD.getFullYear() + '-' + String(bugunD.getMonth()+1).padStart(2,'0') + '-' + String(bugunD.getDate()).padStart(2,'0');
   const bugunTeslim = o.filter(x => x.teslimTarihi === bugunStr2 && x.durum !== 'teslim').slice(0,4);
@@ -2124,8 +1888,6 @@ function renderMobilAnasayfa() {
       return '<div class="m-row" onclick="cariAcFromRow(\'' + escapeAttr(x.id) + '\')"><div class="r-main"><div class="r-title">' + escapeHtml(x.firma||x.adSoyad) + '</div><div class="r-sub">' + escapeHtml(oz) + '</div></div><span class="r-time">→</span></div>';
     }).join('');
   }
-
-  // Son siparişler
   const sonlar = [...o].sort((a,b) => (b.olusturma||0) - (a.olusturma||0)).slice(0,4);
   const sl = $('m-sonSiparisListe');
   if (sl) {
@@ -2135,8 +1897,6 @@ function renderMobilAnasayfa() {
       return '<div class="m-row" onclick="cariAcFromRow(\'' + escapeAttr(x.id) + '\')"><div class="r-main"><div class="r-title">' + escapeHtml(x.firma||x.adSoyad) + '</div><div class="r-sub">' + tarih + ' · ' + x.takipNo + '</div></div><div class="r-time">' + fmtNum(x.netTutar) + '₺</div></div>';
     }).join('');
   }
-
-  // Hızlı notlar
   renderMobilHizliNotlar();
 }
 
@@ -2150,7 +1910,53 @@ function renderMobilHizliNotlar() {
   }).join('');
 }
 
-/* TAKVİM */
+/* ============ MÜŞTERİ OTOMATİK TANIMA (YENİ) ============ */
+window.musteriOtomatikAra = function() {
+  const tel = ($('f-tel')?.value||'').trim();
+  const bilgi = $('musteriOtomatikBilgi');
+  if (!bilgi) return;
+  const temiz = tel.replace(/\D/g, '');
+  if (temiz.length < 10) { bilgi.style.display = 'none'; return; }
+  const m = musteriler[tel] || musteriler[temiz];
+  if (m && m.telefon) {
+    const adi = m.firma || m.adSoyad || 'Müşteri';
+    const sipSay = state.orders.filter(o => o.telefon === m.telefon).length;
+    const borc = state.orders.filter(o => o.telefon === m.telefon && o.odemeDurumu !== 'alindi').reduce((s,o) => s + (o.netTutar||0), 0);
+    bilgi.innerHTML =
+      '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">' +
+        '<span style="font-size:15px">👤</span>' +
+        '<div style="flex:1;min-width:0">' +
+          '<strong style="color:var(--neon)">' + escapeHtml(adi) + '</strong>' +
+          ' <span style="color:var(--muted);font-size:10.5px">kayıtlı müşteri</span>' +
+          '<div style="font-size:10px;color:var(--muted);margin-top:2px">📦 ' + sipSay + ' sipariş' + (borc > 0 ? ' · <span style="color:var(--danger)">Borç: ' + fmt(borc) + '</span>' : '') + '</div>' +
+        '</div>' +
+        '<button type="button" class="btn xs primary" onclick="musteriBilgileriniDoldur(\'' + escapeAttr(m.telefon) + '\')">📋 Bilgileri Doldur</button>' +
+      '</div>';
+    bilgi.style.display = 'block';
+  } else {
+    bilgi.innerHTML = '<div style="display:flex;align-items:center;gap:8px"><span style="font-size:14px">🆕</span><span style="color:var(--muted)">Yeni müşteri — kayıt oluşturulacak</span></div>';
+    bilgi.style.display = 'block';
+  }
+};
+
+window.musteriBilgileriniDoldur = function(tel) {
+  const m = musteriler[tel];
+  if (!m) { toast('Müşteri bulunamadı', 'error'); return; }
+  if ($('f-ad') && !$('f-ad').value) $('f-ad').value = m.adSoyad || '';
+  if ($('f-firma') && !$('f-firma').value) $('f-firma').value = m.firma || '';
+  if ($('f-mail') && !$('f-mail').value) $('f-mail').value = m.email || '';
+  if ($('f-adres') && !$('f-adres').value) $('f-adres').value = m.adres || '';
+  if (m.musteriTuru) {
+    const mt = document.querySelector('input[name="musteriTuru"][value="' + m.musteriTuru + '"]');
+    if (mt) mt.checked = true;
+    firmaGosterGizle();
+  }
+  const bilgi = $('musteriOtomatikBilgi');
+  if (bilgi) bilgi.style.display = 'none';
+  toast('👤 ' + (m.firma||m.adSoyad) + ' bilgileri dolduruldu', 'success');
+};
+
+/* ============ TAKVİM ============ */
 function takvimYukle() {
   try { const raw = localStorage.getItem(TAKVIM_AY_KEY); if (raw) { const p = JSON.parse(raw); if (p && typeof p.yil === 'number') takvimAy = {yil:p.yil, ay:p.ay}; } } catch(e) {}
   if (!takvimAy) { const d = new Date(); takvimAy = { yil: d.getFullYear(), ay: d.getMonth() }; }
@@ -2205,7 +2011,7 @@ window.takvimGunSecildi = function(gun) {
   detay.innerHTML = '<div style="font-size:10.5px;color:var(--neon);font-weight:800;margin-bottom:6px">📅 ' + gun + ' ' + AY[takvimAy.ay] + ' · ' + oGun.length + ' teslim</div>' + oGun.map(o => '<div style="padding:6px 8px;background:var(--card2);border-radius:5px;margin-bottom:4px;cursor:pointer;font-size:11px" onclick="cariAcFromRow(\'' + escapeAttr(o.id) + '\')"><div style="font-weight:700">' + escapeHtml(o.firma||o.adSoyad) + '</div><div style="color:var(--neon);font-size:10px;font-family:monospace">' + o.takipNo + '</div></div>').join('');
 };
 
-/* HAVA */
+/* ============ HAVA ============ */
 function havaIkon(k) { if (k===0) return '☀️'; if (k<=2) return '🌤️'; if (k===3) return '☁️'; if (k>=45&&k<=48) return '🌫️'; if (k>=51&&k<=67) return '🌧️'; if (k>=71&&k<=77) return '❄️'; if (k>=80&&k<=82) return '🌧️'; if (k>=85&&k<=86) return '❄️'; if (k>=95) return '⛈️'; return '🌤️'; }
 function havaAciklama(k) { if (k===0) return 'Açık'; if (k<=2) return 'Az bulutlu'; if (k===3) return 'Bulutlu'; if (k>=45&&k<=48) return 'Puslu'; if (k>=51&&k<=67) return 'Yağmurlu'; if (k>=71&&k<=77) return 'Kar'; if (k>=80&&k<=82) return 'Sağanak'; if (k>=95) return 'Fırtına'; return '—'; }
 async function havaCek() {
@@ -2226,7 +2032,7 @@ async function havaCek() {
   } catch(e) { console.warn('hava:', e); }
 }
 
-/* KUR */
+/* ============ KUR ============ */
 async function kurCek() {
   try {
     const r = await fetch('https://api.genelpara.com/json/');
@@ -2265,7 +2071,7 @@ function kurPanoyuCiz() {
     '<div class="kur-row"><span class="kr-lbl">🇬🇧 GBP</span><span class="kr-vals"><span><span class="kur-baslik">Alış</span><span class="kur-alis">' + kurVerisi.GBP.alis.toFixed(2) + '</span></span><span><span class="kur-baslik">Satış</span><span class="kur-satis">' + kurVerisi.GBP.satis.toFixed(2) + '</span></span></span></div>';
 }
 
-/* AKTİVİTE */
+/* ============ AKTİVİTE ============ */
 function renderAktiviteAkisi() {
   const box = $('aktiviteAkisi'); if (!box) return;
   const sayi = $('aktiviteSayi');
@@ -2531,6 +2337,7 @@ function formuTemizle() {
   const ot = document.querySelector('input[name="odemeTuru"][value="kart"]'); if (ot) ot.checked = true;
   if ($('f-kanal')) $('f-kanal').value = 'atölye';
   if ($('f-personel')) $('f-personel').value = '';
+  if ($('musteriOtomatikBilgi')) $('musteriOtomatikBilgi').style.display = 'none';
   if ($('kalemlerList')) $('kalemlerList').innerHTML = '';
   kalemKarti();
   if ($('formTitle')) $('formTitle').textContent = 'Sipariş Kaydı';
@@ -2897,7 +2704,7 @@ window.topluPNG = function() {
 document.addEventListener('DOMContentLoaded', () => {
   const tbody = $('ordersTbody');
   if (!tbody) return;
-  const dokunmatik = window.matchMedia('(hover:none)').matches;
+  const dokunmatik = 'ontouchstart' in window || navigator.maxTouchPoints > 0 || window.matchMedia('(hover:none)').matches;
   if (dokunmatik) {
     tbody.addEventListener('click', e => {
       if (e.target.closest('.row-check, button, a, input')) return;
@@ -2925,9 +2732,13 @@ window.musteriSecAc = function() {
   if ($('musteriSecSearch')) $('musteriSecSearch').value = '';
   musteriSecFiltrele();
   $('musteriSecModal').classList.add('active');
+  document.body.style.overflow = 'hidden';
   setTimeout(() => { if ($('musteriSecSearch')) $('musteriSecSearch').focus(); }, 150);
 };
-window.musteriSecKapat = function() { $('musteriSecModal').classList.remove('active'); };
+window.musteriSecKapat = function() { 
+  $('musteriSecModal').classList.remove('active'); 
+  document.body.style.overflow = '';
+};
 
 function musteriSecFiltrele() {
   const q = ($('musteriSecSearch')?.value||'').toLowerCase();
@@ -3016,8 +2827,12 @@ function musteriCariPopupAc(tel, siparisId) {
   cariGecmisiYenile(tel);
   cariTabSec('bilgi');
   $('cariModal').classList.add('active');
+  document.body.style.overflow = 'hidden';
 }
-window.cariModalKapat = function() { $('cariModal').classList.remove('active'); };
+window.cariModalKapat = function() { 
+  $('cariModal').classList.remove('active'); 
+  document.body.style.overflow = '';
+};
 
 function cariMusteriBilgileriDoldur(m) {
   if ($('cariEdMusteriTuru')) $('cariEdMusteriTuru').value = m.musteriTuru || 'bireysel';
@@ -3214,7 +3029,10 @@ function cariGecmisiYenile(tel) {
 }
 
 window.rehberAc = function() { goTab('musteri-rehber'); };
-window.musteriRehberiKapat = function() { $('musteriModal').classList.remove('active'); };
+window.musteriRehberiKapat = function() { 
+  $('musteriModal').classList.remove('active'); 
+  document.body.style.overflow = '';
+};
 
 function musteriRehberiFiltrele() {
   const q = ($('musteriSearchInput')?.value||'').toLowerCase();
@@ -3248,6 +3066,7 @@ window.cariModalAcRehberden = function(tel) {
     cariGecmisiYenile(tel);
     if ($('cariSiparisOzet')) $('cariSiparisOzet').innerHTML = '<div style="padding:12px;text-align:center;color:var(--muted)">Sipariş yok</div>';
     $('cariModal').classList.add('active');
+    document.body.style.overflow = 'hidden';
     cariTabSec('bilgi');
   }
 };
@@ -3357,8 +3176,16 @@ function raporHTML(tip) {
   return html;
 }
 
-window.raporModalAc = function(tip) { aktifRaporTipi = tip || 'aylik'; raporTipiSec(aktifRaporTipi); $('raporModal').classList.add('active'); };
-window.raporModalKapat = function() { $('raporModal').classList.remove('active'); };
+window.raporModalAc = function(tip) { 
+  aktifRaporTipi = tip || 'aylik'; 
+  raporTipiSec(aktifRaporTipi); 
+  $('raporModal').classList.add('active'); 
+  document.body.style.overflow = 'hidden';
+};
+window.raporModalKapat = function() { 
+  $('raporModal').classList.remove('active'); 
+  document.body.style.overflow = '';
+};
 window.raporTipiSec = function(tip) { pageRaporTipiSec(tip); };
 window.raporYazdir = function() {
   const html = '<!DOCTYPE html><html lang="tr"><head><meta charset="UTF-8"><title>Rapor</title><style>body{font-family:Segoe UI,Arial,sans-serif;color:#111;background:#fff;padding:24px;font-size:13px}h4{font-size:14px;margin:18px 0 10px;border-bottom:2px solid #111;padding-bottom:6px}.rapor-bolum{margin-bottom:18px}.rapor-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px}.rapor-kutu{border:1px solid #ccc;border-radius:6px;padding:10px;background:#f8f8f8}.rk-lbl{font-size:10.5px;color:#666;text-transform:uppercase;font-weight:700}.rk-val{font-size:18px;font-weight:900;margin-top:4px}.rapor-liste{border:1px solid #ccc;border-radius:6px;padding:10px;background:#f8f8f8}.rl-item{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid #eee}.rl-item:last-child{border-bottom:0}@media print{body{padding:0}}</style></head><body>' + raporHTML(aktifRaporTipi) + '<script>window.onload=()=>setTimeout(()=>window.print(),400);<\/script></body></html>';
@@ -3391,6 +3218,7 @@ window.duzenle = function(id) {
   (o.kalemler||[]).forEach(k => kalemKarti(k));
   if (!(o.kalemler||[]).length) kalemKarti();
   firmaGosterGizle(); hesapla();
+  if ($('musteriOtomatikBilgi')) $('musteriOtomatikBilgi').style.display = 'none';
   if ($('formTitle')) $('formTitle').textContent = 'Düzenle · ' + o.takipNo;
   if ($('formHint')) $('formHint').textContent = 'Değişiklikleri yapıp kaydet.';
   if ($('cancelEditBtn')) $('cancelEditBtn').style.display = '';
@@ -3577,8 +3405,12 @@ window.hatirlatmalarAc = function() {
   if (!list.length) icerik.innerHTML = '<p style="text-align:center;padding:30px;color:var(--muted)">Bekleyen hatırlatma yok 🎉</p>';
   else icerik.innerHTML = list.map(h => '<div class="hatirlatma-item" onclick="cariAcFromRow(\'' + escapeAttr(h.siparis.id) + '\');hatirlatmalarKapat()"><div class="hi-main"><div class="hi-title">' + escapeHtml(h.siparis.firma||h.siparis.adSoyad) + ' <span style="color:var(--neon);font-size:10.5px">' + h.siparis.takipNo + '</span></div><div class="hi-sub">' + h.mesaj + ' · ' + h.aciklama + '</div></div><span class="hi-badge" style="background:var(--card2);color:' + h.renk + '">' + h.tip + '</span></div>').join('');
   $('hatirlatmaModal').classList.add('active');
+  document.body.style.overflow = 'hidden';
 };
-window.hatirlatmalarKapat = function() { $('hatirlatmaModal').classList.remove('active'); };
+window.hatirlatmalarKapat = function() { 
+  $('hatirlatmaModal').classList.remove('active'); 
+  document.body.style.overflow = '';
+};
 window.bildirimIzinAl = function() {
   if (!('Notification' in window)) { toast('Desteklenmiyor', 'warn'); return; }
   Notification.requestPermission().then(p => {
@@ -3814,7 +3646,10 @@ function renderBulut() {
 }
 
 document.querySelectorAll('.modal-overlay').forEach(m => {
-  m.addEventListener('click', e => { if (e.target === m) m.classList.remove('active'); });
+  m.addEventListener('click', e => { if (e.target === m) {
+    m.classList.remove('active');
+    document.body.style.overflow = '';
+  }});
 });
 
 document.addEventListener('keydown', e => {
@@ -3866,7 +3701,7 @@ async function baslatUygulama() {
     setInterval(yedekDurumGuncelle, 60*60*1000);
     gercekZamanliDinle();
     mobilTabbarGuncelle();
-    console.log('✅ v8.7 hazır — ' + state.orders.length + ' sipariş');
+    console.log('✅ v8.8 hazır — ' + state.orders.length + ' sipariş');
   } catch(e) { console.error('baslatUygulama:', e); }
 }
 </script>
