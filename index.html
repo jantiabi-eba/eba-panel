@@ -356,7 +356,8 @@ table.mini tr:hover{background:var(--neon-soft)}
 .login-box .lg-info{text-align:center;font-size:11px;color:var(--dim);margin-top:18px;line-height:1.6}
 .login-box .lg-spin{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .8s linear infinite;vertical-align:-2px;margin-right:6px}
 @keyframes spin{to{transform:rotate(360deg)}}
-#kullaniciBadge{background:var(--card);border:1px solid var(--border);color:var(--text);padding:6px 11px;border-radius:8px;font-size:11.5px;font-weight:700;display:flex;align-items:center;gap:6px;white-space:nowrap;max-width:200px;overflow:hidden;text-overflow:ellipsis}
+#kullaniciBadge{background:var(--card);border:1px solid var(--border);color:var(--text);padding:6px 11px;border-radius:8px;font-size:11.5px;font-weight:700;display:flex;align-items:center;gap:6px;white-space:nowrap;max-width:200px;overflow:hidden;text-overflow:ellipsis;transition:.15s}
+#kullaniciBadge:hover{border-color:var(--neon);color:var(--neon)}
 #kullaniciBadge .u-dot{width:7px;height:7px;border-radius:50%;background:var(--success);box-shadow:0 0 6px var(--success);flex:none}
 #kullaniciBadge .u-mail{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--muted)}
 .btn-cikis{background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.35);color:#f87171;padding:6px 10px;border-radius:8px;cursor:pointer;font-size:11.5px;font-weight:700;font-family:inherit}
@@ -580,6 +581,10 @@ main{padding-bottom:calc(14px + env(safe-area-inset-bottom))}
 #mobilFiltrePanel .filter-actions .btn{flex:1;justify-content:center;min-height:44px;font-size:13px;border-radius:9px}
 @keyframes ebaSlideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
 #musteriOtomatikBilgi{transition:all .2s ease}
+.profil-row{display:flex;justify-content:space-between;margin-bottom:6px;font-size:12.5px}
+.profil-row .lbl{color:var(--muted);font-weight:700}
+.profil-section{border-top:1px dashed var(--border);padding-top:14px;margin-top:2px}
+.profil-section-title{font-size:12px;font-weight:800;color:var(--muted);margin-bottom:10px;letter-spacing:.3px;text-transform:uppercase}
 </style>
 </head>
 <body>
@@ -617,7 +622,7 @@ main{padding-bottom:calc(14px + env(safe-area-inset-bottom))}
       </div>
     </div>
     <div class="head-tools">
-      <div id="kullaniciBadge" title="Giriş yapılmış kullanıcı">
+      <div id="kullaniciBadge" title="Profil" onclick="profilModalAc()" style="cursor:pointer">
         <span class="u-dot"></span>
         <span class="u-mail" id="kullaniciMail">—</span>
       </div>
@@ -1114,6 +1119,8 @@ main{padding-bottom:calc(14px + env(safe-area-inset-bottom))}
     <button onclick="mobilMenuGit('musteri-rehber')"><span class="mi">👥</span> Müşteri Rehberi</button>
     <button onclick="mobilMenuGit('rapor')"><span class="mi">📈</span> Rapor</button>
     <button onclick="mobilMenuGit('ciro')" class="gizli"><span class="mi">💰</span> Ciro</button>
+    <h4>Hesap</h4>
+    <button onclick="mobilMenuKapat();setTimeout(profilModalAc,150)"><span class="mi">👤</span> Profilim</button>
     <h4>İşlemler</h4>
     <button onclick="mobilMenuKapat();toggleGizliMod()"><span class="mi">👁️</span> Gizli Mod</button>
     <button onclick="mobilMenuKapat();yedekIndir()"><span class="mi">💾</span> Yedek Al</button>
@@ -1285,18 +1292,72 @@ main{padding-bottom:calc(14px + env(safe-area-inset-bottom))}
   </div>
 </div>
 
+<!-- ===== PROFİL MODAL ===== -->
+<div class="modal-overlay" id="profilModal">
+  <div class="modal-card" style="max-width:640px">
+    <h3>
+      <span>👤 Profilim</span>
+      <button class="modal-close" onclick="profilModalKapat()">✕</button>
+    </h3>
+
+    <div style="background:var(--card2);border:1px solid var(--border);border-radius:var(--radiusSm);padding:14px">
+      <div class="profil-row"><span class="lbl">📧 E-posta</span><b id="profilEmail">—</b></div>
+      <div class="profil-row"><span class="lbl">🆔 Kullanıcı ID</span><span id="profilUID" style="font-family:monospace;font-size:11px">—</span></div>
+      <div class="profil-row"><span class="lbl">📅 Kayıt Tarihi</span><span id="profilOlusturma">—</span></div>
+      <div class="profil-row" style="margin-bottom:0"><span class="lbl">🕐 Son Giriş</span><span id="profilSonGiris">—</span></div>
+    </div>
+
+    <div class="profil-section">
+      <div class="profil-section-title">👤 Görünen Ad</div>
+      <div style="display:flex;gap:8px">
+        <input type="text" id="profilAd" placeholder="Ad Soyad" style="flex:1">
+        <button class="btn primary" onclick="profilAdKaydet()">💾 Kaydet</button>
+      </div>
+    </div>
+
+    <div class="profil-section">
+      <div class="profil-section-title">🔒 Şifre Değiştir</div>
+      <label class="fld">Mevcut Şifre<input type="password" id="profilEskiSifre" autocomplete="current-password"></label>
+      <div class="grid cols-2" style="margin-top:8px">
+        <label class="fld">Yeni Şifre<input type="password" id="profilYeniSifre" autocomplete="new-password"></label>
+        <label class="fld">Yeni Şifre (tekrar)<input type="password" id="profilYeniSifre2" autocomplete="new-password"></label>
+      </div>
+      <button class="btn primary" style="margin-top:10px;width:100%;justify-content:center" onclick="profilSifreDegistir()">🔒 Şifreyi Değiştir</button>
+    </div>
+
+    <div class="profil-section">
+      <div class="profil-section-title">📧 E-posta Değiştir</div>
+      <label class="fld">Yeni E-posta<input type="email" id="profilYeniEmail" placeholder="yeni@mail.com"></label>
+      <label class="fld" style="margin-top:8px">Mevcut Şifre<input type="password" id="profilEmailSifre"></label>
+      <button class="btn primary" style="margin-top:10px;width:100%;justify-content:center" onclick="profilEmailDegistir()">📧 E-postayı Değiştir</button>
+    </div>
+
+    <div class="profil-section">
+      <div class="profil-section-title">🔑 Şifre Sıfırlama</div>
+      <p style="font-size:12px;color:var(--muted);margin-bottom:10px;line-height:1.5">
+        Kayıtlı e-posta adresinize şifre sıfırlama bağlantısı gönderilir. Mevcut şifrenizi hatırlamıyorsanız bu yöntemi kullanın.
+      </p>
+      <button class="btn warn" style="width:100%;justify-content:center" onclick="profilSifreSifirlaGonder()">📧 Sıfırlama E-postası Gönder</button>
+    </div>
+
+    <div class="action-row" style="border-top:1px solid var(--border);padding-top:12px">
+      <button class="btn" style="flex:1;justify-content:center" onclick="profilModalKapat()">Kapat</button>
+    </div>
+  </div>
+</div>
+
 <div id="toasts"></div>
 
 <script type="module">
 /* ============================================================
-   ESKİŞEHİR BASKI ATÖLYESİ — v8.8
-   - Telefon → müşteri otomatik tanıma ✅
-   - Mobil dokunmatik kontrol güçlendirildi ✅
-   - Tüm modallar body kilitleme ✅
-   - cariAcFromRow bug temizlendi ✅
+   ESKİŞEHİR BASKI ATÖLYESİ — v8.8 (Profil + Güvenli Sil)
    ============================================================ */
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
+import {
+  getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged,
+  updateProfile, updateEmail, updatePassword, sendPasswordResetEmail,
+  EmailAuthProvider, reauthenticateWithCredential
+} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
 import { getFirestore, doc, getDoc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -1653,7 +1714,8 @@ window.yedekIndir = function() {
     localStorage.setItem(LAST_BACKUP_KEY, String(Date.now()));
     yedekDurumGuncelle();
     toast('⬇️ Yedek indirildi', 'success');
-  } catch(e) { toast('Yedek hatası: ' + e.message, 'error'); }
+    return true;
+  } catch(e) { toast('Yedek hatası: ' + e.message, 'error'); return false; }
 };
 
 window.yedekYukle = function(e) {
@@ -1681,13 +1743,67 @@ window.yedekYukle = function(e) {
   r.readAsText(f); e.target.value = '';
 };
 
+/* ============================================================
+   TÜMÜNÜ SİL — Otomatik yedek + 2 aşamalı onay
+   ============================================================ */
 window.tumVerileriSil = function() {
-  if (!confirm('TÜM veriler silinecek! Emin misiniz?')) return;
-  if (!confirm('Son uyarı: Geri alınamaz.')) return;
-  state.orders = []; musteriler = {}; sablonlar = []; personel = []; hedef = 0; trash = []; hizliNotlar = [];
-  [STORAGE_KEY, CUSTOMERS_KEY, SABLON_KEY, PERSONEL_KEY, HEDEF_KEY, TRASH_KEY, DRAFT_KEY, HIZLI_NOT_KEY].forEach(k => localStorage.removeItem(k));
-  save(); render(); renderDashboard(); renderCiro(); renderBulut(); renderMobilAnasayfa();
-  toast('🗑️ Silindi', 'warn');
+  const sipSay = state.orders.length;
+  const musSay = Object.keys(musteriler).length;
+  const sabSay = sablonlar.length;
+  const perSay = personel.length;
+
+  if (sipSay === 0 && musSay === 0 && sabSay === 0 && perSay === 0) {
+    toast('ℹ️ Silinecek veri yok', 'warn');
+    return;
+  }
+
+  // 1) OTOMATİK YEDEK
+  toast('💾 Otomatik yedek alınıyor...', 'warn');
+  let yedekBasarili = false;
+  try { yedekBasarili = yedekIndir(); } catch(e) { yedekBasarili = false; }
+
+  if (!yedekBasarili) {
+    if (!confirm('⚠️ Otomatik yedek ALINAMADI!\n\nYine de silmek istiyor musunuz?\n(Bu işlem GERİ ALINAMAZ)')) {
+      toast('❌ İptal edildi', 'warn'); return;
+    }
+  } else {
+    toast('✅ Yedek indirildi: İndirilenler klasörü', 'success');
+  }
+
+  // 2) İLK ONAY
+  const onay1 = confirm(
+    '⚠️ DİKKAT! GERİ ALINAMAZ İŞLEM ⚠️\n\n' +
+    'Silinecek veriler:\n' +
+    '• 📦 ' + sipSay + ' sipariş\n' +
+    '• 👥 ' + musSay + ' müşteri\n' +
+    '• 📁 ' + sabSay + ' şablon\n' +
+    '• 👷 ' + perSay + ' personel\n' +
+    '• Tüm notlar, hızlı notlar, çöp kutusu\n\n' +
+    '✅ Otomatik yedek: ' + (yedekBasarili ? 'İNDİRİLDİ' : 'ALINAMADI!') + '\n\n' +
+    'Bu işlem hem yerel depoyu hem bulutu siler.\n\n' +
+    'Devam etmek istiyor musunuz?'
+  );
+  if (!onay1) { toast('❌ İptal edildi', 'warn'); return; }
+
+  // 3) SON ONAY — "SIL" yaz
+  const onay2 = prompt(
+    '🚨 SON ONAY 🚨\n\n' +
+    'Silmek için büyük harflerle "SIL" yazın:\n' +
+    '(küçük harf veya yanlış yazım iptal eder)'
+  );
+  if (onay2 !== 'SIL') { toast('❌ İptal edildi — "SIL" yazılmadı', 'warn'); return; }
+
+  // 4) SİL
+  state.orders = []; musteriler = {}; sablonlar = []; personel = [];
+  hedef = 0; trash = []; hizliNotlar = [];
+  [STORAGE_KEY, CUSTOMERS_KEY, SABLON_KEY, PERSONEL_KEY, HEDEF_KEY,
+   TRASH_KEY, DRAFT_KEY, HIZLI_NOT_KEY].forEach(k => {
+    try { localStorage.removeItem(k); } catch(e) {}
+  });
+
+  save();
+  render(); renderDashboard(); renderCiro(); renderBulut(); renderMobilAnasayfa();
+  toast('🗑️ Tüm veriler silindi (yedek indirilmişti)', 'success');
 };
 
 window.buluttanVeriCek = async function(manuel) {
@@ -1910,7 +2026,6 @@ function renderMobilHizliNotlar() {
   }).join('');
 }
 
-/* ============ MÜŞTERİ OTOMATİK TANIMA (YENİ) ============ */
 window.musteriOtomatikAra = function() {
   const tel = ($('f-tel')?.value||'').trim();
   const bilgi = $('musteriOtomatikBilgi');
@@ -3672,8 +3787,115 @@ document.addEventListener('keydown', e => {
     if ($('sablonSecModal').classList.contains('active')) sablonSecModalKapat();
     if ($('taslakModal').classList.contains('active')) taslakModalKapat();
     if ($('raporModal').classList.contains('active')) raporModalKapat();
+    if ($('profilModal').classList.contains('active')) profilModalKapat();
   }
 });
+
+/* ============================================================
+   PROFİL FONKSİYONLARI
+   ============================================================ */
+window.profilModalAc = function() {
+  if (!aktifKullanici) { toast('Giriş yapılmamış', 'error'); return; }
+  if ($('profilEmail')) $('profilEmail').textContent = aktifKullanici.email || '—';
+  if ($('profilAd')) $('profilAd').value = aktifKullanici.displayName || '';
+  if ($('profilUID')) $('profilUID').textContent = aktifKullanici.uid || '—';
+  const meta = aktifKullanici.metadata || {};
+  if ($('profilOlusturma')) $('profilOlusturma').textContent = meta.creationTime ? new Date(meta.creationTime).toLocaleString('tr-TR') : '—';
+  if ($('profilSonGiris')) $('profilSonGiris').textContent = meta.lastSignInTime ? new Date(meta.lastSignInTime).toLocaleString('tr-TR') : '—';
+  if ($('profilEskiSifre')) $('profilEskiSifre').value = '';
+  if ($('profilYeniSifre')) $('profilYeniSifre').value = '';
+  if ($('profilYeniSifre2')) $('profilYeniSifre2').value = '';
+  if ($('profilYeniEmail')) $('profilYeniEmail').value = '';
+  if ($('profilEmailSifre')) $('profilEmailSifre').value = '';
+  $('profilModal').classList.add('active');
+  document.body.style.overflow = 'hidden';
+};
+window.profilModalKapat = function() {
+  const m = $('profilModal'); if (m) m.classList.remove('active');
+  document.body.style.overflow = '';
+};
+
+window.profilAdKaydet = async function() {
+  const ad = ($('profilAd')?.value || '').trim();
+  if (!ad) { toast('Ad boş olamaz', 'error'); return; }
+  try {
+    await updateProfile(aktifKullanici, { displayName: ad });
+    toast('✅ Görünen ad güncellendi', 'success');
+  } catch(e) {
+    console.error(e);
+    toast('❌ ' + (e.message || 'Hata'), 'error');
+  }
+};
+
+window.profilSifreDegistir = async function() {
+  const eski = ($('profilEskiSifre')?.value || '').trim();
+  const yeni = ($('profilYeniSifre')?.value || '').trim();
+  const yeni2 = ($('profilYeniSifre2')?.value || '').trim();
+  if (!eski || !yeni || !yeni2) { toast('Tüm alanları doldurun', 'error'); return; }
+  if (yeni.length < 6) { toast('Şifre en az 6 karakter olmalı', 'error'); return; }
+  if (yeni !== yeni2) { toast('Yeni şifreler eşleşmiyor', 'error'); return; }
+  if (yeni === eski) { toast('Yeni şifre eskisiyle aynı olamaz', 'error'); return; }
+  try {
+    const cred = EmailAuthProvider.credential(aktifKullanici.email, eski);
+    await reauthenticateWithCredential(aktifKullanici, cred);
+    await updatePassword(aktifKullanici, yeni);
+    toast('✅ Şifre değiştirildi', 'success');
+    $('profilEskiSifre').value = '';
+    $('profilYeniSifre').value = '';
+    $('profilYeniSifre2').value = '';
+  } catch(e) {
+    console.error(e);
+    let msg = e.message || 'Hata';
+    if (e.code === 'auth/wrong-password' || e.code === 'auth/invalid-credential') msg = 'Mevcut şifre hatalı';
+    else if (e.code === 'auth/weak-password') msg = 'Şifre çok zayıf';
+    else if (e.code === 'auth/requires-recent-login') msg = 'Güvenlik için çıkış yapıp yeniden giriş yapın';
+    else if (e.code === 'auth/too-many-requests') msg = 'Çok fazla deneme, biraz bekleyin';
+    toast('❌ ' + msg, 'error');
+  }
+};
+
+window.profilEmailDegistir = async function() {
+  const yeniEmail = ($('profilYeniEmail')?.value || '').trim();
+  const sifre = ($('profilEmailSifre')?.value || '').trim();
+  if (!yeniEmail || !sifre) { toast('E-posta ve şifre gerekli', 'error'); return; }
+  if (yeniEmail === aktifKullanici.email) { toast('Bu zaten mevcut e-postanız', 'warn'); return; }
+  if (!confirm('E-posta adresiniz "' + yeniEmail + '" olarak değiştirilecek.\n\nDevam edilsin mi?')) return;
+  try {
+    const cred = EmailAuthProvider.credential(aktifKullanici.email, sifre);
+    await reauthenticateWithCredential(aktifKullanici, cred);
+    await updateEmail(aktifKullanici, yeniEmail);
+    toast('✅ E-posta güncellendi: ' + yeniEmail, 'success');
+    if ($('kullaniciMail')) $('kullaniciMail').textContent = yeniEmail;
+    if ($('mobilMenuMail')) $('mobilMenuMail').textContent = yeniEmail;
+    if ($('profilEmail')) $('profilEmail').textContent = yeniEmail;
+    $('profilYeniEmail').value = '';
+    $('profilEmailSifre').value = '';
+  } catch(e) {
+    console.error(e);
+    let msg = e.message || 'Hata';
+    if (e.code === 'auth/wrong-password' || e.code === 'auth/invalid-credential') msg = 'Mevcut şifre hatalı';
+    else if (e.code === 'auth/email-already-in-use') msg = 'Bu e-posta başka hesapta kullanılıyor';
+    else if (e.code === 'auth/invalid-email') msg = 'Geçersiz e-posta adresi';
+    else if (e.code === 'auth/requires-recent-login') msg = 'Güvenlik için çıkış yapıp yeniden giriş yapın';
+    else if (e.code === 'auth/operation-not-allowed') msg = 'E-posta değiştirme Firebase\'de kapalı';
+    toast('❌ ' + msg, 'error');
+  }
+};
+
+window.profilSifreSifirlaGonder = async function() {
+  if (!aktifKullanici?.email) { toast('E-posta bulunamadı', 'error'); return; }
+  if (!confirm('"' + aktifKullanici.email + '" adresine şifre sıfırlama bağlantısı gönderilsin mi?')) return;
+  try {
+    await sendPasswordResetEmail(fbAuth, aktifKullanici.email);
+    toast('📧 Sıfırlama e-postası gönderildi — spam klasörünü de kontrol edin', 'success');
+  } catch(e) {
+    console.error(e);
+    let msg = e.message || 'Hata';
+    if (e.code === 'auth/user-not-found') msg = 'Bu e-posta kayıtlı değil';
+    else if (e.code === 'auth/too-many-requests') msg = 'Çok fazla istek, biraz bekleyin';
+    toast('❌ ' + msg, 'error');
+  }
+};
 
 async function baslatUygulama() {
   try {
@@ -3701,7 +3923,7 @@ async function baslatUygulama() {
     setInterval(yedekDurumGuncelle, 60*60*1000);
     gercekZamanliDinle();
     mobilTabbarGuncelle();
-    console.log('✅ v8.8 hazır — ' + state.orders.length + ' sipariş');
+    console.log('✅ v8.8 (Profil + Güvenli Sil) hazır — ' + state.orders.length + ' sipariş');
   } catch(e) { console.error('baslatUygulama:', e); }
 }
 </script>
