@@ -8,7 +8,7 @@
   "theme_color": "#0d0d0d",
   "lang": "tr",
   "icons": [
-    { "src": "./e-logo.png", "sizes": "192x192", "type": "image/png" },
-    { "src": "./e-logo.png", "sizes": "512x512", "type": "image/png" }
+    { "src": "./eba-logo.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "./eba-logo.png", "sizes": "512x512", "type": "image/png" }
   ]
 }
