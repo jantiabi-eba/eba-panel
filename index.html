@@ -1387,6 +1387,14 @@ const $ = id => document.getElementById(id);
 const fmt = n => (Number(n)||0).toLocaleString('tr-TR',{minimumFractionDigits:2,maximumFractionDigits:2}) + ' ₺';
 const fmtNum = n => (Number(n)||0).toLocaleString('tr-TR',{minimumFractionDigits:2,maximumFractionDigits:2});
 const uid = () => 'id-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2,8);
+/* ============ TELEFON NORMALİZASYONU ============ */
+function normalizeTel(tel) {
+  if (!tel) return '';
+  let t = String(tel).replace(/\D/g, '');        // boşluk, tire, parantez → sil
+  if (t.startsWith('90') && t.length > 10) t = t.substring(2);  // +90 kaldır
+  if (t.startsWith('0') && t.length > 10) t = t.substring(1);   // baştaki 0 kaldır
+  return t;
+}
 
 function escapeHtml(s) {
   return String(s==null?'':s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
@@ -2027,12 +2035,11 @@ function renderMobilHizliNotlar() {
 }
 
 window.musteriOtomatikAra = function() {
-  const tel = ($('f-tel')?.value||'').trim();
+  const tel = normalizeTel($('f-tel')?.value||'');
   const bilgi = $('musteriOtomatikBilgi');
   if (!bilgi) return;
-  const temiz = tel.replace(/\D/g, '');
-  if (temiz.length < 10) { bilgi.style.display = 'none'; return; }
-  const m = musteriler[tel] || musteriler[temiz];
+  if (tel.length < 10) { bilgi.style.display = 'none'; return; }
+  const m = musteriler[tel];
   if (m && m.telefon) {
     const adi = m.firma || m.adSoyad || 'Müşteri';
     const sipSay = state.orders.filter(o => o.telefon === m.telefon).length;
@@ -2974,7 +2981,7 @@ document.addEventListener('change', e => {
 
 window.cariMusteriBilgileriniKaydet = function() {
   const eskiTel = seciliCariMusteriTel;
-  const yeniTel = ($('cariEdTelefon')?.value||'').trim();
+  const yeniTel = normalizeTel($('cariEdTelefon')?.value||'');
   const ad = ($('cariEdAdSoyad')?.value||'').trim();
   if (!yeniTel) { toast('Telefon zorunlu!', 'error'); return; }
   if (!ad) { toast('Ad zorunlu!', 'error'); return; }
