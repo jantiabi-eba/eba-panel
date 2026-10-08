@@ -1232,17 +1232,25 @@ main{padding-bottom:calc(14px + env(safe-area-inset-bottom))}
       </div>
       <div id="cariNotlarList"></div>
     </div>
-    <div class="cari-panel" data-cpanel="wa">
-      <p class="section-sub">Şablon seç, WhatsApp açılır.</p>
-      <div class="action-row">
-        <button type="button" class="btn success" onclick="waGonder('siparis')">📩 Sipariş Alındı</button>
-        <button type="button" class="btn success" onclick="waGonder('hazir')">🎉 Sipariş Hazır</button>
-        <button type="button" class="btn warn" onclick="waGonder('odeme')">⏳ Ödeme Hatırlatma</button>
-        <button type="button" class="btn warn" onclick="waGonder('teslim')">📅 Teslim Hatırlatma</button>
-      </div>
-      <div style="margin-top:12px;font-size:12px;color:var(--muted)">Önizleme:</div>
-      <textarea id="waOnizleme" rows="12" readonly style="font-family:monospace;font-size:11.5px;margin-top:6px"></textarea>
-    </div>
+   <div class="cari-panel" data-cpanel="wa">
+  <p class="section-sub">Şablon seç → mesaj hazırlanır → WhatsApp'ta açılır.</p>
+  <div class="action-row" style="margin-bottom:12px">
+    <button type="button" class="btn success" onclick="waOnizle('siparis')">📩 Sipariş Alındı</button>
+    <button type="button" class="btn success" onclick="waOnizle('hazir')">🎉 Sipariş Hazır</button>
+    <button type="button" class="btn warn" onclick="waOnizle('odeme')">💳 Ödeme Hatırlatma</button>
+    <button type="button" class="btn warn" onclick="waOnizle('teslim')">📅 Teslim Hatırlatma</button>
+  </div>
+  <div class="action-row" style="margin-bottom:12px">
+    <button type="button" class="btn danger" onclick="waOnizle('iptal')">❌ İptal Bildirimi</button>
+    <button type="button" class="btn danger" onclick="waOnizle('gecikme')">⏰ Gecikme Bildirimi</button>
+    <button type="button" class="btn primary" onclick="waOnizle('tesekkur')">🙏 Teşekkür</button>
+  </div>
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+    <span style="font-size:12px;color:var(--muted);font-weight:700">📱 Önizleme:</span>
+    <button type="button" class="btn sm primary" onclick="waGonderAktif()">💬 WhatsApp'ta Aç</button>
+  </div>
+  <textarea id="waOnizleme" rows="14" readonly style="font-family:monospace;font-size:11.5px;background:var(--card2);border:1px solid var(--border);border-radius:6px;padding:10px;width:100%;margin-top:6px"></textarea>
+</div>
     <div class="action-row" style="border-top:1px solid var(--border);padding-top:12px">
       <button type="button" class="btn danger" onclick="cariPopupMusteriyiSil()">👥 Cariyi Sil</button>
       <button type="button" class="btn" onclick="cariModalKapat()">Kapat</button>
@@ -3669,36 +3677,9 @@ function waMesajiOlustur(tip, o) {
 
   return '';
 }
-  }).join('\n');
-  const tutar = fmtNum(o.netTutar);
-  const tarih = o.teslimTarihi ? o.teslimTarihi.split('-').reverse().join('.') : '—';
-  const olusTarih = new Date(o.olusturma).toLocaleDateString('tr-TR');
-  if (tip === 'siparis') return 'Sayın ' + musteri + ',\n\nEskişehir Baskı Atölyesi\'ni tercih ettiğiniz için teşekkür ederiz. 🙏\n\n*Sipariş Detaylarınız:*\n━━━━━━━━━━━━━━━━\n🎫 Takip No: *' + o.takipNo + '*\n📅 Sipariş Tarihi: ' + olusTarih + '\n🚚 Tahmini Teslim: ' + tarih + '\n\n📦 *Ürünler:*\n' + (kalemTxt || '—') + '\n\n━━━━━━━━━━━━━━━━\n💰 *Toplam Tutar:* ' + tutar + ' ₺\n\nSiparişiniz hazırlanmaya alınmıştır.\n\n*Eskişehir Baskı Atölyesi*';
-  if (tip === 'hazir') return 'Sayın ' + musteri + ',\n\n🎉 Siparişiniz hazır.\n\n━━━━━━━━━━━━━━━━\n🎫 Takip No: *' + o.takipNo + '*\n📦 ' + (kalemTxt || '—') + '\n\n💰 *Toplam:* ' + tutar + ' ₺\n💳 ' + (o.odemeDurumu === 'alindi' ? '✅ Ödendi' : '⏳ Bekliyor') + '\n\nSiparişinizi Atölyemizden Teslim Alabilirsiniz.\n\n*Eskişehir Baskı Atölyesi*';
-  if (tip === 'odeme') return 'Sayın ' + musteri + ',\n\n*Ödeme Hatırlatması* 💳\n\n━━━━━━━━━━━━━━━━\n🎫 Takip No: *' + o.takipNo + '*\n💰 *Ödenmemiş Tutar:* ' + tutar + ' ₺\n\nÖdemeniz hesabımıza ulaşmadı.\n\n*Eskişehir Baskı Atölyesi*';
-  if (tip === 'teslim') return 'Sayın ' + musteri + ',\n\n*Teslim Hatırlatması* 📅\n\n━━━━━━━━━━━━━━━━\n🎫 Takip No: *' + o.takipNo + '*\n🚚 Planlanan Teslim: *' + tarih + '*\n📦 ' + (kalemTxt || '—') + '\n\n💰 ' + tutar + ' ₺\n\n*Eskişehir Baskı Atölyesi*';
-  return '';
-}
 
-window.waGonder = function(tip) {
-  if (!seciliCariSiparisId) { toast('Sipariş yok', 'error'); return; }
-  const o = state.orders.find(x => String(x.id) === String(seciliCariSiparisId));
-  if (!o) return;
-  const msg = waMesajiOlustur(tip, o);
-  const tel = (o.telefon || '').replace(/\D/g, '');
-  let url;
-  if (tel) {
-    let t = tel;
-    if (t.startsWith('0')) t = t.substring(1);
-    if (!t.startsWith('90')) t = '90' + t;
-    url = 'https://wa.me/' + t + '?text=' + encodeURIComponent(msg);
-  } else url = 'https://wa.me/?text=' + encodeURIComponent(msg);
-  window.open(url, '_blank');
-  if (tip === 'hazir') o.musteriBilgilendirildiHazir = true;
-  if (tip === 'teslim') o.musteriBilgilendirildiTeslim = true;
-  save();
-  toast('💬 WhatsApp açıldı', 'success');
-};
+
+
 
 function renderDashboard() {
   const o = state.orders;
