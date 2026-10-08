@@ -1471,6 +1471,7 @@ let takvimAy = null;
 let takvimSeciliGun = null;
 let kurVerisi = { USD:{alis:0,satis:0}, EUR:{alis:0,satis:0}, GBP:{alis:0,satis:0} };
 let aktifMobilTab = 'anasayfa';
+  let aktifWaTipi = 'siparis';
 
 window.girisYap = async function() {
   const email = ($('loginEmail')?.value||'').trim();
@@ -2918,6 +2919,7 @@ window.cariTabSec = function(name) {
   document.querySelectorAll('.cari-tab').forEach(t => t.classList.toggle('active', t.dataset.ctab === name));
   document.querySelectorAll('.cari-panel').forEach(p => p.classList.toggle('active', p.dataset.cpanel === name));
   if (name === 'wa' && seciliCariSiparisId) {
+          aktifWaTipi = 'siparis';
     setTimeout(() => {
       const o = state.orders.find(x => String(x.id) === String(seciliCariSiparisId));
       if (o && $('waOnizleme')) $('waOnizleme').value = waMesajiOlustur('siparis', o);
@@ -4000,6 +4002,36 @@ window.profilSifreSifirlaGonder = async function() {
     else if (e.code === 'auth/too-many-requests') msg = 'Çok fazla istek, biraz bekleyin';
     toast('❌ ' + msg, 'error');
   }
+};
+/* ============ WHATSAPP ÖNİZLEME + GÖNDER ============ */
+window.waOnizle = function(tip) {
+  aktifWaTipi = tip;
+  const o = state.orders.find(x => String(x.id) === String(seciliCariSiparisId));
+  if (!o) { toast('Sipariş yok', 'error'); return; }
+  if ($('waOnizleme')) $('waOnizleme').value = waMesajiOlustur(tip, o);
+  toast('📱 Önizleme hazır — "WhatsApp\'ta Aç" butonuna basın', 'success');
+};
+
+window.waGonderAktif = function() {
+  if (!seciliCariSiparisId) { toast('Sipariş yok', 'error'); return; }
+  const o = state.orders.find(x => String(x.id) === String(seciliCariSiparisId));
+  if (!o) { toast('Sipariş bulunamadı', 'error'); return; }
+  const msg = waMesajiOlustur(aktifWaTipi, o);
+  const tel = (o.telefon || '').replace(/\D/g, '');
+  let url;
+  if (tel) {
+    let t = tel;
+    if (t.startsWith('0')) t = t.substring(1);
+    if (!t.startsWith('90')) t = '90' + t;
+    url = 'https://wa.me/' + t + '?text=' + encodeURIComponent(msg);
+  } else {
+    url = 'https://wa.me/?text=' + encodeURIComponent(msg);
+  }
+  window.open(url, '_blank');
+  if (aktifWaTipi === 'hazir') o.musteriBilgilendirildiHazir = true;
+  if (aktifWaTipi === 'teslim') o.musteriBilgilendirildiTeslim = true;
+  save();
+  toast('💬 WhatsApp açıldı', 'success');
 };
 
 async function baslatUygulama() {
