@@ -2497,7 +2497,7 @@ function filtreleriSifirla() {
 window.siparisKaydet = function() {
   try {
     const ad = ($('f-ad')?.value||'').trim();
-    const tel = ($('f-tel')?.value||'').trim();
+    const tel = normalizeTel($('f-tel')?.value||'');
     const firma = ($('f-firma')?.value||'').trim();
     const musteriTuru = document.querySelector('input[name="musteriTuru"]:checked')?.value || 'bireysel';
     if (!ad) { toast('⚠️ Müşteri adı zorunlu!', 'error'); $('f-ad').focus(); return; }
