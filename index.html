@@ -2358,7 +2358,7 @@ function taslakKaydet() {
     try {
       if (!$('page-ekle').classList.contains('active')) return;
       const ad = ($('f-ad')?.value||'').trim();
-      const tel = ($('f-tel')?.value||'').trim();
+      const tel = normalizeTel($('f-tel')?.value||'');
       const kalemler = formdakiKalemleriAl();
       const anlamliKalem = kalemler.some(k => k.adet > 0 || k.fiyat > 0 || k.detay);
       if (!ad && !tel && !anlamliKalem && !($('f-ozel')?.value||'').trim()) return;
@@ -3542,7 +3542,8 @@ window.bildirimIzinAl = function() {
 };
 
 function waMesajiOlustur(tip, o) {
-  const musteri = o.adSoyad;
+  const musteri = o.adSoyad || '';
+  const firma = o.firma ? o.firma + ' (' + musteri + ')' : musteri;
   const kalemTxt = (o.kalemler||[]).map(k => {
     let s = '• ';
     if (k.baskiTuru) s += '[' + k.baskiTuru + '] ';
@@ -3552,6 +3553,122 @@ function waMesajiOlustur(tip, o) {
     if (k.ebat) s += ' (' + k.ebat + ')';
     s += ' × ' + k.adet + ' = ' + fmtNum((k.adet||0)*(k.fiyat||0)) + ' ₺';
     return s;
+  }).join('\n');
+  const kalemKisa = (o.kalemler||[]).map(k => {
+    let s = '• ';
+    if (k.baskiTuru) s += '[' + k.baskiTuru + '] ';
+    s += (k.urun || 'Ürün');
+    if (k.beden) s += ' / ' + k.beden;
+    s += ' × ' + k.adet;
+    return s;
+  }).join('\n') || '—';
+  const tutar = fmtNum(o.netTutar);
+  const tarih = o.teslimTarihi ? o.teslimTarihi.split('-').reverse().join('.') : '—';
+  const olusTarih = new Date(o.olusturma).toLocaleDateString('tr-TR');
+  const saat = new Date(o.olusturma).toLocaleTimeString('tr-TR', {hour:'2-digit', minute:'2-digit'});
+
+  if (tip === 'siparis') return (
+    'Merhaba ' + firma + ' 👋\n\n' +
+    'Siparişiniz başarıyla alındı ve *iş emriniz açıldı*. ✅\n\n' +
+    '━━━━━━━━━━━━━━━━━\n' +
+    '🎫 *Takip No:* ' + o.takipNo + '\n' +
+    '📅 *Sipariş Tarihi:* ' + olusTarih + ' ' + saat + '\n' +
+    '🚚 *Tahmini Teslim:* ' + tarih + '\n' +
+    '━━━━━━━━━━━━━━━━━\n\n' +
+    '📦 *Sipariş Kalemleri:*\n' + (kalemTxt || '—') + '\n\n' +
+    '━━━━━━━━━━━━━━━━━\n' +
+    '💰 *Toplam Tutar:* ' + tutar + ' ₺\n' +
+    '💳 *Ödeme:* ' + (o.odemeDurumu === 'alindi' ? '✅ Alındı' : '⏳ Bekliyor') + '\n' +
+    '━━━━━━━━━━━━━━━━━\n\n' +
+    'Siparişiniz titizlikle hazırlanmaya başlanmıştır. 🎨\n' +
+    'Herhangi bir sorunuz için bu numaradan bize ulaşabilirsiniz.\n\n' +
+    'Teşekkür ederiz 🙏\n' +
+    '*Eskişehir Baskı Atölyesi*'
+  );
+
+  if (tip === 'hazir') return (
+    'Merhaba ' + firma + ' 🎉\n\n' +
+    'Güzel haber! *Siparişiniz hazır.* ✨\n\n' +
+    '━━━━━━━━━━━━━━━━━\n' +
+    '🎫 *Takip No:* ' + o.takipNo + '\n' +
+    '📦 *Kalemler:*\n' + kalemKisa + '\n' +
+    '━━━━━━━━━━━━━━━━━\n' +
+    '💰 *Toplam:* ' + tutar + ' ₺\n' +
+    '💳 *Ödeme:* ' + (o.odemeDurumu === 'alindi' ? '✅ Alındı' : '⏳ Bekliyor') + '\n' +
+    '━━━━━━━━━━━━━━━━━\n\n' +
+    '📍 Teslim almak için:\n' +
+    '🏢 Atölyemize uğrayabilir veya\n' +
+    '📞 Bize ulaşarak teslimat planlayabilirsiniz.\n\n' +
+    'Sizi ağırlamaktan mutluluk duyarız 🙏\n' +
+    '*Eskişehir Baskı Atölyesi*'
+  );
+
+  if (tip === 'odeme') return (
+    'Merhaba ' + firma + ' 👋\n\n' +
+    'Küçük bir hatırlatma yapmak istedik. 💳\n\n' +
+    '━━━━━━━━━━━━━━━━━\n' +
+    '🎫 *Takip No:* ' + o.takipNo + '\n' +
+    '💰 *Bekleyen Tutar:* ' + tutar + ' ₺\n' +
+    '🏦 *Ödeme Türü:* ' + (ODEME_LBL[o.odemeTuru]||'—') + '\n' +
+    '━━━━━━━━━━━━━━━━━\n\n' +
+    'Ödemeniz hesabımıza henüz ulaşmadı. Uygun olduğunuzda ödeme yapabilir misiniz?\n\n' +
+    'Zahmet verdiğimiz için kusura bakmayın 🙏\n' +
+    '*Eskişehir Baskı Atölyesi*'
+  );
+
+  if (tip === 'teslim') return (
+    'Merhaba ' + firma + ' 👋\n\n' +
+    'Siparişinizin teslim tarihi yaklaşıyor. 📅\n\n' +
+    '━━━━━━━━━━━━━━━━━\n' +
+    '🎫 *Takip No:* ' + o.takipNo + '\n' +
+    '🚚 *Planlanan Teslim:* ' + tarih + '\n' +
+    '📦 *Kalemler:*\n' + kalemKisa + '\n' +
+    '━━━━━━━━━━━━━━━━━\n' +
+    '💰 *Toplam:* ' + tutar + ' ₺\n' +
+    '━━━━━━━━━━━━━━━━━\n\n' +
+    'Teslim için uygun olduğunuz gün ve saati bize bildirebilir misiniz?\n\n' +
+    'Görüşmek üzere 🙏\n' +
+    '*Eskişehir Baskı Atölyesi*'
+  );
+
+  if (tip === 'iptal') return (
+    'Merhaba ' + firma + ' 👋\n\n' +
+    'Siparişinizle ilgili bir bilgilendirme yapmak istedik.\n\n' +
+    '━━━━━━━━━━━━━━━━━\n' +
+    '🎫 *Takip No:* ' + o.takipNo + '\n' +
+    '❌ *Durum:* İptal Edildi\n' +
+    '━━━━━━━━━━━━━━━━━\n\n' +
+    'Siparişiniz iptal edilmiştir. Detaylı bilgi için bize ulaşabilirsiniz.\n\n' +
+    'Anlayışınız için teşekkür ederiz 🙏\n' +
+    '*Eskişehir Baskı Atölyesi*'
+  );
+
+  if (tip === 'gecikme') return (
+    'Merhaba ' + firma + ' 🙏\n\n' +
+    'Siparişinizle ilgili küçük bir gecikme yaşanmaktadır. Özür dileriz.\n\n' +
+    '━━━━━━━━━━━━━━━━━\n' +
+    '🎫 *Takip No:* ' + o.takipNo + '\n' +
+    '🚚 *Yeni Tahmini Teslim:* ' + tarih + '\n' +
+    '━━━━━━━━━━━━━━━━━\n\n' +
+    'Kalite standartlarımızı korumak adına ek süre gerekti. Anlayışınız için teşekkür ederiz.\n\n' +
+    'Bilginize sunarız 🙏\n' +
+    '*Eskişehir Baskı Atölyesi*'
+  );
+
+  if (tip === 'tesekkur') return (
+    'Merhaba ' + firma + ' 🙏\n\n' +
+    'Siparişinizi teslim aldığınız için teşekkür ederiz.\n\n' +
+    '━━━━━━━━━━━━━━━━━\n' +
+    '🎫 *Takip No:* ' + o.takipNo + '\n' +
+    '📦 *Kalemler:*\n' + kalemKisa + '\n' +
+    '━━━━━━━━━━━━━━━━━\n\n' +
+    'Ürünlerimizden memnun kaldıysanız, bizi çevrenize önermenizden mutluluk duyarız. 🌟\n\n' +
+    'Yeni siparişlerinizde görüşmek üzere 🙏\n' +
+    '*Eskişehir Baskı Atölyesi*'
+  );
+
+  return '';
+}
   }).join('\n');
   const tutar = fmtNum(o.netTutar);
   const tarih = o.teslimTarihi ? o.teslimTarihi.split('-').reverse().join('.') : '—';
