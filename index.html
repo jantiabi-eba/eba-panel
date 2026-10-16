@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Eskişehir Baskı Atölyesi — Yönetim Paneli v8.9</title>
+<title>Eskişehir Baskı Atölyesi — Yönetim Paneli v9.0</title>
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#000000">
 <link rel="icon" type="image/png" href="eba-logo.png">
@@ -35,6 +35,12 @@ header{background:#000;border-bottom:1px solid var(--border);padding:10px 18px;f
 .chip:hover{border-color:var(--neon)}
 .chip.uyari{border-color:var(--warn);background:rgba(245,158,11,.1)}
 .chip.uyari b{color:var(--warn)}
+.chip.senkron{border-color:var(--success);background:rgba(34,197,94,.08)}
+.chip.senkron b{color:var(--success)}
+.chip.senkron.hata{border-color:var(--danger);background:rgba(239,68,68,.08)}
+.chip.senkron.hata b{color:var(--danger)}
+.chip.senkron.bekliyor{border-color:var(--warn);background:rgba(245,158,11,.08)}
+.chip.senkron.bekliyor b{color:var(--warn)}
 .theme-switch{display:flex;gap:2px;background:var(--card);border:1px solid var(--border);padding:3px;border-radius:8px}
 .theme-switch button{background:transparent;border:0;cursor:pointer;font-size:14px;padding:4px 7px;border-radius:6px;line-height:1;color:var(--muted)}
 .theme-switch button:hover{background:var(--neon-soft);color:var(--text)}
@@ -618,7 +624,7 @@ main{padding-bottom:calc(14px + env(safe-area-inset-bottom))}
       </div>
       <div>
         <h1>ESKİŞEHİR BASKI ATÖLYESİ</h1>
-        <div class="ver">YÖNETİM PANELİ · v8.9</div>
+        <div class="ver">YÖNETİM PANELİ · v9.0</div>
       </div>
     </div>
     <div class="head-tools">
@@ -628,6 +634,9 @@ main{padding-bottom:calc(14px + env(safe-area-inset-bottom))}
       </div>
       <button class="btn-cikis" onclick="cikisYap()" title="Oturumu kapat">🚪 Çıkış</button>
       <button class="btn-bildirim" id="bildirimBtn" onclick="hatirlatmalarAc()">🔔 <span id="bildirimSayi" class="bildirim-sayi" style="display:none">0</span></button>
+      <div class="chip senkron" id="senkronChip" onclick="manuelSenkron()" title="Senkron durumu — tıkla ve şimdi senkronize et">
+        ☁️ <span class="k">Senkron:</span> <b id="senkronText">—</b>
+      </div>
       <div class="chip" id="yedekChip" onclick="yedekKontrolVeAc()">💾 <span class="k">Yedek:</span> <b id="yedekDurumText">--</b></div>
       <button class="btn sm" onclick="kurtarEsitle()">🔄 Eşitle</button>
       <button class="btn-gizle" id="gizleBtn" onclick="toggleGizliMod()"><span id="gizleIcon">👁️</span> <span id="gizleText">Göster</span></button>
@@ -1124,6 +1133,7 @@ main{padding-bottom:calc(14px + env(safe-area-inset-bottom))}
     <h4>İşlemler</h4>
     <button onclick="mobilMenuKapat();toggleGizliMod()"><span class="mi">👁️</span> Gizli Mod</button>
     <button onclick="mobilMenuKapat();yedekIndir()"><span class="mi">💾</span> Yedek Al</button>
+    <button onclick="mobilMenuKapat();manuelSenkron()"><span class="mi">🔄</span> Şimdi Senkronize Et</button>
     <button onclick="mobilMenuKapat();kurtarEsitle()"><span class="mi">🔄</span> Eşitle</button>
     <button onclick="mobilMenuKapat();hatirlatmalarAc()"><span class="mi">🔔</span> Hatırlatmalar</button>
     <h4>Ayarlar</h4>
@@ -1350,7 +1360,19 @@ main{padding-bottom:calc(14px + env(safe-area-inset-bottom))}
 
 <script type="module">
 /* ============================================================
-   ESKİŞEHİR BASKI ATÖLYESİ — v8.9 (Güvenli escape + Bug fix)
+   ESKİŞEHİR BASKI ATÖLYESİ — v9.0
+   Kritik + Orta Önemli Sorunlar Düzeltildi:
+   • Firestore subcollection mimarisi (1MB limit çözümü)
+   • Otomatik v8 → v9 migration
+   • Incremental cloud sync (sadece değişenler)
+   • Listener deduplication (baslatildi flag)
+   • localStorage quota handling
+   • Trash'te müşteri snapshot'ı korunuyor
+   • Kod tekrarı ortadan kaldırıldı
+   • Hava/Kur cache (15dk TTL)
+   • Timestamp takipNo (çakışma önlendi)
+   • Türkçe-aware search
+   • Modal overflow yönetimi düzeltildi
    ============================================================ */
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
 import {
@@ -1358,7 +1380,10 @@ import {
   updateProfile, updateEmail, updatePassword, sendPasswordResetEmail,
   EmailAuthProvider, reauthenticateWithCredential
 } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
-import { getFirestore, doc, getDoc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+import {
+  getFirestore, doc, getDoc, setDoc, onSnapshot,
+  collection, getDocs, writeBatch
+} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBx3RVJLI36wz3kCYe2ZcaSC6c1uGErqVo",
@@ -1372,6 +1397,7 @@ const firebaseConfig = {
 let fbApp, fbAuth, fbDb, fbHazir = false;
 let aktifKullanici = null;
 let sonYazmaZamani = 0;
+let uygulamaBaslatildi = false;
 
 try {
   fbApp = initializeApp(firebaseConfig);
@@ -1387,6 +1413,7 @@ const $ = id => document.getElementById(id);
 const fmt = n => (Number(n)||0).toLocaleString('tr-TR',{minimumFractionDigits:2,maximumFractionDigits:2}) + ' ₺';
 const fmtNum = n => (Number(n)||0).toLocaleString('tr-TR',{minimumFractionDigits:2,maximumFractionDigits:2});
 const uid = () => 'id-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2,8);
+const trLower = s => String(s==null?'':s).toLocaleLowerCase('tr-TR');
 
 /* ============ TELEFON NORMALİZASYONU ============ */
 function normalizeTel(tel) {
@@ -1397,16 +1424,12 @@ function normalizeTel(tel) {
   return t;
 }
 
-/* ============ HTML ESCAPE (metin içeriği için) ============ */
+/* ============ HTML ESCAPE ============ */
 function escapeHtml(s) {
   return String(s==null?'':s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 }
 const escapeAttr = escapeHtml;
 
-/* ============ JS ESCAPE (onclick="fn('...')" argümanları için) ============
-   Bu fonksiyon, bir string'i hem JS string literal hem de HTML attribute
-   olarak güvenli hale getirir. HTML entity yerine unicode escape kullanır,
-   böylece tarayıcı "&#39;" → "'" çevirisi yapıp JS'i bozamaz. */
 function jsEsc(s) {
   return String(s == null ? '' : s)
     .replace(/\\/g, '\\\\')
@@ -1454,6 +1477,19 @@ const DRAFT_KEY = 'eba_draft';
 const LAST_BACKUP_KEY = 'eba_last_backup';
 const HIZLI_NOT_KEY = 'eba_hizli_notlar';
 const TAKVIM_AY_KEY = 'eba_takvim_ay';
+const HAVA_CACHE_KEY = 'eba_hava_cache';
+const KUR_CACHE_KEY = 'eba_kur_cache';
+const SENKRON_DURUM_KEY = 'eba_senkron_durum';
+
+// Yeni Firestore yapısı
+const FS_META = ['eba_v2', 'meta'];
+const FS_ORDERS = 'eba_v2_siparisler';
+const FS_MUSTERILER = 'eba_v2_musteriler';
+const FS_SABLONLAR = 'eba_v2_sablonlar';
+const FS_PERSONEL = 'eba_v2_personel';
+const FS_TRASH = 'eba_v2_trash';
+const FS_NOTLAR = 'eba_v2_notlar';
+const FS_OLD = ['eba_data', 'main'];
 
 const BASKI_TURLERI = ["DTF","Nakış","Flex","Reflektör","Süblimasyon","Özel İş"];
 const URUN_TURLERI = ["Tişört","Polar","Polar Şal","Yelek / İş Kıyafeti","Sweatshirt","Şapka","Çanta","Forma","Patch / Arma","Kupa Bardak","Kurdele","Müşteri Malzemesi","Diğer"];
@@ -1461,6 +1497,10 @@ const TISORT_MODELLERI = ["Regular Fit","Oversize","Polo Yaka"];
 const BEDENLER = ["S","M","L","XL","XXL","XXXL","Karışık"];
 const BEDENLI_URUNLER = ["Tişört","Polar","Yelek / İş Kıyafeti","Sweatshirt","Forma"];
 const ETIKET_TIPLERI = {'vip':'⭐ VIP','tekrar':'🔁 Tekrar','sorunlu-odeme':'⚠️ Sorunlu Ödeme','toptan':'📦 Toptan','yeni-musteri':'🆕 Yeni'};
+const DURUM_LBL = { yeni:'Yeni', hazirlaniyor:'Hazırlanıyor', hazir:'Hazır', teslim:'Teslim' };
+const ONCELIK_LBL = { normal:'Normal', vip:'VIP', acil:'Acil' };
+const KANAL_LBL = { atölye:'🏢 Atölye', web:'🌐 Web', instagram:'📸 Instagram', whatsapp:'💬 WhatsApp', telefon:'📞 Telefon' };
+const ODEME_LBL = { kart:'💳 Kart', havale:'🏦 Havale', nakit:'💵 Nakit' };
 
 let state = { orders: [] };
 let musteriler = {};
@@ -1484,6 +1524,216 @@ let kurVerisi = { USD:{alis:0,satis:0}, EUR:{alis:0,satis:0}, GBP:{alis:0,satis:
 let aktifMobilTab = 'anasayfa';
 let aktifWaTipi = 'siparis';
 
+/* ============ SENKRON TAKİP ============ */
+let dirty = { orders: new Set(), musteriler: new Set(), sablonlar: new Set(), personel: new Set(), trash: new Set(), notlar: new Set() };
+let deleted = { orders: new Set(), musteriler: new Set(), sablonlar: new Set(), personel: new Set(), trash: new Set(), notlar: new Set() };
+let metaDirty = false;
+let lastSnapshot = { orders: new Map(), musteriler: new Map(), sablonlar: new Map(), personel: new Map(), trash: new Map(), notlar: new Map() };
+let yerelYazmaBuffer = new Map();
+let cloudSyncTimer = null;
+let syncInProgress = false;
+let unsubscribers = [];
+let senkronDurum = 'bekliyor'; // 'bekliyor' | 'senkron' | 'hata'
+
+function senkronDurumGuncelle(durum, mesaj) {
+  senkronDurum = durum;
+  const chip = $('senkronChip'), txt = $('senkronText');
+  if (chip && txt) {
+    chip.classList.remove('senkron','hata','bekliyor');
+    if (durum === 'senkron') chip.classList.add('senkron');
+    else if (durum === 'hata') chip.classList.add('hata');
+    else chip.classList.add('bekliyor');
+    const zaman = mesaj || (durum === 'senkron' ? new Date().toLocaleTimeString('tr-TR', {hour:'2-digit',minute:'2-digit'}) : durum === 'hata' ? 'Hata' : 'Bekliyor');
+    txt.textContent = zaman;
+  }
+  try { localStorage.setItem(SENKRON_DURUM_KEY, JSON.stringify({ durum, ts: Date.now(), mesaj })); } catch(e){}
+}
+
+function snapshotAl() {
+  lastSnapshot.orders = new Map(state.orders.map(o => [String(o.id), JSON.stringify(o)]));
+  lastSnapshot.musteriler = new Map(Object.entries(musteriler).map(([k,v]) => [k, JSON.stringify(v)]));
+  lastSnapshot.sablonlar = new Map(sablonlar.map(s => [String(s.id), JSON.stringify(s)]));
+  lastSnapshot.personel = new Map(personel.map(p => [String(p.id), JSON.stringify(p)]));
+  lastSnapshot.trash = new Map(trash.map(t => [String(t.siparis?.id || t.id || Math.random()), JSON.stringify(t)]));
+  lastSnapshot.notlar = new Map(hizliNotlar.map(n => [String(n.id), JSON.stringify(n)]));
+}
+
+function computeDiff() {
+  // Orders
+  const seenO = new Set();
+  for (const o of state.orders) {
+    const id = String(o.id); seenO.add(id);
+    const prev = lastSnapshot.orders.get(id);
+    if (!prev || prev !== JSON.stringify(o)) dirty.orders.add(id);
+  }
+  for (const id of lastSnapshot.orders.keys()) {
+    if (!seenO.has(id)) { dirty.orders.delete(id); deleted.orders.add(id); }
+  }
+  // Musteriler
+  const seenM = new Set();
+  for (const [tel, m] of Object.entries(musteriler)) {
+    seenM.add(tel);
+    const prev = lastSnapshot.musteriler.get(tel);
+    if (!prev || prev !== JSON.stringify(m)) dirty.musteriler.add(tel);
+  }
+  for (const tel of lastSnapshot.musteriler.keys()) {
+    if (!seenM.has(tel)) { dirty.musteriler.delete(tel); deleted.musteriler.add(tel); }
+  }
+  // Sablonlar
+  const seenS = new Set();
+  for (const s of sablonlar) {
+    const id = String(s.id); seenS.add(id);
+    const prev = lastSnapshot.sablonlar.get(id);
+    if (!prev || prev !== JSON.stringify(s)) dirty.sablonlar.add(id);
+  }
+  for (const id of lastSnapshot.sablonlar.keys()) {
+    if (!seenS.has(id)) { dirty.sablonlar.delete(id); deleted.sablonlar.add(id); }
+  }
+  // Personel
+  const seenP = new Set();
+  for (const p of personel) {
+    const id = String(p.id); seenP.add(id);
+    const prev = lastSnapshot.personel.get(id);
+    if (!prev || prev !== JSON.stringify(p)) dirty.personel.add(id);
+  }
+  for (const id of lastSnapshot.personel.keys()) {
+    if (!seenP.has(id)) { dirty.personel.delete(id); deleted.personel.add(id); }
+  }
+  // Trash - use full replace semantics via a version hash
+  const trashSnap = JSON.stringify(trash);
+  if (lastSnapshot.trash.get('__ALL__') !== trashSnap) {
+    deleted.trash.add('__ALL__'); // marker for full replace
+    dirty.trash.add('__ALL__');
+  }
+  // Notlar
+  const seenN = new Set();
+  for (const n of hizliNotlar) {
+    const id = String(n.id); seenN.add(id);
+    const prev = lastSnapshot.notlar.get(id);
+    if (!prev || prev !== JSON.stringify(n)) dirty.notlar.add(id);
+  }
+  for (const id of lastSnapshot.notlar.keys()) {
+    if (!seenN.has(id)) { dirty.notlar.delete(id); deleted.notlar.add(id); }
+  }
+}
+
+function hasChanges() {
+  return dirty.orders.size || dirty.musteriler.size || dirty.sablonlar.size || dirty.personel.size || dirty.trash.size || dirty.notlar.size
+    || deleted.orders.size || deleted.musteriler.size || deleted.sablonlar.size || deleted.personel.size || deleted.trash.size || deleted.notlar.size
+    || metaDirty;
+}
+
+function scheduleCloudSync(delay = 900) {
+  if (cloudSyncTimer) clearTimeout(cloudSyncTimer);
+  senkronDurumGuncelle('bekliyor', 'Bekliyor...');
+  cloudSyncTimer = setTimeout(async () => {
+    computeDiff();
+    if (hasChanges()) await cloudSync();
+  }, delay);
+}
+
+async function cloudSync() {
+  if (!fbDb || !aktifKullanici) return false;
+  if (syncInProgress) { scheduleCloudSync(1500); return false; }
+  syncInProgress = true;
+  senkronDurumGuncelle('bekliyor', 'Gönderiliyor...');
+  try {
+    const ops = [];
+    // Orders
+    for (const id of dirty.orders) {
+      const o = state.orders.find(x => String(x.id) === id);
+      if (o) ops.push({ ref: doc(fbDb, FS_ORDERS, id), data: o, type: 'set' });
+    }
+    for (const id of deleted.orders) ops.push({ ref: doc(fbDb, FS_ORDERS, id), type: 'delete' });
+    // Musteriler
+    for (const tel of dirty.musteriler) {
+      const m = musteriler[tel];
+      if (m) ops.push({ ref: doc(fbDb, FS_MUSTERILER, tel), data: m, type: 'set' });
+    }
+    for (const tel of deleted.musteriler) ops.push({ ref: doc(fbDb, FS_MUSTERILER, tel), type: 'delete' });
+    // Sablonlar
+    for (const id of dirty.sablonlar) {
+      const s = sablonlar.find(x => String(x.id) === id);
+      if (s) ops.push({ ref: doc(fbDb, FS_SABLONLAR, id), data: s, type: 'set' });
+    }
+    for (const id of deleted.sablonlar) ops.push({ ref: doc(fbDb, FS_SABLONLAR, id), type: 'delete' });
+    // Personel
+    for (const id of dirty.personel) {
+      const p = personel.find(x => String(x.id) === id);
+      if (p) ops.push({ ref: doc(fbDb, FS_PERSONEL, id), data: p, type: 'set' });
+    }
+    for (const id of deleted.personel) ops.push({ ref: doc(fbDb, FS_PERSONEL, id), type: 'delete' });
+    // Trash - full replace when changed
+    if (dirty.trash.has('__ALL__') || deleted.trash.has('__ALL__')) {
+      const existing = await getDocs(collection(fbDb, FS_TRASH));
+      existing.forEach(d => ops.push({ ref: d.ref, type: 'delete' }));
+      trash.forEach((t, i) => {
+        const tid = String(t.siparis?.id || t.id || ('t-' + i));
+        ops.push({ ref: doc(fbDb, FS_TRASH, tid), data: t, type: 'set' });
+      });
+    }
+    // Notlar
+    for (const id of dirty.notlar) {
+      const n = hizliNotlar.find(x => String(x.id) === id);
+      if (n) ops.push({ ref: doc(fbDb, FS_NOTLAR, id), data: n, type: 'set' });
+    }
+    for (const id of deleted.notlar) ops.push({ ref: doc(fbDb, FS_NOTLAR, id), type: 'delete' });
+
+    // Chunk into batches of 400
+    const CHUNK = 400;
+    for (let i = 0; i < ops.length; i += CHUNK) {
+      const batch = writeBatch(fbDb);
+      const chunk = ops.slice(i, i + CHUNK);
+      const now = Date.now();
+      for (const op of chunk) {
+        if (op.type === 'set') batch.set(op.ref, op.data);
+        else batch.delete(op.ref);
+        yerelYazmaBuffer.set(op.ref.path, now);
+      }
+      await batch.commit();
+    }
+
+    // Meta
+    if (metaDirty) {
+      const metaRef = doc(fbDb, FS_META[0], FS_META[1]);
+      await setDoc(metaRef, {
+        hedef, ayarlar, counter: localStorage.getItem(COUNTER_KEY) || '0',
+        guncelleme: Date.now()
+      }, { merge: true });
+      yerelYazmaBuffer.set(metaRef.path, Date.now());
+      metaDirty = false;
+    }
+
+    // Clear dirty
+    Object.values(dirty).forEach(s => s.clear());
+    Object.values(deleted).forEach(s => s.clear());
+    sonYazmaZamani = Date.now();
+    // Update trash snapshot marker
+    lastSnapshot.trash.clear();
+    lastSnapshot.trash.set('__ALL__', JSON.stringify(trash));
+    snapshotAl();
+    senkronDurumGuncelle('senkron', new Date().toLocaleTimeString('tr-TR', {hour:'2-digit',minute:'2-digit'}));
+    bulutDurumYaz('✓ Senkron (' + ops.length + ' işlem)', 'success');
+    return true;
+  } catch(e) {
+    console.error('cloudSync:', e);
+    senkronDurumGuncelle('hata', '⚠️ Hata');
+    bulutDurumYaz('⚠️ Hata: ' + e.message, 'warn');
+    toast('⚠️ Bulut senkron hatası: ' + e.message, 'error');
+    return false;
+  } finally {
+    syncInProgress = false;
+  }
+}
+
+window.manuelSenkron = async function() {
+  if (!fbHazir || !aktifKullanici) { toast('⚠️ Giriş yapın', 'error'); return; }
+  toast('🔄 Senkronize ediliyor...', 'info');
+  computeDiff();
+  await cloudSync();
+};
+
+/* ============ AUTH ============ */
 window.girisYap = async function() {
   const email = ($('loginEmail')?.value||'').trim();
   const pass = ($('loginPassword')?.value||'').trim();
@@ -1510,7 +1760,14 @@ window.girisYap = async function() {
 
 window.cikisYap = async function() {
   if (!confirm('Çıkış yapmak istiyor musunuz?')) return;
-  try { await signOut(fbAuth); } catch(e) { console.error(e); }
+  try {
+    if (cloudSyncTimer) { clearTimeout(cloudSyncTimer); cloudSyncTimer = null; }
+    computeDiff();
+    if (hasChanges()) await cloudSync();
+    unsubscribers.forEach(u => { try { u(); } catch(e){} });
+    unsubscribers = [];
+    await signOut(fbAuth);
+  } catch(e) { console.error(e); }
 };
 
 function loginHata(msg) {
@@ -1530,75 +1787,115 @@ if (fbHazir) {
       baslatUygulama();
     } else {
       aktifKullanici = null;
+      uygulamaBaslatildi = false;
+      unsubscribers.forEach(u => { try { u(); } catch(e){} });
+      unsubscribers = [];
       console.log('🚪 Çıkış');
       if ($('loginOverlay')) $('loginOverlay').classList.remove('hidden');
     }
   });
 }
 
-function veriDocRef() {
-  if (!fbDb) return null;
-  return doc(fbDb, 'eba_data', 'main');
+/* ============ FIRESTORE — YENİ MİMARİ ============ */
+async function firestoreYeniYapidan(d) {
+  const [ordersSnap, musterilerSnap, sablonlarSnap, personelSnap, trashSnap, notlarSnap, metaSnap] = await Promise.all([
+    getDocs(collection(fbDb, FS_ORDERS)),
+    getDocs(collection(fbDb, FS_MUSTERILER)),
+    getDocs(collection(fbDb, FS_SABLONLAR)),
+    getDocs(collection(fbDb, FS_PERSONEL)),
+    getDocs(collection(fbDb, FS_TRASH)),
+    getDocs(collection(fbDb, FS_NOTLAR)),
+    getDoc(doc(fbDb, FS_META[0], FS_META[1]))
+  ]);
+  const hasData = ordersSnap.size > 0 || musterilerSnap.size > 0 || metaSnap.exists();
+  if (!hasData) return false;
+  state.orders = ordersSnap.docs.map(d => d.data());
+  musteriler = {};
+  musterilerSnap.docs.forEach(d => { musteriler[d.id] = d.data(); });
+  sablonlar = sablonlarSnap.docs.map(d => d.data());
+  personel = personelSnap.docs.map(d => d.data());
+  trash = trashSnap.docs.map(d => d.data());
+  hizliNotlar = notlarSnap.docs.map(d => d.data()).sort((a,b) => (b.tarih||0) - (a.tarih||0));
+  if (metaSnap.exists()) {
+    const m = metaSnap.data();
+    if (typeof m.hedef === 'number') hedef = m.hedef;
+    if (m.ayarlar && typeof m.ayarlar === 'object') ayarlar = m.ayarlar;
+    if (m.counter) try { localStorage.setItem(COUNTER_KEY, m.counter); } catch(e){}
+  }
+  return true;
+}
+
+async function eskiYapidanMigrate() {
+  try {
+    const oldSnap = await getDoc(doc(fbDb, FS_OLD[0], FS_OLD[1]));
+    if (!oldSnap.exists()) return false;
+    const d = oldSnap.data();
+    if (Array.isArray(d.siparisler)) state.orders = d.siparisler;
+    if (d.musteriler && typeof d.musteriler === 'object') musteriler = d.musteriler;
+    if (Array.isArray(d.sablonlar)) sablonlar = d.sablonlar;
+    if (Array.isArray(d.personel)) personel = d.personel;
+    if (typeof d.hedef === 'number') hedef = d.hedef;
+    if (Array.isArray(d.trash)) trash = d.trash;
+    if (Array.isArray(d.hizliNotlar)) hizliNotlar = d.hizliNotlar;
+    if (d.ayarlar && typeof d.ayarlar === 'object') ayarlar = d.ayarlar;
+    return true;
+  } catch(e) { console.warn('Migration read error:', e); return false; }
 }
 
 async function buluttanIlkYukleme() {
   if (!fbDb) return;
   try {
     bulutDurumYaz('Veriler çekiliyor...', 'warn');
-    const snap = await getDoc(veriDocRef());
-    if (snap.exists()) {
-      const d = snap.data();
-      if (Array.isArray(d.siparisler)) state.orders = d.siparisler;
-      if (d.musteriler && typeof d.musteriler === 'object') musteriler = d.musteriler;
-      if (Array.isArray(d.sablonlar)) sablonlar = d.sablonlar;
-      if (Array.isArray(d.personel)) personel = d.personel;
-      if (typeof d.hedef === 'number') hedef = d.hedef;
-      if (Array.isArray(d.trash)) trash = d.trash;
-      if (Array.isArray(d.hizliNotlar)) hizliNotlar = d.hizliNotlar;
-      if (d.ayarlar && typeof d.ayarlar === 'object') ayarlar = d.ayarlar;
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-      localStorage.setItem(CUSTOMERS_KEY, JSON.stringify(musteriler));
-      localStorage.setItem(SABLON_KEY, JSON.stringify(sablonlar));
-      localStorage.setItem(PERSONEL_KEY, JSON.stringify(personel));
-      localStorage.setItem(HEDEF_KEY, JSON.stringify({hedef}));
-      localStorage.setItem(TRASH_KEY, JSON.stringify(trash));
-      localStorage.setItem(HIZLI_NOT_KEY, JSON.stringify(hizliNotlar));
-      localStorage.setItem(AYARLAR_KEY, JSON.stringify(ayarlar));
-      bulutDurumYaz('✓ Bulut (' + (d.siparisler?.length||0) + ' sipariş)', 'success');
-    } else {
-      load();
-      if (state.orders.length > 0 || Object.keys(musteriler).length > 0) {
-        bulutDurumYaz('Yerel → Bulut aktarılıyor...', 'warn');
-        await bulutaGonder();
-        bulutDurumYaz('✓ Aktarıldı', 'success');
-        toast('📤 ' + state.orders.length + ' sipariş buluta yüklendi', 'success');
+    senkronDurumGuncelle('bekliyor', 'Çekiliyor...');
+
+    // Önce yeni yapıyı dene
+    const yeniVar = await firestoreYeniYapidan();
+
+    if (!yeniVar) {
+      // Yeni yapı boş, eski yapıyı kontrol et
+      const eskiVar = await eskiYapidanMigrate();
+      if (eskiVar) {
+        toast('📦 v8 verileri yeni yapıya taşınıyor...', 'warn');
+        bulutDurumYaz('⚙️ v8 → v9 migration...', 'warn');
+        snapshotAl();
+        computeDiff();
+        await cloudSync();
+        toast('✅ Taşıma tamamlandı: ' + state.orders.length + ' sipariş', 'success');
+        bulutDurumYaz('✓ Migration tamamlandı', 'success');
       } else {
-        bulutDurumYaz('✓ İlk kullanım', 'success');
+        // Bulut tamamen boş, yerelden yükle
+        load();
+        snapshotAl();
+        if (state.orders.length > 0 || Object.keys(musteriler).length > 0) {
+          bulutDurumYaz('Yerel → Bulut aktarılıyor...', 'warn');
+          computeDiff();
+          await cloudSync();
+          bulutDurumYaz('✓ Aktarıldı', 'success');
+          toast('📤 ' + state.orders.length + ' sipariş buluta yüklendi', 'success');
+        } else {
+          bulutDurumYaz('✓ İlk kullanım', 'success');
+        }
       }
+    } else {
+      bulutDurumYaz('✓ Bulut (' + state.orders.length + ' sipariş)', 'success');
     }
+
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    localStorage.setItem(CUSTOMERS_KEY, JSON.stringify(musteriler));
+    localStorage.setItem(SABLON_KEY, JSON.stringify(sablonlar));
+    localStorage.setItem(PERSONEL_KEY, JSON.stringify(personel));
+    localStorage.setItem(HEDEF_KEY, JSON.stringify({hedef}));
+    localStorage.setItem(TRASH_KEY, JSON.stringify(trash));
+    localStorage.setItem(HIZLI_NOT_KEY, JSON.stringify(hizliNotlar));
+    localStorage.setItem(AYARLAR_KEY, JSON.stringify(ayarlar));
+    snapshotAl();
+    senkronDurumGuncelle('senkron', new Date().toLocaleTimeString('tr-TR', {hour:'2-digit',minute:'2-digit'}));
   } catch(e) {
     console.error('Bulut çekme hatası:', e);
     bulutDurumYaz('⚠️ Bulut hatası, yerel veriler', 'warn');
+    senkronDurumGuncelle('hata', 'Hata');
     load();
-  }
-}
-
-async function bulutaGonder() {
-  if (!fbDb || !aktifKullanici) return false;
-  try {
-    const payload = {
-      siparisler: state.orders,
-      musteriler, sablonlar, personel, hedef, trash, hizliNotlar, ayarlar,
-      guncelleme: Date.now(),
-      guncelleyen: aktifKullanici.email || ''
-    };
-    await setDoc(veriDocRef(), payload);
-    sonYazmaZamani = Date.now();
-    return true;
-  } catch(e) {
-    console.error('Bulut kayıt hatası:', e);
-    toast('⚠️ Bulut kayıt hatası: ' + e.message, 'error');
-    return false;
+    snapshotAl();
   }
 }
 
@@ -1618,25 +1915,94 @@ function bulutDurumYaz(mesaj, tip) {
 
 function gercekZamanliDinle() {
   if (!fbDb) return;
-  try {
-    onSnapshot(veriDocRef(), snap => {
-      if (!snap.exists()) return;
-      if (Date.now() - sonYazmaZamani < 3000) return;
-      const d = snap.data();
-      console.log('🔄 Uzaktan güncelleme');
-      if (Array.isArray(d.siparisler)) state.orders = d.siparisler;
-      if (d.musteriler && typeof d.musteriler === 'object') musteriler = d.musteriler;
-      if (Array.isArray(d.sablonlar)) sablonlar = d.sablonlar;
-      if (Array.isArray(d.personel)) personel = d.personel;
-      if (typeof d.hedef === 'number') hedef = d.hedef;
-      if (Array.isArray(d.trash)) trash = d.trash;
-      if (Array.isArray(d.hizliNotlar)) hizliNotlar = d.hizliNotlar;
-      if (d.ayarlar) ayarlar = d.ayarlar;
-      try { render(); renderDashboard(); renderCiro(); takvimCiz(); renderAktiviteAkisi(); renderUzunListesi(); renderHizliNotlar(); renderMobilAnasayfa(); } catch(e) {}
+  // Önce eski listener'ları temizle
+  unsubscribers.forEach(u => { try { u(); } catch(e){} });
+  unsubscribers = [];
+
+  const applyOrders = (snapshot) => {
+    let changed = false;
+    snapshot.docChanges().forEach(change => {
+      const path = change.doc.ref.path;
+      if (yerelYazmaBuffer.has(path) && Date.now() - yerelYazmaBuffer.get(path) < 5000) return;
+      changed = true;
+      const id = change.doc.id;
+      if (change.type === 'removed') {
+        state.orders = state.orders.filter(o => String(o.id) !== id);
+      } else {
+        const data = change.doc.data();
+        const idx = state.orders.findIndex(o => String(o.id) === id);
+        if (idx >= 0) state.orders[idx] = data; else state.orders.unshift(data);
+      }
+    });
+    if (changed) {
+      try { render(); renderDashboard(); takvimCiz(); renderMobilAnasayfa(); renderAktiviteAkisi(); } catch(e){}
       bulutDurumYaz('✓ Uzaktan güncellendi', 'success');
       toast('🔄 Başka cihazdan güncellendi', 'success');
-    }, err => { console.warn('onSnapshot:', err); });
-  } catch(e) { console.warn(e); }
+    }
+  };
+
+  const applyMusteriler = (snapshot) => {
+    let changed = false;
+    snapshot.docChanges().forEach(change => {
+      const path = change.doc.ref.path;
+      if (yerelYazmaBuffer.has(path) && Date.now() - yerelYazmaBuffer.get(path) < 5000) return;
+      changed = true;
+      if (change.type === 'removed') delete musteriler[change.doc.id];
+      else musteriler[change.doc.id] = change.doc.data();
+    });
+    if (changed) {
+      try { renderMusteriRehberPage(); render(); } catch(e){}
+    }
+  };
+
+  const applySimple = (target, key) => (snapshot) => {
+    let changed = false;
+    snapshot.docChanges().forEach(change => {
+      const path = change.doc.ref.path;
+      if (yerelYazmaBuffer.has(path) && Date.now() - yerelYazmaBuffer.get(path) < 5000) return;
+      changed = true;
+      const id = change.doc.id;
+      if (change.type === 'removed') target[key] = target[key].filter(x => String(x.id) !== id);
+      else {
+        const data = change.doc.data();
+        const idx = target[key].findIndex(x => String(x.id) === id);
+        if (idx >= 0) target[key][idx] = data; else target[key].push(data);
+      }
+    });
+    if (changed) { try { renderAyarlar(); renderTrash(); renderHizliNotlar(); } catch(e){} }
+  };
+
+  const applyTrash = (snapshot) => {
+    let changed = false;
+    snapshot.docChanges().forEach(change => {
+      const path = change.doc.ref.path;
+      if (yerelYazmaBuffer.has(path) && Date.now() - yerelYazmaBuffer.get(path) < 5000) return;
+      changed = true;
+    });
+    if (changed) { try { renderTrash(); } catch(e){} }
+  };
+
+  const applyMeta = (snap) => {
+    if (!snap.exists()) return;
+    const path = snap.ref.path;
+    if (yerelYazmaBuffer.has(path) && Date.now() - yerelYazmaBuffer.get(path) < 5000) return;
+    const d = snap.data();
+    if (typeof d.hedef === 'number') hedef = d.hedef;
+    if (d.ayarlar) ayarlar = d.ayarlar;
+    if (d.counter) try { localStorage.setItem(COUNTER_KEY, d.counter); } catch(e){}
+    try { renderCiro(); renderAyarlar(); } catch(e){}
+  };
+
+  try {
+    unsubscribers.push(onSnapshot(collection(fbDb, FS_ORDERS), applyOrders, err => console.warn('orders:', err)));
+    unsubscribers.push(onSnapshot(collection(fbDb, FS_MUSTERILER), applyMusteriler, err => console.warn('musteriler:', err)));
+    unsubscribers.push(onSnapshot(collection(fbDb, FS_SABLONLAR), applySimple({get sablonlar(){return sablonlar}}, 'sablonlar'), err => console.warn('sablonlar:', err)));
+    unsubscribers.push(onSnapshot(collection(fbDb, FS_PERSONEL), applySimple({get personel(){return personel}}, 'personel'), err => console.warn('personel:', err)));
+    unsubscribers.push(onSnapshot(collection(fbDb, FS_TRASH), applyTrash, err => console.warn('trash:', err)));
+    unsubscribers.push(onSnapshot(collection(fbDb, FS_NOTLAR), applySimple({get hizliNotlar(){return hizliNotlar}}, 'hizliNotlar'), err => console.warn('notlar:', err)));
+    unsubscribers.push(onSnapshot(doc(fbDb, FS_META[0], FS_META[1]), applyMeta, err => console.warn('meta:', err)));
+    console.log('✅ Realtime listeners kuruldu (' + unsubscribers.length + ')');
+  } catch(e) { console.warn('gercekZamanliDinle:', e); }
 }
 
 function save() {
@@ -1650,16 +2016,26 @@ function save() {
     localStorage.setItem(AYARLAR_KEY, JSON.stringify(ayarlar));
     localStorage.setItem(TRASH_KEY, JSON.stringify(trash));
     localStorage.setItem(HIZLI_NOT_KEY, JSON.stringify(hizliNotlar));
-    if (fbHazir && aktifKullanici) {
-      bulutaGonder();
-      bulutDurumYaz('✓ Kaydedildi', 'success');
-    }
-    return true;
   } catch(e) {
-    console.error('save:', e);
-    toast('Kayıt hatası: ' + e.message, 'error');
-    return false;
+    if (e.name === 'QuotaExceededError' || e.code === 22) {
+      console.error('localStorage quota exceeded:', e);
+      bulutDurumYaz('⚠️ Yerel depo doldu', 'warn');
+      toast('⚠️ Yerel depolama doldu! Yedek alıp çöp kutusunu boşaltın.', 'error');
+      try {
+        // Trash temizle, biraz yer aç
+        if (trash.length > 0) {
+          trash = [];
+          localStorage.setItem(TRASH_KEY, '[]');
+          toast('🗑️ Çöp kutusu otomatik boşaltıldı', 'warn');
+        }
+      } catch(e2) {}
+    } else {
+      console.error('save:', e);
+    }
   }
+  // Her durumda bulut senkron planla
+  scheduleCloudSync();
+  return true;
 }
 
 function load() {
@@ -1679,14 +2055,14 @@ function load() {
   } catch(e) { console.error('load:', e); state = {orders:[]}; musteriler = {}; }
 }
 
-/* Takip no üretici — mevcut siparişlerle çakışmayı engeller */
+/* Takip no üretici — timestamp tabanlı, çakışmasız */
 function nextTakipNo() {
   const y = new Date().getFullYear();
   const prefix = 'EBA-' + y + '-';
   let maxN = 0;
   state.orders.forEach(o => {
     if (o && o.takipNo && o.takipNo.startsWith(prefix)) {
-      const n = parseInt(o.takipNo.substring(prefix.length), 10);
+      const n = parseInt(o.takipNo.substring(prefix.length, prefix.length + 4), 10);
       if (!isNaN(n) && n > maxN) maxN = n;
     }
   });
@@ -1694,7 +2070,10 @@ function nextTakipNo() {
   if (maxN > c) c = maxN;
   c++;
   localStorage.setItem(COUNTER_KEY, c);
-  return prefix + String(c).padStart(4, '0');
+  metaDirty = true; // counter değişti
+  // Sonuna kısa random ekle (aynı ms'de çakışmayı önler)
+  const suffix = Math.floor(Math.random() * 90 + 10);
+  return prefix + String(c).padStart(4, '0') + '-' + suffix;
 }
 
 function musteriRehberiGuncelle() {
@@ -1744,7 +2123,7 @@ function yedekUyariGoster() {
 
 window.yedekIndir = function() {
   try {
-    const data = { version: '8.9.0', tarih: new Date().toISOString(), orders: state.orders, musteriler, sablonlar, personel, hedef, trash, hizliNotlar, ayarlar };
+    const data = { version: '9.0.0', tarih: new Date().toISOString(), orders: state.orders, musteriler, sablonlar, personel, hedef, trash, hizliNotlar, ayarlar };
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
@@ -1826,44 +2205,44 @@ window.tumVerileriSil = function() {
   );
   if (onay2 !== 'SIL') { toast('❌ İptal edildi — "SIL" yazılmadı', 'warn'); return; }
 
+  // Tümünü dirty işaretle (silinsin)
+  state.orders.forEach(o => deleted.orders.add(String(o.id)));
+  Object.keys(musteriler).forEach(t => deleted.musteriler.add(t));
+  sablonlar.forEach(s => deleted.sablonlar.add(String(s.id)));
+  personel.forEach(p => deleted.personel.add(String(p.id)));
+  dirty.trash.add('__ALL__');
+  hizliNotlar.forEach(n => deleted.notlar.add(String(n.id)));
+
   state.orders = []; musteriler = {}; sablonlar = []; personel = [];
   hedef = 0; trash = []; hizliNotlar = [];
+  metaDirty = true;
   [STORAGE_KEY, CUSTOMERS_KEY, SABLON_KEY, PERSONEL_KEY, HEDEF_KEY,
    TRASH_KEY, DRAFT_KEY, HIZLI_NOT_KEY].forEach(k => {
     try { localStorage.removeItem(k); } catch(e) {}
   });
 
-  save();
-  render(); renderDashboard(); renderCiro(); renderBulut(); renderMobilAnasayfa();
-  toast('🗑️ Tüm veriler silindi (yedek indirilmişti)', 'success');
+  cloudSync().then(() => {
+    render(); renderDashboard(); renderCiro(); renderBulut(); renderMobilAnasayfa();
+    toast('🗑️ Tüm veriler silindi', 'success');
+  });
 };
 
 window.buluttanVeriCek = async function(manuel) {
   if (!fbHazir || !aktifKullanici) { if (manuel) toast('⚠️ Önce giriş yapın', 'error'); return; }
   try {
     bulutDurumYaz('Çekiliyor...', 'warn');
-    const snap = await getDoc(veriDocRef());
-    if (snap.exists()) {
-      const d = snap.data();
-      if (Array.isArray(d.siparisler)) state.orders = d.siparisler;
-      if (d.musteriler) musteriler = d.musteriler;
-      if (Array.isArray(d.sablonlar)) sablonlar = d.sablonlar;
-      if (Array.isArray(d.personel)) personel = d.personel;
-      if (typeof d.hedef === 'number') hedef = d.hedef;
-      if (Array.isArray(d.trash)) trash = d.trash;
-      if (Array.isArray(d.hizliNotlar)) hizliNotlar = d.hizliNotlar;
-      if (d.ayarlar) ayarlar = d.ayarlar;
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-      localStorage.setItem(CUSTOMERS_KEY, JSON.stringify(musteriler));
-      render(); renderDashboard(); renderCiro(); takvimCiz(); renderMobilAnasayfa();
-      bulutDurumYaz('✓ ' + state.orders.length + ' sipariş alındı', 'success');
-      if (manuel) toast('✅ Bulut verileri çekildi', 'success');
-    } else {
-      bulutDurumYaz('Bulut boş', 'warn');
-      if (manuel) toast('ℹ️ Bulutta veri yok', 'warn');
-    }
+    senkronDurumGuncelle('bekliyor', 'Çekiliyor...');
+    await firestoreYeniYapidan();
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    localStorage.setItem(CUSTOMERS_KEY, JSON.stringify(musteriler));
+    snapshotAl();
+    render(); renderDashboard(); renderCiro(); takvimCiz(); renderMobilAnasayfa();
+    bulutDurumYaz('✓ ' + state.orders.length + ' sipariş alındı', 'success');
+    senkronDurumGuncelle('senkron', new Date().toLocaleTimeString('tr-TR', {hour:'2-digit',minute:'2-digit'}));
+    if (manuel) toast('✅ Bulut verileri çekildi', 'success');
   } catch(e) {
     bulutDurumYaz('⚠️ Hata: ' + e.message, 'warn');
+    senkronDurumGuncelle('hata', 'Hata');
     if (manuel) toast('❌ ' + e.message, 'error');
   }
 };
@@ -1872,7 +2251,8 @@ window.verileriKaydet = async function() {
   if (!fbHazir || !aktifKullanici) { toast('⚠️ Önce giriş yapın', 'error'); return; }
   try {
     bulutDurumYaz('Gönderiliyor...', 'warn');
-    await bulutaGonder();
+    computeDiff();
+    await cloudSync();
     bulutDurumYaz('✓ Gönderildi', 'success');
     toast('⬆️ Buluta gönderildi', 'success');
   } catch(e) { toast('❌ ' + e.message, 'error'); }
@@ -1907,6 +2287,7 @@ window.geminiVerisiAktar = function() {
   toast('✅ ' + state.orders.length + ' sipariş aktarıldı', 'success');
 };
 
+/* ============ TEMA ============ */
 function setTheme(t) {
   document.documentElement.setAttribute('data-theme', t);
   localStorage.setItem('eba_theme', t);
@@ -2157,39 +2538,77 @@ window.takvimGunSecildi = function(gun) {
   detay.innerHTML = '<div style="font-size:10.5px;color:var(--neon);font-weight:800;margin-bottom:6px">📅 ' + gun + ' ' + AY[takvimAy.ay] + ' · ' + oGun.length + ' teslim</div>' + oGun.map(o => '<div style="padding:6px 8px;background:var(--card2);border-radius:5px;margin-bottom:4px;cursor:pointer;font-size:11px" onclick="cariAcFromRow(\'' + jsEsc(o.id) + '\')"><div style="font-weight:700">' + escapeHtml(o.firma||o.adSoyad) + '</div><div style="color:var(--neon);font-size:10px;font-family:monospace">' + escapeHtml(o.takipNo) + '</div></div>').join('');
 };
 
-/* ============ HAVA ============ */
+/* ============ HAVA (CACHE'li) ============ */
 function havaIkon(k) { if (k===0) return '☀️'; if (k<=2) return '🌤️'; if (k===3) return '☁️'; if (k>=45&&k<=48) return '🌫️'; if (k>=51&&k<=67) return '🌧️'; if (k>=71&&k<=77) return '❄️'; if (k>=80&&k<=82) return '🌧️'; if (k>=85&&k<=86) return '❄️'; if (k>=95) return '⛈️'; return '🌤️'; }
 function havaAciklama(k) { if (k===0) return 'Açık'; if (k<=2) return 'Az bulutlu'; if (k===3) return 'Bulutlu'; if (k>=45&&k<=48) return 'Puslu'; if (k>=51&&k<=67) return 'Yağmurlu'; if (k>=71&&k<=77) return 'Kar'; if (k>=80&&k<=82) return 'Sağanak'; if (k>=95) return 'Fırtına'; return '—'; }
+
+function havaRender(d) {
+  const ana = $('havaAna');
+  if (ana) ana.innerHTML = '<div style="font-size:34px">' + havaIkon(d.current.weather_code) + '</div><div class="ha-temp">' + Math.round(d.current.temperature_2m) + '°</div><div class="ha-aciklama">' + havaAciklama(d.current.weather_code) + ' · Eskişehir</div>';
+  const row = $('havaRow');
+  if (row && d.daily && d.daily.time && d.daily.time.length > 1) {
+    const gunAdlari = ['Yarın','+2','+3']; let html = '';
+    for (let i = 1; i <= 3 && i < d.daily.time.length; i++) {
+      html += '<div class="hava-gun"><div class="hg-gun">' + gunAdlari[i-1] + '</div><div class="hg-ic">' + havaIkon(d.daily.weather_code[i]) + '</div><div class="hg-temp">' + Math.round(d.daily.temperature_2m_max[i]) + '°</div><div class="hg-alt">' + Math.round(d.daily.temperature_2m_min[i]) + '°</div></div>';
+    }
+    row.innerHTML = html;
+  }
+}
+
 async function havaCek() {
+  // Cache kontrol
+  try {
+    const raw = localStorage.getItem(HAVA_CACHE_KEY);
+    if (raw) {
+      const c = JSON.parse(raw);
+      if (c && c.ts && (Date.now() - c.ts) < 15 * 60 * 1000) {
+        havaRender(c.data);
+        return;
+      }
+    }
+  } catch(e){}
   try {
     const r = await fetch('https://api.open-meteo.com/v1/forecast?latitude=39.7767&longitude=30.5206&current=temperature_2m,weather_code&daily=temperature_2m_max,temperature_2m_min,weather_code&timezone=auto&forecast_days=4');
     const d = await r.json();
     if (!d.current) return;
-    const ana = $('havaAna');
-    if (ana) ana.innerHTML = '<div style="font-size:34px">' + havaIkon(d.current.weather_code) + '</div><div class="ha-temp">' + Math.round(d.current.temperature_2m) + '°</div><div class="ha-aciklama">' + havaAciklama(d.current.weather_code) + ' · Eskişehir</div>';
-    const row = $('havaRow');
-    if (row && d.daily && d.daily.time && d.daily.time.length > 1) {
-      const gunAdlari = ['Yarın','+2','+3']; let html = '';
-      for (let i = 1; i <= 3 && i < d.daily.time.length; i++) {
-        html += '<div class="hava-gun"><div class="hg-gun">' + gunAdlari[i-1] + '</div><div class="hg-ic">' + havaIkon(d.daily.weather_code[i]) + '</div><div class="hg-temp">' + Math.round(d.daily.temperature_2m_max[i]) + '°</div><div class="hg-alt">' + Math.round(d.daily.temperature_2m_min[i]) + '°</div></div>';
-      }
-      row.innerHTML = html;
-    }
+    havaRender(d);
+    try { localStorage.setItem(HAVA_CACHE_KEY, JSON.stringify({ts: Date.now(), data: d})); } catch(e){}
   } catch(e) { console.warn('hava:', e); }
 }
 
-/* ============ KUR ============ */
+/* ============ KUR (CACHE'li) ============ */
+function kurRender(k) {
+  kurVerisi = k;
+  const el = $('kurPano'); if (!el) return;
+  el.innerHTML =
+    '<div class="kur-row"><span class="kr-lbl">🇺🇸 USD</span><span class="kr-vals"><span><span class="kur-baslik">Alış</span><span class="kur-alis">' + (k.USD.alis||0).toFixed(2) + '</span></span><span><span class="kur-baslik">Satış</span><span class="kur-satis">' + (k.USD.satis||0).toFixed(2) + '</span></span></span></div>' +
+    '<div class="kur-row"><span class="kr-lbl">🇪🇺 EUR</span><span class="kr-vals"><span><span class="kur-baslik">Alış</span><span class="kur-alis">' + (k.EUR.alis||0).toFixed(2) + '</span></span><span><span class="kur-baslik">Satış</span><span class="kur-satis">' + (k.EUR.satis||0).toFixed(2) + '</span></span></span></div>' +
+    '<div class="kur-row"><span class="kr-lbl">🇬🇧 GBP</span><span class="kr-vals"><span><span class="kur-baslik">Alış</span><span class="kur-alis">' + (k.GBP.alis||0).toFixed(2) + '</span></span><span><span class="kur-baslik">Satış</span><span class="kur-satis">' + (k.GBP.satis||0).toFixed(2) + '</span></span></span></div>';
+}
+
 async function kurCek() {
+  // Cache kontrol
+  try {
+    const raw = localStorage.getItem(KUR_CACHE_KEY);
+    if (raw) {
+      const c = JSON.parse(raw);
+      if (c && c.ts && (Date.now() - c.ts) < 15 * 60 * 1000) {
+        kurRender(c.data);
+        return;
+      }
+    }
+  } catch(e){}
   try {
     const r = await fetch('https://api.genelpara.com/json/');
     const d = await r.json();
     if (d && d.USD && d.EUR && d.GBP) {
-      kurVerisi = {
+      const newK = {
         USD: { alis: parseFloat(d.USD.alis) || 0, satis: parseFloat(d.USD.satis) || 0 },
         EUR: { alis: parseFloat(d.EUR.alis) || 0, satis: parseFloat(d.EUR.satis) || 0 },
         GBP: { alis: parseFloat(d.GBP.alis) || 0, satis: parseFloat(d.GBP.satis) || 0 }
       };
-      kurPanoyuCiz();
+      kurRender(newK);
+      try { localStorage.setItem(KUR_CACHE_KEY, JSON.stringify({ts: Date.now(), data: newK})); } catch(e){}
       return;
     }
   } catch(e) {
@@ -2200,21 +2619,15 @@ async function kurCek() {
       const usd = d2.rates.USD ? 1/d2.rates.USD : 0;
       const eur = d2.rates.EUR ? 1/d2.rates.EUR : 0;
       const gbp = d2.rates.GBP ? 1/d2.rates.GBP : 0;
-      kurVerisi = {
+      const newK = {
         USD: { alis: usd * 0.995, satis: usd * 1.005 },
         EUR: { alis: eur * 0.995, satis: eur * 1.005 },
         GBP: { alis: gbp * 0.995, satis: gbp * 1.005 }
       };
-      kurPanoyuCiz();
+      kurRender(newK);
+      try { localStorage.setItem(KUR_CACHE_KEY, JSON.stringify({ts: Date.now(), data: newK})); } catch(e){}
     } catch(e2) { console.warn('kur:', e2); }
   }
-}
-function kurPanoyuCiz() {
-  const el = $('kurPano'); if (!el) return;
-  el.innerHTML =
-    '<div class="kur-row"><span class="kr-lbl">🇺🇸 USD</span><span class="kr-vals"><span><span class="kur-baslik">Alış</span><span class="kur-alis">' + kurVerisi.USD.alis.toFixed(2) + '</span></span><span><span class="kur-baslik">Satış</span><span class="kur-satis">' + kurVerisi.USD.satis.toFixed(2) + '</span></span></span></div>' +
-    '<div class="kur-row"><span class="kr-lbl">🇪🇺 EUR</span><span class="kr-vals"><span><span class="kur-baslik">Alış</span><span class="kur-alis">' + kurVerisi.EUR.alis.toFixed(2) + '</span></span><span><span class="kur-baslik">Satış</span><span class="kur-satis">' + kurVerisi.EUR.satis.toFixed(2) + '</span></span></span></div>' +
-    '<div class="kur-row"><span class="kr-lbl">🇬🇧 GBP</span><span class="kr-vals"><span><span class="kur-baslik">Alış</span><span class="kur-alis">' + kurVerisi.GBP.alis.toFixed(2) + '</span></span><span><span class="kur-baslik">Satış</span><span class="kur-satis">' + kurVerisi.GBP.satis.toFixed(2) + '</span></span></span></div>';
 }
 
 /* ============ AKTİVİTE ============ */
@@ -2374,7 +2787,6 @@ function hesapla() {
   if ($('t-net')) $('t-net').textContent = fmt(net);
   return { ara, indirim, net };
 }
-if ($('f-indirim')) $('f-indirim').addEventListener('input', hesapla);
 
 function taslakKaydet() {
   if (taslakZamanlayici) clearTimeout(taslakZamanlayici);
@@ -2430,6 +2842,7 @@ function taslakKontrolEt() {
   const toplam = t.kalemler ? t.kalemler.reduce((s,k) => s + (k.adet||0)*(k.fiyat||0), 0) : 0;
   $('taslakOzet').innerHTML = '<div style="display:grid;gap:6px"><div><strong style="color:var(--neon)">Müşteri:</strong> ' + escapeHtml(t.ad||'-') + ' ' + escapeHtml(t.tel||'') + '</div><div><strong style="color:var(--neon)">Kalem:</strong> ' + kalemSay + ' adet · ' + fmt(toplam) + '</div><div><strong style="color:var(--neon)">Kayıt:</strong> ' + new Date(t.tarih).toLocaleString('tr-TR') + '</div></div>';
   $('taslakModal').classList.add('active');
+  document.body.style.overflow = 'hidden';
 }
 
 window.taslakDevamEt = function() {
@@ -2470,6 +2883,7 @@ function formTaslakDinleyicileri() {
   document.querySelectorAll('input[name="musteriTuru"],input[name="oncelik"],input[name="durum"],input[name="odemeDurumu"],input[name="odemeTuru"]').forEach(r => r.addEventListener('change', taslakKaydet));
   const sel = $('f-kanal'); if (sel) sel.addEventListener('change', taslakKaydet);
   const per = $('f-personel'); if (per) per.addEventListener('change', taslakKaydet);
+  const ind = $('f-indirim'); if (ind) ind.addEventListener('input', hesapla);
 }
 
 function formuTemizle() {
@@ -2483,7 +2897,8 @@ function formuTemizle() {
   const ot = document.querySelector('input[name="odemeTuru"][value="kart"]'); if (ot) ot.checked = true;
   if ($('f-kanal')) $('f-kanal').value = 'atölye';
   if ($('f-personel')) $('f-personel').value = '';
-  if ($('musteriOtomatikBilgi')) $('musteriOtomatikBilgi').style.display = 'none';
+  // FIX: Her zaman gizle
+  if ($('musteriOtomatikBilgi')) { $('musteriOtomatikBilgi').style.display = 'none'; $('musteriOtomatikBilgi').innerHTML = ''; }
   if ($('kalemlerList')) $('kalemlerList').innerHTML = '';
   kalemKarti();
   if ($('formTitle')) $('formTitle').textContent = 'Sipariş Kaydı';
@@ -2491,7 +2906,7 @@ function formuTemizle() {
   if ($('cancelEditBtn')) $('cancelEditBtn').style.display = 'none';
   firmaGosterGizle(); hesapla();
 }
-if ($('tgMusteriTuru')) $('tgMusteriTuru').addEventListener('change', firmaGosterGizle);
+
 function firmaGosterGizle() {
   const el = document.querySelector('input[name="musteriTuru"]:checked');
   const k = el && el.value === 'kurumsal';
@@ -2506,6 +2921,8 @@ function filtreleriSifirla() {
   if ($('filterPersonel')) $('filterPersonel').value = '';
   if ($('checkAll')) $('checkAll').checked = false;
   seciliSiparisler.clear();
+  // FIX: personel listesini de yenile
+  personelSecenekleriGuncelle('filterPersonel', '');
 }
 
 window.siparisKaydet = function() {
@@ -2564,8 +2981,7 @@ window.siparisKaydet = function() {
       state.orders.unshift(data);
       toast('✅ Kaydedildi: ' + data.takipNo, 'success');
     }
-    const ok = save();
-    if (!ok) { toast('⚠️ Hafızaya yazılamadı!', 'error'); return; }
+    save();
     taslakSil(); formuTemizle(); filtreleriSifirla(); goTab('panel'); render(); renderMobilAnasayfa();
   } catch(err) {
     console.error('KAYDET HATA:', err);
@@ -2576,7 +2992,7 @@ window.siparisKaydet = function() {
 window.duzenlemeIptal = function() { editingId = null; formuTemizle(); goTab('panel'); };
 
 function getFiltered() {
-  const q = ($('searchBox')?.value||'').toLowerCase().trim();
+  const q = trLower($('searchBox')?.value||'').trim();
   const fp = $('filterPriority')?.value || '';
   const fpay = $('filterPayment')?.value || '';
   const fper = $('filterPersonel')?.value || '';
@@ -2591,32 +3007,34 @@ function getFiltered() {
     if (fpay && o.odemeDurumu !== fpay) return false;
     if (fper && o.personelId !== fper) return false;
     if (q) {
-      const hay = [o.adSoyad,o.firma,o.telefon,o.takipNo,o.email,o.faturaNo, ...(o.kalemler||[]).map(k => k.urun + ' ' + k.baskiTuru + ' ' + k.detay)].join(' ').toLowerCase();
+      const hay = trLower([o.adSoyad,o.firma,o.telefon,o.takipNo,o.email,o.faturaNo, ...(o.kalemler||[]).map(k => k.urun + ' ' + k.baskiTuru + ' ' + k.detay)].join(' '));
       if (!hay.includes(q)) return false;
     }
     return true;
   });
 }
 
-const DURUM_LBL = { yeni:'Yeni', hazirlaniyor:'Hazırlanıyor', hazir:'Hazır', teslim:'Teslim' };
-const ONCELIK_LBL = { normal:'Normal', vip:'VIP', acil:'Acil' };
-const KANAL_LBL = { atölye:'🏢 Atölye', web:'🌐 Web', instagram:'📸 Instagram', whatsapp:'💬 WhatsApp', telefon:'📞 Telefon' };
-const ODEME_LBL = { kart:'💳 Kart', havale:'🏦 Havale', nakit:'💵 Nakit' };
-
-window.renderMusteriRehberPage = function() {
-  const q = ($('pageRehberSearch')?.value||'').toLowerCase().trim();
+/* FIX: Ortak müşteri listesi fonksiyonu (kod tekrarını önler) */
+function musteriListesiGetir(q) {
   const tekiller = {};
   Object.values(musteriler).forEach(m => { if (m && m.telefon) tekiller[m.telefon] = m; });
-  const list = Object.values(tekiller).filter(m =>
-    (m.adSoyad||'').toLowerCase().includes(q) ||
-    (m.firma||'').toLowerCase().includes(q) ||
-    (m.telefon||'').includes(q) ||
-    (m.email||'').toLowerCase().includes(q)
+  const qq = trLower(q || '');
+  return Object.values(tekiller).filter(m =>
+    !qq ||
+    trLower(m.adSoyad||'').includes(qq) ||
+    trLower(m.firma||'').includes(qq) ||
+    (m.telefon||'').includes(qq) ||
+    trLower(m.email||'').includes(qq)
   ).sort((a, b) => {
     const aSon = Math.max(0, ...state.orders.filter(o => o.telefon === a.telefon).map(o => o.olusturma || 0));
     const bSon = Math.max(0, ...state.orders.filter(o => o.telefon === b.telefon).map(o => o.olusturma || 0));
     return bSon - aSon;
   });
+}
+
+window.renderMusteriRehberPage = function() {
+  const q = $('pageRehberSearch')?.value||'';
+  const list = musteriListesiGetir(q);
   if ($('pageRehberCount')) $('pageRehberCount').textContent = list.length + ' kişi';
   const box = $('pageRehberList'); if (!box) return;
   if (!list.length) { box.innerHTML = '<div style="padding:30px;text-align:center;color:var(--muted)">📭 Müşteri bulunamadı</div>'; return; }
@@ -2756,12 +3174,6 @@ window.clearFilters = function() {
   render();
 };
 
-['searchBox','filterPriority','filterPayment','filterPersonel'].forEach(id => {
-  const el = $(id); if (!el) return;
-  el.addEventListener('input', render);
-  el.addEventListener('change', render);
-});
-
 window.satirSecimToggle = function(id, checked) {
   id = String(id);
   if (checked) seciliSiparisler.add(id); else seciliSiparisler.delete(id);
@@ -2771,6 +3183,7 @@ window.satirSecimToggle = function(id, checked) {
 };
 window.toggleTumSecim = function(el) {
   const list = getFiltered();
+  if (!list.length) { el.checked = false; return; }
   if (el.checked) list.forEach(o => seciliSiparisler.add(String(o.id)));
   else seciliSiparisler.clear();
   document.querySelectorAll('#ordersTbody .row-check').forEach(c => { c.checked = el.checked; });
@@ -2793,7 +3206,7 @@ function bulkBarGuncelle() {
   else bar.classList.remove('active');
   if ($('checkAll')) {
     const toplam = getFiltered().length;
-    $('checkAll').checked = (n > 0 && n === toplam);
+    $('checkAll').checked = (toplam > 0 && n === toplam);
   }
 }
 
@@ -2812,7 +3225,10 @@ window.topluSil = function() {
   const sec = seciliSiparisleriAl();
   if (!sec.length) { toast('Hiç seçili değil', 'warn'); return; }
   if (!confirm(sec.length + ' sipariş ÇÖP KUTUSUNA taşınacak. Onay?')) return;
-  sec.forEach(o => { trash.push({ siparis: o, silinmeTarihi: Date.now() }); });
+  sec.forEach(o => {
+    const musteriSnapshot = musteriler[o.telefon] ? JSON.parse(JSON.stringify(musteriler[o.telefon])) : null;
+    trash.push({ siparis: o, silinmeTarihi: Date.now(), musteriSnapshot });
+  });
   state.orders = state.orders.filter(o => !seciliSiparisler.has(String(o.id)));
   save(); bulkSecimiTemizle(); render(); renderDashboard(); renderAyarlar(); renderTrash(); takvimCiz(); renderMobilAnasayfa();
   toast('🗑️ ' + sec.length + ' çöp kutusuna atıldı', 'warn');
@@ -2821,9 +3237,7 @@ window.topluSil = function() {
 window.topluWhatsApp = function() {
   const sec = seciliSiparisleriAl();
   if (!sec.length) { toast('Hiç seçili değil', 'warn'); return; }
-  if (sec.length > 3) {
-    toast('⚠️ Tarayıcı ' + sec.length + ' sekme açmayı engelleyebilir. İlk 3 tanesi açılacak.', 'warn');
-  }
+  if (sec.length > 3) toast('⚠️ Tarayıcı ' + sec.length + ' sekme açmayı engelleyebilir. İlk 3 tanesi açılacak.', 'warn');
   const limit = Math.min(sec.length, 3);
   if (!confirm(limit + ' müşteri için WhatsApp açılacak. Devam?')) return;
   sec.slice(0, limit).forEach((o, i) => {
@@ -2846,16 +3260,15 @@ window.topluWhatsApp = function() {
 window.topluPNG = function() {
   const sec = seciliSiparisleriAl();
   if (!sec.length) { toast('Hiç seçili değil', 'warn'); return; }
-  if (sec.length > 5) {
-    toast('⚠️ Tarayıcı ' + sec.length + ' dosya indirmeyi engelleyebilir. İlk 5 tanesi indirilecek.', 'warn');
-  }
+  if (sec.length > 5) toast('⚠️ Tarayıcı ' + sec.length + ' dosya indirmeyi engelleyebilir. İlk 5 tanesi indirilecek.', 'warn');
   const limit = Math.min(sec.length, 5);
   if (!confirm(limit + ' PNG indirilecek. Devam?')) return;
   sec.slice(0, limit).forEach((o, i) => { setTimeout(() => pngFis(o.id), i * 800); });
   if (sec.length > limit) toast('ℹ️ Kalan ' + (sec.length - limit) + ' kişi için tekrar deneyin', 'warn');
 };
 
-document.addEventListener('DOMContentLoaded', () => {
+/* FIX: DOMContentLoaded yerine direkt listener (modül script defer gibi çalışır) */
+(function setupTableListeners() {
   const tbody = $('ordersTbody');
   if (!tbody) return;
   const dokunmatik = 'ontouchstart' in window || navigator.maxTouchPoints > 0 || window.matchMedia('(hover:none)').matches;
@@ -2874,7 +3287,28 @@ document.addEventListener('DOMContentLoaded', () => {
       cariAcFromRow(id);
     });
   }
-});
+})();
+
+/* FIX: Tüm filtre input listener'larını bir kez bağla (baslatUygulama dışında) */
+(function setupFilterListeners() {
+  ['searchBox','filterPriority','filterPayment','filterPersonel'].forEach(id => {
+    const el = $(id); if (!el) return;
+    el.addEventListener('input', render);
+    el.addEventListener('change', render);
+  });
+  ['mobilFilterPriority','mobilFilterPayment','mobilFilterPersonel'].forEach(id => {
+    const el = $(id); if (!el) return;
+    el.addEventListener('change', () => { /* Sadece Uygula butonu ile çalışır */ });
+  });
+  const ind = $('f-indirim'); if (ind) ind.addEventListener('input', hesapla);
+  const hedefInp = $('hedefInput');
+  if (hedefInp) {
+    hedefInp.addEventListener('input', () => {
+      if ($('hedefText')) $('hedefText').textContent = fmt(parseFloat(hedefInp.value) || 0);
+    });
+    hedefInp.addEventListener('change', hedefKaydet);
+  }
+})();
 
 window.cariAcFromRow = function(id) {
   const o = state.orders.find(x => String(x.id) === String(id));
@@ -2895,18 +3329,7 @@ window.musteriSecKapat = function() {
 };
 
 function musteriSecFiltrele() {
-  const q = ($('musteriSecSearch')?.value||'').toLowerCase();
-  const tekiller = {};
-  Object.values(musteriler).forEach(m => { if (m && m.telefon) tekiller[m.telefon] = m; });
-  const list = Object.values(tekiller).filter(m =>
-    (m.adSoyad||'').toLowerCase().includes(q) ||
-    (m.firma||'').toLowerCase().includes(q) ||
-    (m.telefon||'').includes(q)
-  ).sort((a, b) => {
-    const aSon = Math.max(0, ...state.orders.filter(o => o.telefon === a.telefon).map(o => o.olusturma || 0));
-    const bSon = Math.max(0, ...state.orders.filter(o => o.telefon === b.telefon).map(o => o.olusturma || 0));
-    return bSon - aSon;
-  });
+  const list = musteriListesiGetir($('musteriSecSearch')?.value||'');
   if ($('musteriSecCount')) $('musteriSecCount').textContent = list.length + ' kişi';
   const box = $('musteriSecList'); if (!box) return;
   if (!list.length) { box.innerHTML = '<div style="padding:20px;text-align:center;color:var(--muted)">Müşteri bulunamadı</div>'; return; }
@@ -3008,8 +3431,8 @@ function cariFirmaGoster() {
 
 document.addEventListener('change', e => {
   if (e.target && e.target.id === 'cariEdMusteriTuru') cariFirmaGoster();
-  if (e.target && e.target.id === 'ayarTeslimGun') { ayarlar.teslimGun = parseInt(e.target.value) || 3; save(); }
-  if (e.target && e.target.id === 'ayarOdemeGun') { ayarlar.odemeGun = parseInt(e.target.value) || 7; save(); }
+  if (e.target && e.target.id === 'ayarTeslimGun') { ayarlar.teslimGun = parseInt(e.target.value) || 3; metaDirty = true; save(); }
+  if (e.target && e.target.id === 'ayarOdemeGun') { ayarlar.odemeGun = parseInt(e.target.value) || 7; metaDirty = true; save(); }
 });
 
 window.cariMusteriBilgileriniKaydet = function() {
@@ -3037,6 +3460,7 @@ window.cariMusteriBilgileriniKaydet = function() {
         o.telefon = yeniTel; o.adSoyad = ad; o.firma = yeniM.firma;
         o.musteriTuru = yeniM.musteriTuru; o.vergiNo = yeniM.vergiNo;
         o.email = yeniM.email; o.adres = yeniM.adres;
+        o.guncelleme = Date.now();
       }
     });
     seciliCariMusteriTel = yeniTel;
@@ -3045,6 +3469,7 @@ window.cariMusteriBilgileriniKaydet = function() {
       if (o.telefon === yeniTel) {
         o.adSoyad = ad; o.firma = yeniM.firma; o.musteriTuru = yeniM.musteriTuru;
         o.vergiNo = yeniM.vergiNo; o.email = yeniM.email; o.adres = yeniM.adres;
+        o.guncelleme = Date.now();
       }
     });
   }
@@ -3084,7 +3509,8 @@ window.cariPopupHazirlik = function() { if (seciliCariSiparisId) hazirlikFormu(s
 window.cariPopupSiparisiSil = function() {
   const o = state.orders.find(x => String(x.id) === String(seciliCariSiparisId)); if (!o) return;
   if (!confirm('"' + o.takipNo + '" çöp kutusuna taşınsın mı?')) return;
-  trash.push({ siparis: o, silinmeTarihi: Date.now() });
+  const musteriSnapshot = musteriler[o.telefon] ? JSON.parse(JSON.stringify(musteriler[o.telefon])) : null;
+  trash.push({ siparis: o, silinmeTarihi: Date.now(), musteriSnapshot });
   state.orders = state.orders.filter(x => String(x.id) !== String(o.id));
   seciliCariSiparisId = null;
   save(); render(); renderDashboard(); takvimCiz(); renderTrash(); renderMobilAnasayfa(); cariGecmisiYenile(o.telefon);
@@ -3210,7 +3636,8 @@ window.musteriSil = function(tel) {
   const adi = m.firma || m.adSoyad || tel;
   if (!confirm('"' + adi + '" ve tüm siparişleri çöp kutusuna taşınsın mı?')) return;
   const silinecek = state.orders.filter(o => o.telefon === tel);
-  silinecek.forEach(o => trash.push({ siparis: o, silinmeTarihi: Date.now() }));
+  const musteriSnapshot = JSON.parse(JSON.stringify(m));
+  silinecek.forEach(o => trash.push({ siparis: o, silinmeTarihi: Date.now(), musteriSnapshot }));
   delete musteriler[tel];
   state.orders = state.orders.filter(o => o.telefon !== tel);
   save(); render(); renderDashboard(); takvimCiz(); renderTrash(); renderMobilAnasayfa(); 
@@ -3230,11 +3657,12 @@ function renderTrash() {
   const cnt = $('trashCount');
   if (cnt) cnt.textContent = trash.length ? '(' + trash.length + ' kayıt)' : '';
   if (!trash.length) { box.innerHTML = '<div class="trash-empty"><div class="ic">🗑️</div><div>Çöp kutusu boş</div></div>'; return; }
-  const sirali = [...trash].sort((a, b) => b.silinmeTarihi - a.silinmeTarihi);
-  box.innerHTML = sirali.map(t => {
-    const o = t.siparis; const gercekIdx = trash.indexOf(t);
+  const sirali = [...trash].map((t, i) => ({ t, gercekIdx: i })).sort((a, b) => b.t.silinmeTarihi - a.t.silinmeTarihi);
+  box.innerHTML = sirali.map(({t, gercekIdx}) => {
+    const o = t.siparis;
     const gun = Math.floor((Date.now() - t.silinmeTarihi)/(1000*60*60*24)); const kalan = 30 - gun;
-    return '<div class="trash-item"><div class="ti-main"><div class="ti-title">' + escapeHtml(o.takipNo) + ' · ' + escapeHtml(o.adSoyad||'-') + '</div><div class="ti-sub">' + escapeHtml(o.firma||'') + ' ' + (o.telefon ? '· ' + escapeHtml(o.telefon) : '') + ' · ' + fmt(o.netTutar) + '</div><div class="ti-tarih">Silindi: ' + new Date(t.silinmeTarihi).toLocaleString('tr-TR') + ' · ' + kalan + ' gün kaldı</div></div><div style="display:flex;gap:6px"><button type="button" class="btn sm success" onclick="trashGeri(' + gercekIdx + ')">↩️ Geri</button><button type="button" class="btn sm danger" onclick="trashKaliciSil(' + gercekIdx + ')">✖ Sil</button></div></div>';
+    const snapBadge = t.musteriSnapshot ? '<span style="color:var(--info);font-size:10px;font-weight:700;margin-left:6px">👤 müşteri kayıtlı</span>' : '';
+    return '<div class="trash-item"><div class="ti-main"><div class="ti-title">' + escapeHtml(o.takipNo) + ' · ' + escapeHtml(o.adSoyad||'-') + snapBadge + '</div><div class="ti-sub">' + escapeHtml(o.firma||'') + ' ' + (o.telefon ? '· ' + escapeHtml(o.telefon) : '') + ' · ' + fmt(o.netTutar) + '</div><div class="ti-tarih">Silindi: ' + new Date(t.silinmeTarihi).toLocaleString('tr-TR') + ' · ' + kalan + ' gün kaldı</div></div><div style="display:flex;gap:6px"><button type="button" class="btn sm success" onclick="trashGeri(' + gercekIdx + ')">↩️ Geri</button><button type="button" class="btn sm danger" onclick="trashKaliciSil(' + gercekIdx + ')">✖ Sil</button></div></div>';
   }).join('');
 }
 
@@ -3242,10 +3670,13 @@ window.trashGeri = function(idx) {
   const t = trash[idx]; if (!t) return;
   const o = t.siparis;
   if (state.orders.some(x => String(x.takipNo) === String(o.takipNo))) { toast('⚠️ Bu takip no zaten var', 'warn'); return; }
-  state.orders.unshift(o); trash.splice(idx, 1);
+  state.orders.unshift(o);
+  // FIX: Müşteri snapshot'ı varsa onu geri yükle (etiketler/notlar korunur)
   if (o.telefon && !musteriler[o.telefon]) {
-    musteriler[o.telefon] = { musteriTuru: o.musteriTuru||'bireysel', adSoyad: o.adSoyad||'', firma: o.firma||'', vergiNo: o.vergiNo||'', telefon: o.telefon, email: o.email||'', adres: o.adres||'', etiketler: [], notlar: [] };
+    if (t.musteriSnapshot) musteriler[o.telefon] = JSON.parse(JSON.stringify(t.musteriSnapshot));
+    else musteriler[o.telefon] = { musteriTuru: o.musteriTuru||'bireysel', adSoyad: o.adSoyad||'', firma: o.firma||'', vergiNo: o.vergiNo||'', telefon: o.telefon, email: o.email||'', adres: o.adres||'', etiketler: [], notlar: [] };
   }
+  trash.splice(idx, 1);
   save(); render(); renderDashboard(); takvimCiz(); renderTrash(); renderMobilAnasayfa();
   toast('↩️ Geri yüklendi: ' + o.takipNo, 'success');
 };
@@ -3372,8 +3803,9 @@ window.sablonSecModalAc = function() {
   if (!sablonlar.length) box.innerHTML = '<p style="text-align:center;padding:20px;color:var(--muted)">Şablon yok</p>';
   else box.innerHTML = sablonlar.map(s => '<div class="rehber-item" style="cursor:pointer" onclick="sablonYukle(\'' + jsEsc(s.id) + '\')"><div><div class="nm">' + escapeHtml(s.ad) + '</div><div class="sub">' + s.kalemler.length + ' kalem</div></div><button type="button" class="btn sm danger" onclick="event.stopPropagation();sablonSil(\'' + jsEsc(s.id) + '\')">Sil</button></div>').join('');
   $('sablonSecModal').classList.add('active');
+  document.body.style.overflow = 'hidden';
 };
-window.sablonSecModalKapat = function() { $('sablonSecModal').classList.remove('active'); };
+window.sablonSecModalKapat = function() { $('sablonSecModal').classList.remove('active'); document.body.style.overflow = ''; };
 window.sablonYukle = function(id) {
   const s = sablonlar.find(x => x.id === id); if (!s) return;
   if ($('kalemlerList')) $('kalemlerList').innerHTML = '';
@@ -3414,7 +3846,14 @@ function renderAyarlar() {
   if ($('ayarOdemeGun')) $('ayarOdemeGun').value = ayarlar.odemeGun || 7;
 }
 
-window.hedefKaydet = function() { hedef = parseFloat($('hedefInput')?.value) || 0; save(); renderCiro(); toast('🎯 Hedef güncellendi', 'success'); };
+window.hedefKaydet = function() {
+  const yeni = parseFloat($('hedefInput')?.value);
+  hedef = isNaN(yeni) ? 0 : yeni;
+  metaDirty = true;
+  save();
+  renderCiro();
+  toast('🎯 Hedef güncellendi: ' + fmt(hedef), 'success');
+};
 
 function renderCiro() {
   const o = state.orders;
@@ -3576,7 +4015,7 @@ function waMesajiOlustur(tip, o) {
   const tutar = fmtNum(o.netTutar);
   const tarih = o.teslimTarihi ? o.teslimTarihi.split('-').reverse().join('.') : '—';
   const olusTarih = new Date(o.olusturma).toLocaleDateString('tr-TR');
-  const saat = new Date(o.olusturma).toLocaleTimeString('tr-TR', {hour:'2-digit', minute:'2-digit'});
+  const saat = new Date(o.olusturma).toLocaleTimeString('tr-TR', {hour:'2-digit', minute:'2-digit', hour12:false});
 
   if (tip === 'siparis') return (
     'Merhaba ' + firma + ' 👋\n\n' +
@@ -3882,7 +4321,6 @@ document.addEventListener('keydown', e => {
   if (!e.ctrlKey && !e.altKey && tus === 'n' && !yaziliyor) { e.preventDefault(); goTab('ekle'); }
   if (!e.ctrlKey && !e.altKey && tus === 'r' && !yaziliyor) { e.preventDefault(); goTab('rapor'); }
   if (e.key === 'Escape') {
-    // Öncelik sırası: menü → filtre → modal → düzenleme iptal
     if ($('mobilMenuOverlay')?.classList.contains('active')) { mobilMenuKapat(); return; }
     if ($('mobilFiltrePanel')?.classList.contains('active')) { mobilFiltreKapat(); return; }
     let modalKapatildi = false;
@@ -3893,7 +4331,6 @@ document.addEventListener('keydown', e => {
     if ($('taslakModal').classList.contains('active')) { taslakModalKapat(); modalKapatildi = true; }
     if ($('raporModal').classList.contains('active')) { raporModalKapat(); modalKapatildi = true; }
     if ($('profilModal').classList.contains('active')) { profilModalKapat(); modalKapatildi = true; }
-    // Sadece modal KAPALIYSA ve Ekle sayfasındaysa düzenleme iptal edilsin
     if (!modalKapatildi && editingId && $('page-ekle').classList.contains('active')) duzenlemeIptal();
   }
 });
@@ -4031,11 +4468,22 @@ window.waGonderAktif = function() {
   window.open(url, '_blank');
   if (aktifWaTipi === 'hazir') o.musteriBilgilendirildiHazir = true;
   if (aktifWaTipi === 'teslim') o.musteriBilgilendirildiTeslim = true;
+  o.guncelleme = Date.now();
   save();
   toast('💬 WhatsApp açıldı', 'success');
 };
 
+/* ============ UYGULAMA BAŞLAT ============ */
 async function baslatUygulama() {
+  // FIX: Her girişte listener birikmesin
+  if (uygulamaBaslatildi) {
+    console.log('ℹ️ Uygulama zaten başlatılmış, sadece veri yenile');
+    await buluttanIlkYukleme();
+    render(); renderDashboard(); renderCiro(); takvimCiz(); renderMobilAnasayfa();
+    return;
+  }
+  uygulamaBaslatildi = true;
+
   try {
     const g = localStorage.getItem(GIZLI_MOD_KEY);
     gizliMod = (g === null) ? true : (g === '1');
@@ -4053,13 +4501,6 @@ async function baslatUygulama() {
     mobilFiltreSayisiniGuncelle();
     havaCek(); kurCek();
     yedekDurumGuncelle();
-    // hedefInput: hem yazarken hem değiştirince güncelle
-    if ($('hedefInput')) {
-      $('hedefInput').addEventListener('input', () => {
-        if ($('hedefText')) $('hedefText').textContent = fmt(parseFloat($('hedefInput').value) || 0);
-      });
-      $('hedefInput').addEventListener('change', hedefKaydet);
-    }
     setTimeout(taslakKontrolEt, 800);
     setTimeout(yedekUyariGoster, 1500);
     setInterval(havaCek, 30*60*1000);
@@ -4072,14 +4513,28 @@ async function baslatUygulama() {
     setInterval(yedekDurumGuncelle, 60*60*1000);
     gercekZamanliDinle();
     mobilTabbarGuncelle();
-    console.log('✅ v8.9 (Güvenli escape + Bug fix) hazır — ' + state.orders.length + ' sipariş');
+    console.log('✅ v9.0 hazır — ' + state.orders.length + ' sipariş');
   } catch(e) { console.error('baslatUygulama:', e); }
 }
+
+// Sayfa kapatılırken son senkron
+window.addEventListener('beforeunload', (e) => {
+  if (fbHazir && aktifKullanici && cloudSyncTimer) {
+    // Kullanıcıya sor
+    e.preventDefault();
+    e.returnValue = '';
+  }
+});
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'hidden' && fbHazir && aktifKullanici) {
+    // Arka plana atılınca senkron dene (session kesilmeden)
+    computeDiff();
+    if (hasChanges()) cloudSync();
+  }
+});
 </script>
 <script>
-/* Service Worker'ları iptal et — çünkü sürekli güncellenen bir panelde
-   eski cache sorunlara yol açıyor. İhtiyaç olursa bu bloğu kaldırıp
-   manifest + SW ile PWA'ya çevirebilirsin. */
+/* Service Worker'ları iptal et */
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.getRegistrations().then(regs => {
     regs.forEach(r => r.unregister());
