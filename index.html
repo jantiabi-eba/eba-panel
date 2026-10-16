@@ -3306,7 +3306,9 @@ window.topluPNG = function() {
     hedefInp.addEventListener('input', () => {
       if ($('hedefText')) $('hedefText').textContent = fmt(parseFloat(hedefInp.value) || 0);
     });
-    hedefInp.addEventListener('change', hedefKaydet);
+    hedefInp.addEventListener('change', () => {
+  if (typeof window.hedefKaydet === 'function') window.hedefKaydet();
+});
   }
 })();
 
