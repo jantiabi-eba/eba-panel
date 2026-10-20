@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Eskişehir Baskı Atölyesi — Yönetim Paneli v9.0</title>
+<title>Eskişehir Baskı Atölyesi — Yönetim Paneli v9.1</title>
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#000000">
 <link rel="icon" type="image/png" href="eba-logo.png">
@@ -911,8 +911,9 @@ main{padding-bottom:calc(14px + env(safe-area-inset-bottom))}
         </div>
       </div>
       <div class="grid cols-3" style="margin-bottom:14px">
-        <label class="fld">İsim Soyisim *<input type="text" id="f-ad" placeholder="Ad Soyad"></label>
-        <label class="fld" id="firmaWrap" style="display:none">Firma Adı<input type="text" id="f-firma" placeholder="Firma / Kurum"></label>
+        <label class="fld">İsim Soyisim / Yetkili *<input type="text" id="f-ad" placeholder="Ad Soyad"></label>
+        <label class="fld" id="firmaWrap" style="display:none">Firma Adı *<input type="text" id="f-firma" placeholder="Firma / Kurum"></label>
+        <label class="fld" id="vergiWrap" style="display:none">Vergi No *<input type="text" id="f-vergi" placeholder="Vergi No"></label>
         <label class="fld">Telefon *<input type="tel" id="f-tel" placeholder="05xx xxx xx xx" oninput="musteriOtomatikAra()">
           <div id="musteriOtomatikBilgi" style="display:none;margin-top:6px;padding:8px 10px;background:var(--card2);border:1px solid var(--border);border-radius:6px;font-size:11.5px"></div>
         </label>
@@ -930,7 +931,7 @@ main{padding-bottom:calc(14px + env(safe-area-inset-bottom))}
       </div>
       <div class="grid cols-2" style="margin-bottom:14px">
         <label class="fld">👷 Atanan Usta<select id="f-personel"><option value="">— Seçilmedi —</option></select></label>
-        <label class="fld">Teslimat / Adres<textarea id="f-adres" rows="1"></textarea></label>
+        <label class="fld">Teslimat / Adres<textarea id="f-adres" rows="1" placeholder="Adres bilgisi..."></textarea></label>
       </div>
       <h2 style="margin-top:6px"><span class="ic">📦</span> Sipariş Kalemleri</h2>
       <div class="kalem-list" id="kalemlerList"></div>
@@ -1360,19 +1361,11 @@ main{padding-bottom:calc(14px + env(safe-area-inset-bottom))}
 
 <script type="module">
 /* ============================================================
-   ESKİŞEHİR BASKI ATÖLYESİ — v9.0
-   Kritik + Orta Önemli Sorunlar Düzeltildi:
-   • Firestore subcollection mimarisi (1MB limit çözümü)
-   • Otomatik v8 → v9 migration
-   • Incremental cloud sync (sadece değişenler)
-   • Listener deduplication (baslatildi flag)
-   • localStorage quota handling
-   • Trash'te müşteri snapshot'ı korunuyor
-   • Kod tekrarı ortadan kaldırıldı
-   • Hava/Kur cache (15dk TTL)
-   • Timestamp takipNo (çakışma önlendi)
-   • Türkçe-aware search
-   • Modal overflow yönetimi düzeltildi
+   ESKİŞEHİR BASKI ATÖLYESİ — v9.1
+   Fixes: 
+   - Kurumsal tab event listener missing
+   - Added f-vergi (Vergi No) field to Add Order form
+   - Validations for Corporate fields updated
    ============================================================ */
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
 import {
@@ -2471,6 +2464,7 @@ window.musteriBilgileriniDoldur = function(tel) {
   if (!m) { toast('Müşteri bulunamadı', 'error'); return; }
   if ($('f-ad') && !$('f-ad').value) $('f-ad').value = m.adSoyad || '';
   if ($('f-firma') && !$('f-firma').value) $('f-firma').value = m.firma || '';
+  if ($('f-vergi') && !$('f-vergi').value) $('f-vergi').value = m.vergiNo || '';
   if ($('f-mail') && !$('f-mail').value) $('f-mail').value = m.email || '';
   if ($('f-adres') && !$('f-adres').value) $('f-adres').value = m.adres || '';
   if (m.musteriTuru) {
@@ -2787,6 +2781,7 @@ function taslakKaydet() {
       const taslak = {
         tarih: Date.now(), editingId, ad, tel,
         firma: ($('f-firma')?.value||'').trim(),
+        vergiNo: ($('f-vergi')?.value||'').trim(),
         mail: ($('f-mail')?.value||'').trim(),
         tarih2: $('f-tarih')?.value || '',
         adres: ($('f-adres')?.value||'').trim(),
@@ -2838,6 +2833,7 @@ window.taslakDevamEt = function() {
     if ($('f-ad')) $('f-ad').value = t.ad || '';
     if ($('f-tel')) $('f-tel').value = t.tel || '';
     if ($('f-firma')) $('f-firma').value = t.firma || '';
+    if ($('f-vergi')) $('f-vergi').value = t.vergiNo || '';
     if ($('f-mail')) $('f-mail').value = t.mail || '';
     if ($('f-tarih')) $('f-tarih').value = t.tarih2 || '';
     if ($('f-adres')) $('f-adres').value = t.adres || '';
@@ -2861,7 +2857,7 @@ window.taslakDevamEt = function() {
 };
 
 function formTaslakDinleyicileri() {
-  ['f-ad','f-firma','f-tel','f-mail','f-tarih','f-adres','f-ozel','f-not','f-indirim'].forEach(id => {
+  ['f-ad','f-firma','f-vergi','f-tel','f-mail','f-tarih','f-adres','f-ozel','f-not','f-indirim'].forEach(id => {
     const el = $(id); if (!el) return;
     el.addEventListener('input', taslakKaydet);
     el.addEventListener('change', taslakKaydet);
@@ -2874,7 +2870,7 @@ function formTaslakDinleyicileri() {
 
 function formuTemizle() {
   editingId = null;
-  ['f-ad','f-firma','f-tel','f-mail','f-tarih','f-adres','f-ozel','f-not','f-faturano','f-faturatarih'].forEach(id => { if ($(id)) $(id).value = ''; });
+  ['f-ad','f-firma','f-vergi','f-tel','f-mail','f-tarih','f-adres','f-ozel','f-not','f-faturano','f-faturatarih'].forEach(id => { if ($(id)) $(id).value = ''; });
   if ($('f-indirim')) $('f-indirim').value = 0;
   const b = document.querySelector('input[name="musteriTuru"][value="bireysel"]'); if (b) b.checked = true;
   const on = document.querySelector('input[name="oncelik"][value="normal"]'); if (on) on.checked = true;
@@ -2897,7 +2893,11 @@ function firmaGosterGizle() {
   const el = document.querySelector('input[name="musteriTuru"]:checked');
   const k = el && el.value === 'kurumsal';
   if ($('firmaWrap')) $('firmaWrap').style.display = k ? '' : 'none';
+  if ($('vergiWrap')) $('vergiWrap').style.display = k ? '' : 'none';
 }
+
+// FIX: Missing event listener for musteriTuru change
+document.querySelectorAll('input[name="musteriTuru"]').forEach(r => r.addEventListener('change', firmaGosterGizle));
 
 function filtreleriSifirla() {
   document.querySelectorAll('.stat-pill').forEach(p => p.classList.toggle('active', p.dataset.stat === 'aktif'));
@@ -2916,10 +2916,12 @@ window.siparisKaydet = function() {
     const ad = ($('f-ad')?.value||'').trim();
     const tel = normalizeTel($('f-tel')?.value||'');
     const firma = ($('f-firma')?.value||'').trim();
+    const vergiNo = ($('f-vergi')?.value||'').trim();
     const musteriTuru = document.querySelector('input[name="musteriTuru"]:checked')?.value || 'bireysel';
     if (!ad) { toast('⚠️ Müşteri adı zorunlu!', 'error'); $('f-ad').focus(); return; }
     if (!tel) { toast('⚠️ Telefon zorunlu!', 'error'); $('f-tel').focus(); return; }
     if (musteriTuru === 'kurumsal' && !firma) { toast('⚠️ Firma adı zorunlu!', 'error'); $('f-firma').focus(); return; }
+    if (musteriTuru === 'kurumsal' && !vergiNo) { toast('⚠️ Vergi No zorunlu!', 'error'); $('f-vergi').focus(); return; }
     const kalemler = formdakiKalemleriAl().filter(k => k.adet > 0 || k.fiyat > 0 || k.detay || k.urun);
     const ozelMetin = ($('f-ozel')?.value||'').trim();
     if (!kalemler.length && !ozelMetin) { toast('⚠️ Kalem veya özel iş girin!', 'error'); return; }
@@ -2929,7 +2931,7 @@ window.siparisKaydet = function() {
     if (!Array.isArray(musteriler[tel].notlar)) musteriler[tel].notlar = [];
     Object.assign(musteriler[tel], {
       musteriTuru, adSoyad: ad, firma,
-      vergiNo: musteriler[tel].vergiNo || '',
+      vergiNo: vergiNo || musteriler[tel].vergiNo || '',
       telefon: tel,
       email: ($('f-mail')?.value||'').trim(),
       adres: ($('f-adres')?.value||'').trim()
@@ -2939,6 +2941,7 @@ window.siparisKaydet = function() {
       id: editingId || uid(),
       takipNo: eski ? eski.takipNo : nextTakipNo(),
       musteriTuru, firma, adSoyad: ad, telefon: tel,
+      vergiNo: vergiNo || (eski ? eski.vergiNo : ''),
       email: ($('f-mail')?.value||'').trim(),
       teslimTarihi: $('f-tarih')?.value || '',
       adres: ($('f-adres')?.value||'').trim(),
@@ -3339,6 +3342,7 @@ window.musteriSecVeDoldur = function(tel) {
     firmaGosterGizle();
     if ($('f-ad')) $('f-ad').value = m.adSoyad || '';
     if ($('f-firma')) $('f-firma').value = m.firma || '';
+    if ($('f-vergi')) $('f-vergi').value = m.vergiNo || '';
     if ($('f-tel')) $('f-tel').value = m.telefon || '';
     if ($('f-mail')) $('f-mail').value = m.email || '';
     if ($('f-adres')) $('f-adres').value = m.adres || '';
@@ -3750,6 +3754,7 @@ window.duzenle = function(id) {
   editingId = id;
   if ($('f-ad')) $('f-ad').value = o.adSoyad || '';
   if ($('f-firma')) $('f-firma').value = o.firma || '';
+  if ($('f-vergi')) $('f-vergi').value = o.vergiNo || '';
   if ($('f-tel')) $('f-tel').value = o.telefon || '';
   if ($('f-mail')) $('f-mail').value = o.email || '';
   if ($('f-tarih')) $('f-tarih').value = o.teslimTarihi || '';
@@ -4501,7 +4506,7 @@ async function baslatUygulama() {
     setInterval(yedekDurumGuncelle, 60*60*1000);
     gercekZamanliDinle();
     mobilTabbarGuncelle();
-    console.log('✅ v9.0 hazır — ' + state.orders.length + ' sipariş');
+    console.log('✅ v9.1 hazır — ' + state.orders.length + ' sipariş');
   } catch(e) { console.error('baslatUygulama:', e); }
 }
 
