@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Eskişehir Baskı Atölyesi — Yönetim Paneli v9.1</title>
+<title>Eskişehir Baskı Atölyesi — Yönetim Paneli v9.2</title>
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#000000">
 <link rel="icon" type="image/png" href="eba-logo.png">
@@ -1361,11 +1361,9 @@ main{padding-bottom:calc(14px + env(safe-area-inset-bottom))}
 
 <script type="module">
 /* ============================================================
-   ESKİŞEHİR BASKI ATÖLYESİ — v9.1
+   ESKİŞEHİR BASKI ATÖLYESİ — v9.2
    Fixes: 
-   - Kurumsal tab event listener missing
-   - Added f-vergi (Vergi No) field to Add Order form
-   - Validations for Corporate fields updated
+   - Undefined values filtered before writing to Firestore
    ============================================================ */
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
 import {
@@ -1434,6 +1432,27 @@ function jsEsc(s) {
     .replace(/</g, '\\u003C')
     .replace(/>/g, '\\u003E')
     .replace(/&/g, '\\u0026');
+}
+
+// ⭐ YENİ EKLENEN FONKSİYON: Firebase'e yazmadan önce undefined'ları temizler
+function removeUndefined(obj) {
+  if (obj === null || obj === undefined) return null;
+  if (Array.isArray(obj)) {
+    return obj.map(item => removeUndefined(item)).filter(item => item !== undefined);
+  }
+  if (typeof obj === 'object') {
+    const cleaned = {};
+    for (const key in obj) {
+      if (Object.prototype.hasOwnProperty.call(obj, key)) {
+        const val = obj[key];
+        if (val !== undefined) {
+          cleaned[key] = removeUndefined(val);
+        }
+      }
+    }
+    return cleaned;
+  }
+  return obj;
 }
 
 function toast(msg, type='info') {
@@ -1635,25 +1654,25 @@ async function cloudSync() {
     // Orders
     for (const id of dirty.orders) {
       const o = state.orders.find(x => String(x.id) === id);
-      if (o) ops.push({ ref: doc(fbDb, FS_ORDERS, id), data: o, type: 'set' });
+      if (o) ops.push({ ref: doc(fbDb, FS_ORDERS, id), data: removeUndefined(o), type: 'set' });
     }
     for (const id of deleted.orders) ops.push({ ref: doc(fbDb, FS_ORDERS, id), type: 'delete' });
     // Musteriler
     for (const tel of dirty.musteriler) {
       const m = musteriler[tel];
-      if (m) ops.push({ ref: doc(fbDb, FS_MUSTERILER, tel), data: m, type: 'set' });
+      if (m) ops.push({ ref: doc(fbDb, FS_MUSTERILER, tel), data: removeUndefined(m), type: 'set' });
     }
     for (const tel of deleted.musteriler) ops.push({ ref: doc(fbDb, FS_MUSTERILER, tel), type: 'delete' });
     // Sablonlar
     for (const id of dirty.sablonlar) {
       const s = sablonlar.find(x => String(x.id) === id);
-      if (s) ops.push({ ref: doc(fbDb, FS_SABLONLAR, id), data: s, type: 'set' });
+      if (s) ops.push({ ref: doc(fbDb, FS_SABLONLAR, id), data: removeUndefined(s), type: 'set' });
     }
     for (const id of deleted.sablonlar) ops.push({ ref: doc(fbDb, FS_SABLONLAR, id), type: 'delete' });
     // Personel
     for (const id of dirty.personel) {
       const p = personel.find(x => String(x.id) === id);
-      if (p) ops.push({ ref: doc(fbDb, FS_PERSONEL, id), data: p, type: 'set' });
+      if (p) ops.push({ ref: doc(fbDb, FS_PERSONEL, id), data: removeUndefined(p), type: 'set' });
     }
     for (const id of deleted.personel) ops.push({ ref: doc(fbDb, FS_PERSONEL, id), type: 'delete' });
     // Trash - full replace when changed
@@ -1662,13 +1681,13 @@ async function cloudSync() {
       existing.forEach(d => ops.push({ ref: d.ref, type: 'delete' }));
       trash.forEach((t, i) => {
         const tid = String(t.siparis?.id || t.id || ('t-' + i));
-        ops.push({ ref: doc(fbDb, FS_TRASH, tid), data: t, type: 'set' });
+        ops.push({ ref: doc(fbDb, FS_TRASH, tid), data: removeUndefined(t), type: 'set' });
       });
     }
     // Notlar
     for (const id of dirty.notlar) {
       const n = hizliNotlar.find(x => String(x.id) === id);
-      if (n) ops.push({ ref: doc(fbDb, FS_NOTLAR, id), data: n, type: 'set' });
+      if (n) ops.push({ ref: doc(fbDb, FS_NOTLAR, id), data: removeUndefined(n), type: 'set' });
     }
     for (const id of deleted.notlar) ops.push({ ref: doc(fbDb, FS_NOTLAR, id), type: 'delete' });
 
@@ -1689,10 +1708,10 @@ async function cloudSync() {
     // Meta
     if (metaDirty) {
       const metaRef = doc(fbDb, FS_META[0], FS_META[1]);
-      await setDoc(metaRef, {
+      await setDoc(metaRef, removeUndefined({
         hedef, ayarlar, counter: localStorage.getItem(COUNTER_KEY) || '0',
         guncelleme: Date.now()
-      }, { merge: true });
+      }), { merge: true });
       yerelYazmaBuffer.set(metaRef.path, Date.now());
       metaDirty = false;
     }
@@ -2879,7 +2898,6 @@ function formuTemizle() {
   const ot = document.querySelector('input[name="odemeTuru"][value="kart"]'); if (ot) ot.checked = true;
   if ($('f-kanal')) $('f-kanal').value = 'atölye';
   if ($('f-personel')) $('f-personel').value = '';
-  // FIX: Her zaman gizle
   if ($('musteriOtomatikBilgi')) { $('musteriOtomatikBilgi').style.display = 'none'; $('musteriOtomatikBilgi').innerHTML = ''; }
   if ($('kalemlerList')) $('kalemlerList').innerHTML = '';
   kalemKarti();
@@ -2896,7 +2914,6 @@ function firmaGosterGizle() {
   if ($('vergiWrap')) $('vergiWrap').style.display = k ? '' : 'none';
 }
 
-// FIX: Missing event listener for musteriTuru change
 document.querySelectorAll('input[name="musteriTuru"]').forEach(r => r.addEventListener('change', firmaGosterGizle));
 
 function filtreleriSifirla() {
@@ -2907,7 +2924,6 @@ function filtreleriSifirla() {
   if ($('filterPersonel')) $('filterPersonel').value = '';
   if ($('checkAll')) $('checkAll').checked = false;
   seciliSiparisler.clear();
-  // FIX: personel listesini de yenile
   personelSecenekleriGuncelle('filterPersonel', '');
 }
 
@@ -2941,7 +2957,7 @@ window.siparisKaydet = function() {
       id: editingId || uid(),
       takipNo: eski ? eski.takipNo : nextTakipNo(),
       musteriTuru, firma, adSoyad: ad, telefon: tel,
-      vergiNo: vergiNo || (eski ? eski.vergiNo : ''),
+      vergiNo: vergiNo || (eski ? eski.vergiNo : '') || '',
       email: ($('f-mail')?.value||'').trim(),
       teslimTarihi: $('f-tarih')?.value || '',
       adres: ($('f-adres')?.value||'').trim(),
@@ -3003,7 +3019,6 @@ function getFiltered() {
   });
 }
 
-/* FIX: Ortak müşteri listesi fonksiyonu (kod tekrarını önler) */
 function musteriListesiGetir(q) {
   const tekiller = {};
   Object.values(musteriler).forEach(m => { if (m && m.telefon) tekiller[m.telefon] = m; });
@@ -3256,7 +3271,6 @@ window.topluPNG = function() {
   if (sec.length > limit) toast('ℹ️ Kalan ' + (sec.length - limit) + ' kişi için tekrar deneyin', 'warn');
 };
 
-/* FIX: DOMContentLoaded yerine direkt listener (modül script defer gibi çalışır) */
 (function setupTableListeners() {
   const tbody = $('ordersTbody');
   if (!tbody) return;
@@ -3278,7 +3292,6 @@ window.topluPNG = function() {
   }
 })();
 
-/* FIX: Tüm filtre input listener'larını bir kez bağla (baslatUygulama dışında) */
 (function setupFilterListeners() {
   ['searchBox','filterPriority','filterPayment','filterPersonel'].forEach(id => {
     const el = $(id); if (!el) return;
@@ -3663,7 +3676,6 @@ window.trashGeri = function(idx) {
   const o = t.siparis;
   if (state.orders.some(x => String(x.takipNo) === String(o.takipNo))) { toast('⚠️ Bu takip no zaten var', 'warn'); return; }
   state.orders.unshift(o);
-  // FIX: Müşteri snapshot'ı varsa onu geri yükle (etiketler/notlar korunur)
   if (o.telefon && !musteriler[o.telefon]) {
     if (t.musteriSnapshot) musteriler[o.telefon] = JSON.parse(JSON.stringify(t.musteriSnapshot));
     else musteriler[o.telefon] = { musteriTuru: o.musteriTuru||'bireysel', adSoyad: o.adSoyad||'', firma: o.firma||'', vergiNo: o.vergiNo||'', telefon: o.telefon, email: o.email||'', adres: o.adres||'', etiketler: [], notlar: [] };
@@ -4468,7 +4480,6 @@ window.waGonderAktif = function() {
 
 /* ============ UYGULAMA BAŞLAT ============ */
 async function baslatUygulama() {
-  // FIX: Her girişte listener birikmesin
   if (uygulamaBaslatildi) {
     console.log('ℹ️ Uygulama zaten başlatılmış, sadece veri yenile');
     await buluttanIlkYukleme();
@@ -4506,21 +4517,19 @@ async function baslatUygulama() {
     setInterval(yedekDurumGuncelle, 60*60*1000);
     gercekZamanliDinle();
     mobilTabbarGuncelle();
-    console.log('✅ v9.1 hazır — ' + state.orders.length + ' sipariş');
+    console.log('✅ v9.2 hazır — ' + state.orders.length + ' sipariş');
   } catch(e) { console.error('baslatUygulama:', e); }
 }
 
 // Sayfa kapatılırken son senkron
 window.addEventListener('beforeunload', (e) => {
   if (fbHazir && aktifKullanici && cloudSyncTimer) {
-    // Kullanıcıya sor
     e.preventDefault();
     e.returnValue = '';
   }
 });
 document.addEventListener('visibilitychange', () => {
   if (document.visibilityState === 'hidden' && fbHazir && aktifKullanici) {
-    // Arka plana atılınca senkron dene (session kesilmeden)
     computeDiff();
     if (hasChanges()) cloudSync();
   }
