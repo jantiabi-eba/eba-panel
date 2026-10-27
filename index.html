@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Eskişehir Baskı Atölyesi — Yönetim Paneli v9.4</title>
+<title>Eskişehir Baskı Atölyesi — Yönetim Paneli v9.5</title>
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#000000">
 <link rel="icon" type="image/png" href="eba-logo.png">
@@ -664,13 +664,6 @@ main{padding-bottom:calc(14px + env(safe-area-inset-bottom))}
 .profil-row .lbl{color:var(--muted);font-weight:700}
 .profil-section{border-top:1px dashed var(--border);padding-top:14px;margin-top:2px}
 .profil-section-title{font-size:12px;font-weight:800;color:var(--muted);margin-bottom:10px;letter-spacing:.3px;text-transform:uppercase}
-/* ===== KATLANABİLİR KARTLAR ===== */
-.collapsible-head{cursor:pointer;user-select:none;display:flex;align-items:center;gap:6px;transition:.15s}
-.collapsible-head:hover{opacity:.8}
-.collapsible-head .toggle-icon{margin-left:auto;font-size:11px;color:var(--muted);transition:transform .2s;font-weight:900;background:var(--card2);border:1px solid var(--border);border-radius:5px;padding:1px 6px;line-height:1.4}
-.collapsible-head.collapsed .toggle-icon{transform:rotate(-90deg)}
-.collapsible-body{transition:max-height .25s ease,opacity .2s ease;overflow:hidden}
-.collapsible-body.collapsed{max-height:0!important;opacity:0;margin:0!important;padding:0!important}
 </style>
 </head>
 <body>
@@ -704,7 +697,7 @@ main{padding-bottom:calc(14px + env(safe-area-inset-bottom))}
       </div>
       <div>
         <h1>ESKİŞEHİR BASKI ATÖLYESİ</h1>
-        <div class="ver">YÖNETİM PANELİ · v9.4</div>
+        <div class="ver">YÖNETİM PANELİ · v9.5</div>
       </div>
     </div>
     <div class="head-tools">
@@ -763,43 +756,35 @@ main{padding-bottom:calc(14px + env(safe-area-inset-bottom))}
     <div class="masaustu-gorunum">
       <div class="dash-3col">
         <aside class="dash-side">
-          <div class="mini-card mobil-gizle" data-collapsible="takvim">
+          <div class="mini-card mobil-gizle">
             <div class="takvim-head">
               <button onclick="takvimAyDegistir(-1)">◀</button>
               <div class="ay-yaz" id="takvimAyYaz">—</div>
               <button onclick="takvimAyDegistir(1)">▶</button>
             </div>
-            <div class="collapsible-body" data-collapsible-body="takvim">
             <div class="takvim-grid" id="takvimGrid"></div>
             <div style="margin-top:10px;display:flex;justify-content:space-between;align-items:center;font-size:10.5px;color:var(--muted);font-weight:700">
               <span><span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--warn);margin-right:4px"></span>Teslim var</span>
               <button class="btn xs ghost" onclick="takvimBuguneDon()" style="padding:2px 6px;font-size:10px">Bugün</button>
             </div>
             <div id="takvimDetay" style="margin-top:10px"></div>
-            </div>
           </div>
-          <div class="mini-card mobil-gizle" data-collapsible="hava">
-            <h3 class="collapsible-head" data-toggle="hava"><span class="ic">⛅</span> Hava Durumu <span class="toggle-icon">▾</span></h3>
-            <div class="collapsible-body" data-collapsible-body="hava">
-              <div class="hava-ana" id="havaAna"><div class="ha-temp">--°</div><div class="ha-aciklama">Eskişehir</div></div>
-              <div class="hava-row" id="havaRow"></div>
-            </div>
+          <div class="mini-card mobil-gizle">
+            <h3><span class="ic">⛅</span> Hava Durumu</h3>
+            <div class="hava-ana" id="havaAna"><div class="ha-temp">--°</div><div class="ha-aciklama">Eskişehir</div></div>
+            <div class="hava-row" id="havaRow"></div>
           </div>
-          <div class="mini-card mobil-gizle" data-collapsible="kur">
-            <h3 class="collapsible-head" data-toggle="kur"><span class="ic">💵</span> Döviz Kurları <span class="toggle-icon">▾</span></h3>
-            <div class="collapsible-body" data-collapsible-body="kur">
+          <div class="mini-card mobil-gizle">
+            <h3><span class="ic">💵</span> Döviz Kurları</h3>
             <div id="kurPano">
               <div class="kur-row"><span class="kr-lbl">🇺🇸 USD</span><span class="kr-vals"><span><span class="kur-baslik">Alış</span><span class="kur-alis">--</span></span><span><span class="kur-baslik">Satış</span><span class="kur-satis">--</span></span></span></div>
               <div class="kur-row"><span class="kr-lbl">🇪🇺 EUR</span><span class="kr-vals"><span><span class="kur-baslik">Alış</span><span class="kur-alis">--</span></span><span><span class="kur-baslik">Satış</span><span class="kur-satis">--</span></span></span></div>
               <div class="kur-row"><span class="kr-lbl">🇬🇧 GBP</span><span class="kr-vals"><span><span class="kur-baslik">Alış</span><span class="kur-alis">--</span></span><span><span class="kur-baslik">Satış</span><span class="kur-satis">--</span></span></span></div>
             </div>
-            </div>
           </div>
-          <div class="mini-card mobil-gizle" data-collapsible="bulut" style="border-left:3px solid var(--success)">
-            <h3 class="collapsible-head" data-toggle="bulut"><span class="ic">☁️</span> Bulut Durumu <span class="toggle-icon">▾</span></h3>
-            <div class="collapsible-body" data-collapsible-body="bulut">
-              <div id="bulutDurumMini" style="font-size:12px;color:var(--muted)">Bağlanıyor...</div>
-            </div>
+          <div class="mini-card mobil-gizle" style="border-left:3px solid var(--success)">
+            <h3><span class="ic">☁️</span> Bulut Durumu</h3>
+            <div id="bulutDurumMini" style="font-size:12px;color:var(--muted)">Bağlanıyor...</div>
           </div>
         </aside>
         <div class="dash-mid">
@@ -816,66 +801,38 @@ main{padding-bottom:calc(14px + env(safe-area-inset-bottom))}
             <div class="dash-card c-dim gizli" onclick="goTab('ciro')"><div class="dc-icon">💵</div><div class="dc-lbl">Toplam Kalan Bakiye</div><div class="dc-val" id="d-kalanBakiye" style="color:var(--danger);font-size:20px">0 ₺</div></div>
           </div>
           <div class="dash-row" style="margin-bottom:0">
-            <div class="dash-list-card" data-collapsible="yaklasan">
-              <h3 class="collapsible-head" data-toggle="yaklasan">🚨 Bu Hafta Teslim <span class="toggle-icon">▾</span></h3>
-              <div class="collapsible-body" data-collapsible-body="yaklasan">
-                <div class="list-scroll" id="d-yaklasanList"></div>
-              </div>
-            </div>
-            <div class="dash-list-card" data-collapsible="acilList">
-              <h3 class="collapsible-head" data-toggle="acilList">🔥 Acil İşler <span class="toggle-icon">▾</span></h3>
-              <div class="collapsible-body" data-collapsible-body="acilList">
-                <div class="list-scroll" id="d-acilList"></div>
-              </div>
-            </div>
+            <div class="dash-list-card"><h3>🚨 Bu Hafta Teslim</h3><div class="list-scroll" id="d-yaklasanList"></div></div>
+            <div class="dash-list-card"><h3>🔥 Acil İşler</h3><div class="list-scroll" id="d-acilList"></div></div>
           </div>
           <div class="dash-row" style="margin-bottom:0">
-            <div class="dash-list-card" data-collapsible="sonList">
-              <h3 class="collapsible-head" data-toggle="sonList">🆕 Son Siparişler <span class="toggle-icon">▾</span></h3>
-              <div class="collapsible-body" data-collapsible-body="sonList">
-                <div class="list-scroll" id="d-sonList"></div>
-              </div>
-            </div>
-            <div class="dash-list-card" data-collapsible="durumOzet">
-              <h3 class="collapsible-head" data-toggle="durumOzet">📊 Durum Özeti <span class="toggle-icon">▾</span></h3>
-              <div class="collapsible-body" data-collapsible-body="durumOzet">
-                <div id="d-durumOzet" style="padding:6px 0"></div>
-              </div>
-            </div>
+            <div class="dash-list-card"><h3>🆕 Son Siparişler</h3><div class="list-scroll" id="d-sonList"></div></div>
+            <div class="dash-list-card"><h3>📊 Durum Özeti</h3><div id="d-durumOzet" style="padding:6px 0"></div></div>
           </div>
-          <div class="mini-card" data-collapsible="hizliIslem">
-            <h3 class="collapsible-head" data-toggle="hizliIslem"><span class="ic">⚡</span> Hızlı İşlemler <span class="toggle-icon">▾</span></h3>
-            <div class="collapsible-body" data-collapsible-body="hizliIslem">
-              <div class="action-row">
-                <button class="btn primary" onclick="musteriSecAc()">👥 Kayıtlı Müşteri</button>
-                <button class="btn" onclick="goTab('ekle')">➕ Yeni Sipariş</button>
-                <button class="btn" onclick="goTab('musteri-rehber')">👥 Müşteri Rehberi</button>
-                <button class="btn" onclick="goTab('rapor')">📈 Rapor</button>
-                <button class="btn gizli" onclick="goTab('ciro')">💰 Ciro</button>
-              </div>
+          <div class="mini-card">
+            <h3><span class="ic">⚡</span> Hızlı İşlemler</h3>
+            <div class="action-row">
+              <button class="btn primary" onclick="musteriSecAc()">👥 Kayıtlı Müşteri</button>
+              <button class="btn" onclick="goTab('ekle')">➕ Yeni Sipariş</button>
+              <button class="btn" onclick="goTab('musteri-rehber')">👥 Müşteri Rehberi</button>
+              <button class="btn" onclick="goTab('rapor')">📈 Rapor</button>
+              <button class="btn gizli" onclick="goTab('ciro')">💰 Ciro</button>
             </div>
           </div>
         </div>
         <aside class="dash-side">
-          <div class="mini-card mobil-gizle" data-collapsible="aktivite">
-            <h3 class="collapsible-head" data-toggle="aktivite"><span class="ic">📋</span> Son Aktiviteler <span class="badge-mini" id="aktiviteSayi">0</span> <span class="toggle-icon">▾</span></h3>
-            <div class="collapsible-body" data-collapsible-body="aktivite">
-              <div id="aktiviteAkisi" style="max-height:280px;overflow-y:auto"></div>
-            </div>
+          <div class="mini-card mobil-gizle">
+            <h3><span class="ic">📋</span> Son Aktiviteler <span class="badge-mini" id="aktiviteSayi">0</span></h3>
+            <div id="aktiviteAkisi" style="max-height:280px;overflow-y:auto"></div>
           </div>
-          <div class="mini-card mobil-gizle" data-collapsible="uzun">
-            <h3 class="collapsible-head" data-toggle="uzun"><span class="ic">🕐</span> İletişime Geçilecekler <span class="badge-mini" id="uzunSayi">0</span> <span class="toggle-icon">▾</span></h3>
-            <div class="collapsible-body" data-collapsible-body="uzun">
-              <div id="uzunListesi" style="max-height:240px;overflow-y:auto"></div>
-            </div>
+          <div class="mini-card mobil-gizle">
+            <h3><span class="ic">🕐</span> İletişime Geçilecekler <span class="badge-mini" id="uzunSayi">0</span></h3>
+            <div id="uzunListesi" style="max-height:240px;overflow-y:auto"></div>
           </div>
-          <div class="mini-card" data-collapsible="hizliNot">
-            <h3 class="collapsible-head" data-toggle="hizliNot"><span class="ic">📝</span> Hızlı Notlar <span class="toggle-icon">▾</span></h3>
-            <div class="collapsible-body" data-collapsible-body="hizliNot">
-              <textarea id="hizliNotInput" class="not-yazma" placeholder="Not yaz..." rows="3"></textarea>
-              <button type="button" class="btn sm primary" style="margin-top:8px;width:100%;justify-content:center" onclick="hizliNotEkle()">💾 Notu Kaydet</button>
-              <div id="hizliNotlarListe" style="margin-top:12px;max-height:200px;overflow-y:auto"></div>
-            </div>
+          <div class="mini-card">
+            <h3><span class="ic">📝</span> Hızlı Notlar</h3>
+            <textarea id="hizliNotInput" class="not-yazma" placeholder="Not yaz..." rows="3"></textarea>
+            <button type="button" class="btn sm primary" style="margin-top:8px;width:100%;justify-content:center" onclick="hizliNotEkle()">💾 Notu Kaydet</button>
+            <div id="hizliNotlarListe" style="margin-top:12px;max-height:200px;overflow-y:auto"></div>
           </div>
         </aside>
       </div>
@@ -1431,7 +1388,6 @@ main{padding-bottom:calc(14px + env(safe-area-inset-bottom))}
   </div>
 </div>
 
-<!-- ===== PROFİL MODAL ===== -->
 <div class="modal-overlay" id="profilModal">
   <div class="modal-card" style="max-width:640px">
     <h3>
@@ -1488,10 +1444,6 @@ main{padding-bottom:calc(14px + env(safe-area-inset-bottom))}
 <div id="toasts"></div>
 
 <script type="module">
-/* ============================================================
-   ESKİŞEHİR BASKI ATÖLYESİ — v9.4
-   Yeni: Kapora + Kalan Bakiye + Katlanabilir Kartlar
-   ============================================================ */
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
 import {
   getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged,
@@ -1616,7 +1568,6 @@ const TAKVIM_AY_KEY = 'eba_takvim_ay';
 const HAVA_CACHE_KEY = 'eba_hava_cache';
 const KUR_CACHE_KEY = 'eba_kur_cache';
 const SENKRON_DURUM_KEY = 'eba_senkron_durum';
-const COLLAPSE_KEY = 'eba_collapse_state_v1';
 
 const FS_META = ['eba_v2', 'meta'];
 const FS_ORDERS = 'eba_v2_siparisler';
@@ -2230,7 +2181,7 @@ function yedekUyariGoster() {
 
 window.yedekIndir = function() {
   try {
-    const data = { version: '9.4.0', tarih: new Date().toISOString(), orders: state.orders, musteriler, sablonlar, personel, hedef, trash, hizliNotlar, ayarlar };
+    const data = { version: '9.5.0', tarih: new Date().toISOString(), orders: state.orders, musteriler, sablonlar, personel, hedef, trash, hizliNotlar, ayarlar };
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
@@ -2405,51 +2356,6 @@ function setTheme(t) {
 }
 document.querySelectorAll('[data-theme-btn]').forEach(b => b.addEventListener('click', () => setTheme(b.dataset.themeBtn)));
 setTheme(localStorage.getItem('eba_theme') || 'dark');
-
-/* ============ KATLANABİLİR KARTLAR ============ */
-function collapseStateOku() {
-  try { return JSON.parse(localStorage.getItem(COLLAPSE_KEY) || '{}'); } catch(e) { return {}; }
-}
-function collapseStateYaz(s) {
-  try { localStorage.setItem(COLLAPSE_KEY, JSON.stringify(s)); } catch(e) {}
-}
-function collapseDurumUygula() {
-  const s = collapseStateOku();
-  document.querySelectorAll('[data-collapsible]').forEach(card => {
-    const key = card.dataset.collapsible;
-    const body = card.querySelector('[data-collapsible-body="' + key + '"]');
-    const head = card.querySelector('[data-toggle="' + key + '"]');
-    if (!body || !head) return;
-    if (s[key]) {
-      body.classList.add('collapsed');
-      head.classList.add('collapsed');
-    } else {
-      body.classList.remove('collapsed');
-      head.classList.remove('collapsed');
-    }
-  });
-}
-function collapseToggle(key) {
-  const s = collapseStateOku();
-  s[key] = !s[key];
-  collapseStateYaz(s);
-  const body = document.querySelector('[data-collapsible-body="' + key + '"]');
-  const head = document.querySelector('[data-toggle="' + key + '"]');
-  if (body) body.classList.toggle('collapsed', !!s[key]);
-  if (head) head.classList.toggle('collapsed', !!s[key]);
-}
-document.addEventListener('click', e => {
-  const h = e.target.closest('[data-toggle]');
-  if (!h) return;
-  // Takvim içindeki butonlara tıklamayı engelleme
-  if (e.target.closest('.takvim-head button')) return;
-  const key = h.dataset.toggle;
-  if (!key) return;
-  e.preventDefault();
-  e.stopPropagation();
-  collapseToggle(key);
-});
-setTimeout(collapseDurumUygula, 100);
 
 function applyGizliMod() {
   document.body.classList.toggle('gizli-mod', gizliMod);
@@ -4734,8 +4640,7 @@ async function baslatUygulama() {
     setInterval(yedekDurumGuncelle, 60*60*1000);
     gercekZamanliDinle();
     mobilTabbarGuncelle();
-    setTimeout(collapseDurumUygula, 200);
-    console.log('✅ v9.4 hazır — ' + state.orders.length + ' sipariş');
+    console.log('✅ v9.5 hazır — ' + state.orders.length + ' sipariş');
   } catch(e) { console.error('baslatUygulama:', e); }
 }
 
