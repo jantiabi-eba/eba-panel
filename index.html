@@ -664,6 +664,38 @@ main{padding-bottom:calc(14px + env(safe-area-inset-bottom))}
 .profil-row .lbl{color:var(--muted);font-weight:700}
 .profil-section{border-top:1px dashed var(--border);padding-top:14px;margin-top:2px}
 .profil-section-title{font-size:12px;font-weight:800;color:var(--muted);margin-bottom:10px;letter-spacing:.3px;text-transform:uppercase}
+
+/* ===== SÜRÜKLE BIRAK (DRAG & DROP) ===== */
+.drag-handle {
+  cursor: grab;
+  user-select: none;
+  padding: 2px 6px;
+  color: var(--dim);
+  font-weight: 900;
+  font-size: 14px;
+  letter-spacing: -2px;
+  line-height: 1;
+  transition: color .15s;
+}
+.drag-handle:hover {
+  color: var(--neon);
+}
+.drag-handle:active {
+  cursor: grabbing;
+}
+.dragging {
+  opacity: 0.4 !important;
+  border: 1px dashed var(--neon) !important;
+}
+.drop-indicator {
+  border-top: 3px solid var(--neon) !important;
+  box-shadow: 0 -4px 12px var(--neon-soft);
+}
+.mini-card h3, .dash-list-card h3 {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
 </style>
 </head>
 <body>
@@ -755,8 +787,8 @@ main{padding-bottom:calc(14px + env(safe-area-inset-bottom))}
   <div class="page-scroll">
     <div class="masaustu-gorunum">
       <div class="dash-3col">
-        <aside class="dash-side">
-          <div class="mini-card mobil-gizle">
+        <aside class="dash-side" id="colLeft">
+          <div class="mini-card mobil-gizle" draggable="true" data-drag-id="takvim">
             <div class="takvim-head">
               <button onclick="takvimAyDegistir(-1)">◀</button>
               <div class="ay-yaz" id="takvimAyYaz">—</div>
@@ -769,27 +801,27 @@ main{padding-bottom:calc(14px + env(safe-area-inset-bottom))}
             </div>
             <div id="takvimDetay" style="margin-top:10px"></div>
           </div>
-          <div class="mini-card mobil-gizle">
-            <h3><span class="ic">⛅</span> Hava Durumu</h3>
+          <div class="mini-card mobil-gizle" draggable="true" data-drag-id="hava">
+            <h3><span class="drag-handle">⋮⋮</span> <span class="ic">⛅</span> Hava Durumu</h3>
             <div class="hava-ana" id="havaAna"><div class="ha-temp">--°</div><div class="ha-aciklama">Eskişehir</div></div>
             <div class="hava-row" id="havaRow"></div>
           </div>
-          <div class="mini-card mobil-gizle">
-            <h3><span class="ic">💵</span> Döviz Kurları</h3>
+          <div class="mini-card mobil-gizle" draggable="true" data-drag-id="kur">
+            <h3><span class="drag-handle">⋮⋮</span> <span class="ic">💵</span> Döviz Kurları</h3>
             <div id="kurPano">
               <div class="kur-row"><span class="kr-lbl">🇺🇸 USD</span><span class="kr-vals"><span><span class="kur-baslik">Alış</span><span class="kur-alis">--</span></span><span><span class="kur-baslik">Satış</span><span class="kur-satis">--</span></span></span></div>
               <div class="kur-row"><span class="kr-lbl">🇪🇺 EUR</span><span class="kr-vals"><span><span class="kur-baslik">Alış</span><span class="kur-alis">--</span></span><span><span class="kur-baslik">Satış</span><span class="kur-satis">--</span></span></span></div>
               <div class="kur-row"><span class="kr-lbl">🇬🇧 GBP</span><span class="kr-vals"><span><span class="kur-baslik">Alış</span><span class="kur-alis">--</span></span><span><span class="kur-baslik">Satış</span><span class="kur-satis">--</span></span></span></div>
             </div>
           </div>
-          <div class="mini-card mobil-gizle" style="border-left:3px solid var(--success)">
-            <h3><span class="ic">☁️</span> Bulut Durumu</h3>
+          <div class="mini-card mobil-gizle" draggable="true" data-drag-id="bulut" style="border-left:3px solid var(--success)">
+            <h3><span class="drag-handle">⋮⋮</span> <span class="ic">☁️</span> Bulut Durumu</h3>
             <div id="bulutDurumMini" style="font-size:12px;color:var(--muted)">Bağlanıyor...</div>
           </div>
         </aside>
-        <div class="dash-mid">
+        <div class="dash-mid" id="colMid">
           <div id="hatirlatmaPanel"></div>
-          <div class="dash-grid" style="margin-bottom:0">
+          <div class="dash-grid" style="margin-bottom:0" draggable="true" data-drag-id="kpiGrid">
             <div class="dash-card" onclick="dashboardStatFiltrele('aktif');goTab('panel')"><div class="dc-icon">📋</div><div class="dc-lbl">Aktif İşler</div><div class="dc-val" id="d-acik">0</div></div>
             <div class="dash-card c-yellow" onclick="dashboardStatFiltrele('hazirlaniyor');goTab('panel')"><div class="dc-icon">⚙️</div><div class="dc-lbl">Hazırlanıyor</div><div class="dc-val" id="d-prep">0</div></div>
             <div class="dash-card c-green" onclick="dashboardStatFiltrele('hazir');goTab('panel')"><div class="dc-icon">✅</div><div class="dc-lbl">Hazır</div><div class="dc-val" id="d-ready">0</div></div>
@@ -801,15 +833,27 @@ main{padding-bottom:calc(14px + env(safe-area-inset-bottom))}
             <div class="dash-card c-dim gizli" onclick="goTab('ciro')"><div class="dc-icon">💵</div><div class="dc-lbl">Toplam Kalan Bakiye</div><div class="dc-val" id="d-kalanBakiye" style="color:var(--danger);font-size:20px">0 ₺</div></div>
           </div>
           <div class="dash-row" style="margin-bottom:0">
-            <div class="dash-list-card"><h3>🚨 Bu Hafta Teslim</h3><div class="list-scroll" id="d-yaklasanList"></div></div>
-            <div class="dash-list-card"><h3>🔥 Acil İşler</h3><div class="list-scroll" id="d-acilList"></div></div>
+            <div class="dash-list-card" draggable="true" data-drag-id="yaklasan">
+              <h3><span class="drag-handle">⋮⋮</span> 🚨 Bu Hafta Teslim</h3>
+              <div class="list-scroll" id="d-yaklasanList"></div>
+            </div>
+            <div class="dash-list-card" draggable="true" data-drag-id="acilList">
+              <h3><span class="drag-handle">⋮⋮</span> 🔥 Acil İşler</h3>
+              <div class="list-scroll" id="d-acilList"></div>
+            </div>
           </div>
           <div class="dash-row" style="margin-bottom:0">
-            <div class="dash-list-card"><h3>🆕 Son Siparişler</h3><div class="list-scroll" id="d-sonList"></div></div>
-            <div class="dash-list-card"><h3>📊 Durum Özeti</h3><div id="d-durumOzet" style="padding:6px 0"></div></div>
+            <div class="dash-list-card" draggable="true" data-drag-id="sonList">
+              <h3><span class="drag-handle">⋮⋮</span> 🆕 Son Siparişler</h3>
+              <div class="list-scroll" id="d-sonList"></div>
+            </div>
+            <div class="dash-list-card" draggable="true" data-drag-id="durumOzet">
+              <h3><span class="drag-handle">⋮⋮</span> 📊 Durum Özeti</h3>
+              <div id="d-durumOzet" style="padding:6px 0"></div>
+            </div>
           </div>
-          <div class="mini-card">
-            <h3><span class="ic">⚡</span> Hızlı İşlemler</h3>
+          <div class="mini-card" draggable="true" data-drag-id="hizliIslem">
+            <h3><span class="drag-handle">⋮⋮</span> <span class="ic">⚡</span> Hızlı İşlemler</h3>
             <div class="action-row">
               <button class="btn primary" onclick="musteriSecAc()">👥 Kayıtlı Müşteri</button>
               <button class="btn" onclick="goTab('ekle')">➕ Yeni Sipariş</button>
@@ -819,17 +863,17 @@ main{padding-bottom:calc(14px + env(safe-area-inset-bottom))}
             </div>
           </div>
         </div>
-        <aside class="dash-side">
-          <div class="mini-card mobil-gizle">
-            <h3><span class="ic">📋</span> Son Aktiviteler <span class="badge-mini" id="aktiviteSayi">0</span></h3>
+        <aside class="dash-side" id="colRight">
+          <div class="mini-card mobil-gizle" draggable="true" data-drag-id="aktivite">
+            <h3><span class="drag-handle">⋮⋮</span> <span class="ic">📋</span> Son Aktiviteler <span class="badge-mini" id="aktiviteSayi">0</span></h3>
             <div id="aktiviteAkisi" style="max-height:280px;overflow-y:auto"></div>
           </div>
-          <div class="mini-card mobil-gizle">
-            <h3><span class="ic">🕐</span> İletişime Geçilecekler <span class="badge-mini" id="uzunSayi">0</span></h3>
+          <div class="mini-card mobil-gizle" draggable="true" data-drag-id="uzun">
+            <h3><span class="drag-handle">⋮⋮</span> <span class="ic">🕐</span> İletişime Geçilecekler <span class="badge-mini" id="uzunSayi">0</span></h3>
             <div id="uzunListesi" style="max-height:240px;overflow-y:auto"></div>
           </div>
-          <div class="mini-card">
-            <h3><span class="ic">📝</span> Hızlı Notlar</h3>
+          <div class="mini-card" draggable="true" data-drag-id="hizliNot">
+            <h3><span class="drag-handle">⋮⋮</span> <span class="ic">📝</span> Hızlı Notlar</h3>
             <textarea id="hizliNotInput" class="not-yazma" placeholder="Not yaz..." rows="3"></textarea>
             <button type="button" class="btn sm primary" style="margin-top:8px;width:100%;justify-content:center" onclick="hizliNotEkle()">💾 Notu Kaydet</button>
             <div id="hizliNotlarListe" style="margin-top:12px;max-height:200px;overflow-y:auto"></div>
@@ -1568,6 +1612,7 @@ const TAKVIM_AY_KEY = 'eba_takvim_ay';
 const HAVA_CACHE_KEY = 'eba_hava_cache';
 const KUR_CACHE_KEY = 'eba_kur_cache';
 const SENKRON_DURUM_KEY = 'eba_senkron_durum';
+const DND_ORDER_KEY = 'eba_dnd_order_v1';
 
 const FS_META = ['eba_v2', 'meta'];
 const FS_ORDERS = 'eba_v2_siparisler';
@@ -4656,6 +4701,112 @@ document.addEventListener('visibilitychange', () => {
     if (hasChanges()) cloudSync();
   }
 });
+
+/* ===== SÜRÜKLE BIRAK (DRAG & DROP) ===== */
+let draggedItem = null;
+
+function initDragAndDrop() {
+  const cards = document.querySelectorAll('[data-drag-id]');
+  cards.forEach(card => {
+    card.setAttribute('draggable', 'true');
+    
+    card.addEventListener('dragstart', (e) => {
+      draggedItem = card;
+      card.classList.add('dragging');
+      e.dataTransfer.effectAllowed = 'move';
+      // Firefox için gerekli
+      e.dataTransfer.setData('text/plain', card.dataset.dragId);
+    });
+
+    card.addEventListener('dragend', () => {
+      card.classList.remove('dragging');
+      document.querySelectorAll('.drop-indicator').forEach(el => el.classList.remove('drop-indicator'));
+      draggedItem = null;
+      saveDragOrder();
+    });
+
+    card.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+      if (card === draggedItem) return;
+      
+      const rect = card.getBoundingClientRect();
+      const midpoint = rect.top + rect.height / 2;
+      
+      document.querySelectorAll('.drop-indicator').forEach(el => el.classList.remove('drop-indicator'));
+      
+      if (e.clientY < midpoint) {
+        card.classList.add('drop-indicator');
+      }
+    });
+
+    card.addEventListener('dragleave', () => {
+      card.classList.remove('drop-indicator');
+    });
+
+    card.addEventListener('drop', (e) => {
+      e.preventDefault();
+      if (!draggedItem || draggedItem === card) return;
+      
+      const rect = card.getBoundingClientRect();
+      const midpoint = rect.top + rect.height / 2;
+      const parent = card.parentNode;
+      
+      if (e.clientY < midpoint) {
+        parent.insertBefore(draggedItem, card);
+      } else {
+        parent.insertBefore(draggedItem, card.nextSibling);
+      }
+      
+      card.classList.remove('drop-indicator');
+    });
+  });
+}
+
+function saveDragOrder() {
+  const order = {};
+  document.querySelectorAll('#colLeft, #colMid, #colRight').forEach(col => {
+    const colId = col.id;
+    const items = [];
+    Array.from(col.children).forEach(child => {
+      if (child.dataset.dragId) items.push(child.dataset.dragId);
+    });
+    order[colId] = items;
+  });
+  localStorage.setItem(DND_ORDER_KEY, JSON.stringify(order));
+}
+
+function loadDragOrder() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(DND_ORDER_KEY) || '{}');
+    Object.keys(saved).forEach(colId => {
+      const col = document.getElementById(colId);
+      if (!col) return;
+      const orderedIds = saved[colId];
+      orderedIds.forEach(id => {
+        const el = col.querySelector('[data-drag-id="' + id + '"]');
+        if (el) col.appendChild(el);
+      });
+    });
+  } catch(e) { console.warn('loadDragOrder:', e); }
+}
+
+// Başlangıçta sırayı yükle ve dinleyicileri kur
+setTimeout(() => {
+  loadDragOrder();
+  initDragAndDrop();
+  // renderDashboard sonrası yeniden bağlanması gerekirse diye MutationObserver
+  const observer = new MutationObserver(() => {
+    if (!document.querySelector('.dragging')) {
+      initDragAndDrop();
+    }
+  });
+  ['colLeft', 'colMid', 'colRight'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) observer.observe(el, { childList: true });
+  });
+}, 500);
+
 </script>
 <script>
 if ('serviceWorker' in navigator) {
