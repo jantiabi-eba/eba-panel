@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Eskişehir Baskı Atölyesi — Yönetim Paneli v9.5</title>
+<title>Eskişehir Baskı Atölyesi — Yönetim Paneli v9.6</title>
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#000000">
 <link rel="icon" type="image/png" href="eba-logo.png">
@@ -199,7 +199,7 @@ input[type="date"]{color-scheme:dark}
 .dash-row-item .dr-val{font-size:13px;font-weight:800;color:var(--success);white-space:nowrap}
 .progress-bar{height:8px;background:#0a0a0a;border-radius:4px;overflow:hidden;border:1px solid var(--border);margin-top:6px}
 .progress-bar > i{display:block;height:100%;background:linear-gradient(90deg,var(--neon),#ff6b6b)}
-.hatirlatma-kart{background:#0a0a0a;border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:14px;border-left:4px solid var(--warn)}
+.hatirlatma-kart{background:#0a0a0a;border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:14px;border-left:4px solid var(--warn);transition: all 0.3s ease;}
 [data-theme="cyber"] .hatirlatma-kart { background: rgba(0,0,0,0.3); }
 .hatirlatma-kart.bos{border-left-color:var(--success)}
 .hatirlatma-kart h3{font-size:13px;font-weight:800;margin-bottom:10px;display:flex;align-items:center;gap:6px}
@@ -665,6 +665,49 @@ main{padding-bottom:calc(14px + env(safe-area-inset-bottom))}
 .profil-section{border-top:1px dashed var(--border);padding-top:14px;margin-top:2px}
 .profil-section-title{font-size:12px;font-weight:800;color:var(--muted);margin-bottom:10px;letter-spacing:.3px;text-transform:uppercase}
 
+/* Hatırlatma Panel Toggle */
+.hatirlatma-kart.collapsed .hatirlatma-content { display: none; }
+.hatirlatma-kart .hatirlatma-toggle { 
+  margin-left: auto; 
+  cursor: pointer; 
+  background: transparent; 
+  border: none; 
+  color: var(--muted); 
+  font-size: 16px; 
+  transition: transform 0.3s ease;
+}
+.hatirlatma-kart.collapsed .hatirlatma-toggle { transform: rotate(-90deg); }
+
+/* Kalan Bakiye Tamamlandı Butonu */
+.btn-tahsil {
+  background: rgba(34,197,94,.15);
+  border: 1px solid var(--success);
+  color: var(--success);
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 11.5px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: .15s;
+  width: 100%;
+  margin-top: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
+.btn-tahsil:hover {
+  background: var(--success);
+  color: #fff;
+}
+.btn-tahsil:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: rgba(34,197,94,.05);
+  color: var(--muted);
+  border-color: var(--border);
+}
+
 /* ===== SÜRÜKLE BIRAK (DRAG & DROP) ===== */
 .drag-handle {
   cursor: grab;
@@ -729,7 +772,7 @@ main{padding-bottom:calc(14px + env(safe-area-inset-bottom))}
       </div>
       <div>
         <h1>ESKİŞEHİR BASKI ATÖLYESİ</h1>
-        <div class="ver">YÖNETİM PANELİ · v9.5</div>
+        <div class="ver">YÖNETİM PANELİ · v9.6</div>
       </div>
     </div>
     <div class="head-tools">
@@ -868,10 +911,7 @@ main{padding-bottom:calc(14px + env(safe-area-inset-bottom))}
             <h3><span class="drag-handle">⋮⋮</span> <span class="ic">📋</span> Son Aktiviteler <span class="badge-mini" id="aktiviteSayi">0</span></h3>
             <div id="aktiviteAkisi" style="max-height:280px;overflow-y:auto"></div>
           </div>
-          <div class="mini-card mobil-gizle" draggable="true" data-drag-id="uzun">
-            <h3><span class="drag-handle">⋮⋮</span> <span class="ic">🕐</span> İletişime Geçilecekler <span class="badge-mini" id="uzunSayi">0</span></h3>
-            <div id="uzunListesi" style="max-height:240px;overflow-y:auto"></div>
-          </div>
+          <!-- Uzun Liste Kaldırıldı -->
           <div class="mini-card" draggable="true" data-drag-id="hizliNot">
             <h3><span class="drag-handle">⋮⋮</span> <span class="ic">📝</span> Hızlı Notlar</h3>
             <textarea id="hizliNotInput" class="not-yazma" placeholder="Not yaz..." rows="3"></textarea>
@@ -1194,6 +1234,7 @@ main{padding-bottom:calc(14px + env(safe-area-inset-bottom))}
       </div>
       <div class="action-row" style="margin-top:12px">
         <button type="button" class="btn primary" onclick="bildirimIzinAl()">🔔 Bildirim İzni</button>
+        <button type="button" class="btn warn" onclick="testGunlukBildirim()">📨 Test Günlük Rapor</button>
       </div>
     </div>
   </div>
@@ -1328,6 +1369,12 @@ main{padding-bottom:calc(14px + env(safe-area-inset-bottom))}
         <div class="fld" style="font-size:11px">Kalan Bakiye<div id="cariQuickKalan" style="background:var(--card2);border:1px solid var(--border);border-radius:5px;padding:8px 11px;font-weight:800;color:var(--danger);font-size:13px;text-align:right">0,00 ₺</div></div>
         <div class="fld" style="font-size:11px">Toplam<div id="cariQuickToplam" style="background:var(--card2);border:1px solid var(--border);border-radius:5px;padding:8px 11px;font-weight:800;color:var(--success);font-size:13px;text-align:right">0,00 ₺</div></div>
       </div>
+      
+      <!-- Kalan Bakiye Tamamlandı Butonu -->
+      <button type="button" class="btn-tahsil" id="btnKalanBakiyeTamamla" onclick="kalanBakiyeTamamla()" style="display:none;">
+        ✅ Kalan Bakiye Tahsil Edildi (Tamamlandı)
+      </button>
+
       <label class="fld" style="margin-top:10px">👷 Usta<select id="cariQuickUsta"><option value="">— Seçilmedi —</option></select></label>
       <div class="action-row" style="margin-top:10px"><button type="button" class="btn primary" onclick="cariPopupDurumlariKaydet()">💾 Güncelle</button></div>
       <div class="action-row" style="margin-top:10px;border-top:1px dashed var(--border);padding-top:10px">
@@ -1394,6 +1441,9 @@ main{padding-bottom:calc(14px + env(safe-area-inset-bottom))}
   <div class="modal-card" style="max-width:720px">
     <h3><span>🔔 Hatırlatmalar</span><button class="modal-close" onclick="hatirlatmalarKapat()">✕</button></h3>
     <div id="hatirlatmaModalIcerik"></div>
+    <div class="action-row" style="margin-top:10px; border-top:1px dashed var(--border); padding-top:10px;">
+      <button type="button" class="btn primary" style="flex:1" onclick="tumHatirlatmalariOkunduYap()">✅ Tümünü Okundu Say</button>
+    </div>
   </div>
 </div>
 
@@ -1613,6 +1663,8 @@ const HAVA_CACHE_KEY = 'eba_hava_cache';
 const KUR_CACHE_KEY = 'eba_kur_cache';
 const SENKRON_DURUM_KEY = 'eba_senkron_durum';
 const DND_ORDER_KEY = 'eba_dnd_order_v1';
+const HATIRLATMA_OKUNDU_KEY = 'eba_hatirlatma_okundu'; // Yeni: Okunan bildirimler
+const LAST_DAILY_NOTIFY_KEY = 'eba_last_daily_notify'; // Yeni: Son günlük bildirim zamanı
 
 const FS_META = ['eba_v2', 'meta'];
 const FS_ORDERS = 'eba_v2_siparisler';
@@ -1655,6 +1707,7 @@ let takvimSeciliGun = null;
 let kurVerisi = { USD:{alis:0,satis:0}, EUR:{alis:0,satis:0}, GBP:{alis:0,satis:0} };
 let aktifMobilTab = 'anasayfa';
 let aktifWaTipi = 'siparis';
+let hatirlatmaOkundu = {}; // Okunan hatırlatmaların ID'lerini tutar
 
 let dirty = { orders: new Set(), musteriler: new Set(), sablonlar: new Set(), personel: new Set(), trash: new Set(), notlar: new Set() };
 let deleted = { orders: new Set(), musteriler: new Set(), sablonlar: new Set(), personel: new Set(), trash: new Set(), notlar: new Set() };
@@ -1665,6 +1718,7 @@ let cloudSyncTimer = null;
 let syncInProgress = false;
 let unsubscribers = [];
 let senkronDurum = 'bekliyor';
+let gunlukBildirimTimer = null; // Yeni: Günlük bildirim zamanlayıcısı
 
 function senkronDurumGuncelle(durum, mesaj) {
   senkronDurum = durum;
@@ -1876,6 +1930,7 @@ window.cikisYap = async function() {
   if (!confirm('Çıkış yapmak istiyor musunuz?')) return;
   try {
     if (cloudSyncTimer) { clearTimeout(cloudSyncTimer); cloudSyncTimer = null; }
+    if (gunlukBildirimTimer) { clearInterval(gunlukBildirimTimer); gunlukBildirimTimer = null; }
     computeDiff();
     if (hasChanges()) await cloudSync();
     unsubscribers.forEach(u => { try { u(); } catch(e){} });
@@ -1899,11 +1954,13 @@ if (fbHazir) {
       if ($('mobilMenuMail')) $('mobilMenuMail').textContent = kullanici.email || '—';
       if ($('loginOverlay')) $('loginOverlay').classList.add('hidden');
       baslatUygulama();
+      gunlukBildirimBaslat(); // Günlük bildirim zamanlayıcısını başlat
     } else {
       aktifKullanici = null;
       uygulamaBaslatildi = false;
       unsubscribers.forEach(u => { try { u(); } catch(e){} });
       unsubscribers = [];
+      if (gunlukBildirimTimer) { clearInterval(gunlukBildirimTimer); gunlukBildirimTimer = null; }
       console.log('🚪 Çıkış');
       if ($('loginOverlay')) $('loginOverlay').classList.remove('hidden');
     }
@@ -2157,6 +2214,7 @@ function load() {
     const a = localStorage.getItem(AYARLAR_KEY); if (a) { const pa = JSON.parse(a); if (pa && typeof pa === 'object') ayarlar = {teslimGun:pa.teslimGun||3, odemeGun:pa.odemeGun||7}; }
     const tr = localStorage.getItem(TRASH_KEY); if (tr) { const pt = JSON.parse(tr); if (Array.isArray(pt)) trash = pt; }
     const hn = localStorage.getItem(HIZLI_NOT_KEY); if (hn) { const phn = JSON.parse(hn); if (Array.isArray(phn)) hizliNotlar = phn; }
+    const ho = localStorage.getItem(HATIRLATMA_OKUNDU_KEY); if (ho) { const pho = JSON.parse(ho); if (pho && typeof pho === 'object') hatirlatmaOkundu = pho; }
   } catch(e) { console.error('load:', e); state = {orders:[]}; musteriler = {}; }
 }
 
@@ -2226,7 +2284,7 @@ function yedekUyariGoster() {
 
 window.yedekIndir = function() {
   try {
-    const data = { version: '9.5.0', tarih: new Date().toISOString(), orders: state.orders, musteriler, sablonlar, personel, hedef, trash, hizliNotlar, ayarlar };
+    const data = { version: '9.6.0', tarih: new Date().toISOString(), orders: state.orders, musteriler, sablonlar, personel, hedef, trash, hizliNotlar, ayarlar };
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
@@ -2363,7 +2421,7 @@ window.verileriKaydet = async function() {
 window.kurtarEsitle = function() {
   load(); takvimYukle();
   render(); renderDashboard(); renderCiro(); takvimCiz(); renderAyarlar(); renderTrash();
-  renderAktiviteAkisi(); renderUzunListesi(); renderHizliNotlar(); renderMobilAnasayfa();
+  renderAktiviteAkisi(); renderHizliNotlar(); renderMobilAnasayfa();
   buluttanVeriCek(true);
 };
 
@@ -2425,7 +2483,7 @@ document.querySelectorAll('.tab').forEach(tab => {
     const pageEl = $('page-' + tab.dataset.page); if (pageEl) pageEl.classList.add('active');
     aktifMobilTab = tab.dataset.page;
     mobilTabbarGuncelle();
-    if (tab.dataset.page === 'anasayfa') { renderDashboard(); takvimCiz(); renderAktiviteAkisi(); renderUzunListesi(); renderMobilAnasayfa(); }
+    if (tab.dataset.page === 'anasayfa') { renderDashboard(); takvimCiz(); renderAktiviteAkisi(); renderMobilAnasayfa(); }
     if (tab.dataset.page === 'panel') render();
     if (tab.dataset.page === 'musteri-rehber') renderMusteriRehberPage();
     if (tab.dataset.page === 'rapor') renderRaporPage();
@@ -2448,7 +2506,7 @@ window.mobilTabSec = function(name) {
   if (tabBtn) tabBtn.classList.add('active');
   const pageEl = $('page-' + name); if (pageEl) pageEl.classList.add('active');
   mobilTabbarGuncelle();
-  if (name === 'anasayfa') { renderDashboard(); takvimCiz(); renderAktiviteAkisi(); renderUzunListesi(); renderMobilAnasayfa(); }
+  if (name === 'anasayfa') { renderDashboard(); takvimCiz(); renderAktiviteAkisi(); renderMobilAnasayfa(); }
   if (name === 'panel') render();
   if (name === 'musteri-rehber') renderMusteriRehberPage();
   if (name === 'rapor') renderRaporPage();
@@ -2736,36 +2794,6 @@ function renderAktiviteAkisi() {
     return '<div class="aktivite-item" onclick="cariAcFromRow(\'' + jsEsc(a.siparis.id) + '\')"><div class="ai-ust"><span class="ai-tip ' + a.tip + '">' + a.tip + '</span><span class="ai-saat">' + gun + ' ' + saat + '</span></div><div class="ai-metin">' + escapeHtml(a.metin) + '</div></div>';
   }).join('');
 }
-
-function renderUzunListesi() {
-  const box = $('uzunListesi'); if (!box) return;
-  const sayi = $('uzunSayi');
-  const bugun = Date.now(); const liste = [];
-  Object.values(musteriler).forEach(m => {
-    if (!m.telefon) return;
-    const sip = state.orders.filter(o => o.telefon === m.telefon);
-    if (!sip.length) return;
-    const sonTarih = Math.max(...sip.map(o => o.olusturma || 0));
-    const gun = Math.floor((bugun - sonTarih) / (1000*60*60*24));
-    if (gun >= 60) liste.push({ musteri: m, gun });
-  });
-  liste.sort((a,b) => b.gun - a.gun);
-  if (sayi) sayi.textContent = liste.length;
-  if (!liste.length) { box.innerHTML = '<div style="font-size:11.5px;color:var(--muted);text-align:center;padding:20px">🎉 Herkes aktif</div>'; return; }
-  box.innerHTML = liste.slice(0, 15).map(x => {
-    const ad = x.musteri.firma || x.musteri.adSoyad || '-';
-    const tel = x.musteri.telefon;
-    return '<div class="uzun-item"><div class="ui-main"><div class="ui-ad">' + escapeHtml(ad) + '</div><div class="ui-gun">🕐 ' + x.gun + ' gündür sipariş yok</div></div><div style="display:flex;gap:4px"><button type="button" class="btn xs success" onclick="uzunWa(\'' + jsEsc(tel) + '\',\'' + jsEsc(ad) + '\')">💬</button><button type="button" class="btn xs" onclick="cariModalAcRehberden(\'' + jsEsc(tel) + '\')">👤</button></div></div>';
-  }).join('');
-}
-
-window.uzunWa = function(tel, ad) {
-  const msg = 'Sayın ' + ad + ',\n\nUzun süredir sizden sipariş almadık. Yardımcı olabileceğimiz bir iş var mı?\n\n*Eskişehir Baskı Atölyesi*';
-  let t = (tel||'').replace(/\D/g, '');
-  if (t.startsWith('0')) t = t.substring(1);
-  if (!t.startsWith('90')) t = '90' + t;
-  window.open('https://wa.me/' + t + '?text=' + encodeURIComponent(msg), '_blank');
-};
 
 window.hizliNotEkle = function() {
   const inpM = $('mHizliNotInput');
@@ -3500,6 +3528,18 @@ function musteriCariPopupAc(tel, siparisId) {
   if ($('cariQuickKapora')) $('cariQuickKapora').value = kapora;
   if ($('cariQuickToplam')) $('cariQuickToplam').textContent = fmt(o.netTutar);
   if ($('cariQuickKalan')) $('cariQuickKalan').textContent = fmt(kalan);
+  
+  // Kalan Bakiye Tamamla Butonu Kontrolü
+  const btnKalan = $('btnKalanBakiyeTamamla');
+  if (btnKalan) {
+    if (kalan > 0 && o.odemeDurumu !== 'alindi') {
+      btnKalan.style.display = 'flex';
+      btnKalan.disabled = false;
+    } else {
+      btnKalan.style.display = 'none';
+    }
+  }
+
   const kalemOzet = (o.kalemler||[]).map(k => {
     let s = k.adet + '× ' + escapeHtml(k.urun||'-');
     if (k.model) s += ' / ' + escapeHtml(k.model);
@@ -3554,8 +3594,45 @@ document.addEventListener('input', e => {
     const kapora = parseFloat(e.target.value) || 0;
     const kalan = Math.max(0, net - kapora);
     if ($('cariQuickKalan')) $('cariQuickKalan').textContent = fmt(kalan);
+    
+    // Buton durumunu güncelle
+    const btnKalan = $('btnKalanBakiyeTamamla');
+    if (btnKalan) {
+      if (kalan > 0 && o.odemeDurumu !== 'alindi') {
+        btnKalan.style.display = 'flex';
+        btnKalan.disabled = false;
+      } else {
+        btnKalan.style.display = 'none';
+      }
+    }
   }
 });
+
+// Yeni Fonksiyon: Kalan Bakiyeyi Tamamla
+window.kalanBakiyeTamamla = function() {
+  const o = state.orders.find(x => String(x.id) === String(seciliCariSiparisId));
+  if (!o) return;
+  if (!confirm('Kalan bakiye tahsil edildi olarak işaretlensin mi? Bu işlem ödeme durumunu "Alındı" yapar ve kalan bakiyeyi sıfırlar.')) return;
+  
+  o.odemeDurumu = 'alindi';
+  o.kalanBakiye = 0;
+  // Kaporayı toplam tutara eşitle (tam ödendi demek)
+  o.kapora = Number(o.netTutar) || 0;
+  o.guncelleme = Date.now();
+  
+  if ($('cariQuickOdemeDurumu')) $('cariQuickOdemeDurumu').value = 'alindi';
+  if ($('cariQuickKapora')) $('cariQuickKapora').value = o.kapora;
+  if ($('cariQuickKalan')) $('cariQuickKalan').textContent = fmt(0);
+  if ($('btnKalanBakiyeTamamla')) $('btnKalanBakiyeTamamla').style.display = 'none';
+  
+  save();
+  render();
+  renderDashboard();
+  renderMobilAnasayfa();
+  cariGecmisiYenile(o.telefon);
+  
+  toast('✅ Kalan bakiye tahsil edildi ve ödeme alındı olarak işaretlendi.', 'success');
+};
 
 window.cariMusteriBilgileriniKaydet = function() {
   const eskiTel = seciliCariMusteriTel;
@@ -4072,20 +4149,25 @@ function hatirlatmalariHesapla() {
   const odemeEsik = new Date(); odemeEsik.setDate(odemeEsik.getDate() - (ayarlar.odemeGun || 7));
   state.orders.forEach(o => {
     if (!o) return;
+    
+    // Okundu kontrolü için ID oluştur (sipariş ID + tip)
+    const hId = o.id + '_' + (o.teslimTarihi || '') + '_' + (o.odemeDurumu || '');
+    if (hatirlatmaOkundu[hId]) return; // Eğer bu hatırlatma okunduysa atla
+
     const teslimD = o.teslimTarihi ? new Date(o.teslimTarihi) : null;
     if (teslimD) teslimD.setHours(0, 0, 0, 0);
     if (o.durum !== 'teslim' && teslimD && teslimD < bugun) {
       const gf = Math.ceil((bugun - teslimD)/(1000*60*60*24));
-      out.push({ tip: 'gecikmis', siparis: o, mesaj: '🚨 ' + gf + ' gün gecikmiş', renk: 'var(--danger)', aciklama: 'Müşteriyle iletişime geçin' });
+      out.push({ id: hId, tip: 'gecikmis', siparis: o, mesaj: '🚨 ' + gf + ' gün gecikmiş', renk: 'var(--danger)', aciklama: 'Müşteriyle iletişime geçin' });
       return;
     }
     if (o.durum !== 'teslim' && teslimD && teslimD <= teslimEsik && teslimD >= bugun) {
       const gf = Math.ceil((teslimD - bugun)/(1000*60*60*24));
       const gt = gf === 0 ? 'Bugün teslim' : gf === 1 ? 'Yarın teslim' : gf + ' gün sonra';
-      out.push({ tip: 'teslim', siparis: o, mesaj: '📅 ' + gt, renk: 'var(--warn)', aciklama: 'Müşteriyle iletişime geçin' });
+      out.push({ id: hId, tip: 'teslim', siparis: o, mesaj: '📅 ' + gt, renk: 'var(--warn)', aciklama: 'Müşteriyle iletişime geçin' });
     }
     if (o.durum === 'hazir' && !o.musteriBilgilendirildiHazir) {
-      out.push({ tip: 'hazir', siparis: o, mesaj: '✅ Hazır - bilgi verilmedi', renk: 'var(--success)', aciklama: 'WhatsApp gönderin' });
+      out.push({ id: hId, tip: 'hazir', siparis: o, mesaj: '✅ Hazır - bilgi verilmedi', renk: 'var(--success)', aciklama: 'WhatsApp gönderin' });
     }
     const kapora = Number(o.kapora) || 0;
     const kalan = (o.kalanBakiye != null) ? Number(o.kalanBakiye) : Math.max(0, (Number(o.netTutar)||0) - kapora);
@@ -4093,7 +4175,7 @@ function hatirlatmalariHesapla() {
       const olusD = new Date(o.olusturma);
       if (olusD < odemeEsik) {
         const gf = Math.ceil((new Date() - olusD)/(1000*60*60*24));
-        out.push({ tip: 'odeme', siparis: o, mesaj: '⏳ ' + gf + ' gündür ödeme bekliyor' + (kalan > 0 ? ' (Kalan: ' + fmtNum(kalan) + ' ₺)' : ''), renk: 'var(--warn)', aciklama: 'Müşteriyle iletişime geçin' });
+        out.push({ id: hId, tip: 'odeme', siparis: o, mesaj: '⏳ ' + gf + ' gündür ödeme bekliyor' + (kalan > 0 ? ' (Kalan: ' + fmtNum(kalan) + ' ₺)' : ''), renk: 'var(--warn)', aciklama: 'Müşteriyle iletişime geçin' });
       }
     }
   });
@@ -4106,10 +4188,52 @@ function renderHatirlatmaPanel() {
   const bs = $('bildirimSayi'), btn = $('bildirimBtn');
   if (list.length) { if (bs) { bs.textContent = list.length; bs.style.display = ''; } if (btn) btn.classList.add('pulse'); }
   else { if (bs) bs.style.display = 'none'; if (btn) btn.classList.remove('pulse'); }
-  if (!list.length) { panel.innerHTML = '<div class="hatirlatma-kart bos"><h3>✅ Hatırlatma Yok</h3><div style="font-size:12px;color:var(--muted)">Her şey yolunda.</div></div>'; return; }
+  
+  // Panel açık/kapalı durumu için localStorage kontrolü
+  const isCollapsed = localStorage.getItem('eba_hatirlatma_collapsed') === 'true';
+  
+  if (!list.length) { 
+    panel.innerHTML = '<div class="hatirlatma-kart bos"><h3>✅ Hatırlatma Yok</h3><div style="font-size:12px;color:var(--muted)">Her şey yolunda.</div></div>'; 
+    return; 
+  }
+  
   const icerik = list.slice(0, 6).map(h => '<div class="hatirlatma-item" onclick="cariAcFromRow(\'' + jsEsc(h.siparis.id) + '\')"><div class="hi-main"><div class="hi-title">' + escapeHtml(h.siparis.firma||h.siparis.adSoyad) + ' <span style="color:var(--neon);font-size:10.5px">' + escapeHtml(h.siparis.takipNo) + '</span></div><div class="hi-sub">' + h.mesaj + ' · ' + h.aciklama + '</div></div><span class="hi-badge" style="background:var(--card2);color:' + h.renk + '">' + h.tip + '</span></div>').join('');
-  panel.innerHTML = '<div class="hatirlatma-kart"><h3>🔔 ' + list.length + ' Adet <button type="button" class="btn sm" style="margin-left:auto" onclick="hatirlatmalarAc()">Tümü</button></h3>' + icerik + '</div>';
+  
+  panel.innerHTML = `
+    <div class="hatirlatma-kart ${isCollapsed ? 'collapsed' : ''}">
+      <h3 style="cursor:pointer;" onclick="toggleHatirlatmaPanel()">
+        🔔 ${list.length} Adet 
+        <button type="button" class="btn sm" style="margin-left:auto;margin-right:5px;" onclick="event.stopPropagation();hatirlatmalarAc()">Tümü</button>
+        <span class="hatirlatma-toggle">▼</span>
+      </h3>
+      <div class="hatirlatma-content">
+        ${icerik}
+      </div>
+    </div>
+  `;
 }
+
+// Hatırlatma panelini açıp kapatma fonksiyonu
+window.toggleHatirlatmaPanel = function() {
+  const kart = document.querySelector('.hatirlatma-kart');
+  if (!kart) return;
+  kart.classList.toggle('collapsed');
+  const isCollapsed = kart.classList.contains('collapsed');
+  localStorage.setItem('eba_hatirlatma_collapsed', isCollapsed);
+};
+
+// Tüm hatırlatmaları okundu say
+window.tumHatirlatmalariOkunduYap = function() {
+  const list = hatirlatmalariHesapla();
+  if (!list.length) return;
+  list.forEach(h => {
+    hatirlatmaOkundu[h.id] = true;
+  });
+  localStorage.setItem(HATIRLATMA_OKUNDU_KEY, JSON.stringify(hatirlatmaOkundu));
+  renderHatirlatmaPanel(); // Paneli yenile
+  hatirlatmalarKapat();
+  toast('✅ Tüm hatırlatmalar okundu olarak işaretlendi', 'success');
+};
 
 window.hatirlatmalarAc = function() {
   const list = hatirlatmalariHesapla();
@@ -4130,6 +4254,113 @@ window.bildirimIzinAl = function() {
     else toast('İzin verilmedi', 'warn');
   });
 };
+
+// ==========================================
+// YENİ: GÜNLÜK BİLDİRİM FONKSİYONLARI
+// ==========================================
+
+function gunlukOzetHazirla() {
+  const bugun = new Date();
+  const bugunStr = bugun.toDateString();
+  const buAy = bugun.toISOString().slice(0, 7);
+  
+  const bugunGirilen = state.orders.filter(o => new Date(o.olusturma).toDateString() === bugunStr).length;
+  
+  const aylikCiro = state.orders.filter(o => {
+    const d = new Date(o.olusturma);
+    return (d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0')) === buAy;
+  }).reduce((s, o) => s + (o.netTutar||0), 0);
+  
+  let hedefYuzde = 0;
+  let hedefKalan = 0;
+  let hedefMetin = 'Hedef belirlenmemiş.';
+  if (hedef > 0) {
+    hedefYuzde = Math.min(100, (aylikCiro / hedef) * 100);
+    hedefKalan = Math.max(0, hedef - aylikCiro);
+    hedefMetin = `Hedef: %${hedefYuzde.toFixed(1)} (Kalan: ${fmt(hedefKalan)})`;
+  }
+
+  const bekleyenIsler = state.orders.filter(o => o.durum === 'yeni' || o.durum === 'hazirlaniyor').length;
+
+  return `📊 Günlük Özet (${bugun.toLocaleDateString('tr-TR')})\n\n` +
+         `📦 Bugün Alınan İş: ${bugunGirilen}\n` +
+         `💰 Bu Ay Ciro: ${fmt(aylikCiro)}\n` +
+         `🎯 ${hedefMetin}\n` +
+         `⏳ Bekleyen Aktif İş: ${bekleyenIpler}\n\n` +
+         `İyi akşamlar dileriz! 👋`;
+}
+
+function gunlukBildirimGonder() {
+  if (!('Notification' in window) || Notification.permission !== 'granted') {
+    console.log('Bildirim izni yok, günlük bildirim gönderilemedi.');
+    return;
+  }
+
+  const now = new Date();
+  const bugunKey = now.toISOString().slice(0, 10);
+  const lastNotify = localStorage.getItem(LAST_DAILY_NOTIFY_KEY);
+
+  if (lastNotify === bugunKey) {
+    console.log('Bugünkü bildirim zaten gönderildi.');
+    return;
+  }
+
+  const ozet = gunlukOzetHazirla();
+  try {
+    new Notification('Eskişehir Baskı Atölyesi - Günlük Rapor', {
+      body: ozet,
+      icon: 'eba-logo.png',
+      tag: 'gunluk-rapor',
+      requireInteraction: true
+    });
+    localStorage.setItem(LAST_DAILY_NOTIFY_KEY, bugunKey);
+    console.log('✅ Günlük bildirim gönderildi.');
+  } catch(e) {
+    console.error('Bildirim hatası:', e);
+  }
+}
+
+function gunlukBildirimBaslat() {
+  if (gunlukBildirimTimer) clearInterval(gunlukBildirimTimer);
+  
+  // Her 30 saniyede bir kontrol et (saat 20:00'ı kaçırmamak için)
+  gunlukBildirimTimer = setInterval(() => {
+    const now = new Date();
+    const saat = now.getHours();
+    const dakika = now.getMinutes();
+    
+    // Saat 20:00 - 20:05 arasındaysa ve o gün henüz gönderilmediyse gönder
+    if (saat === 20 && dakika >= 0 && dakika <= 5) {
+      gunlukBildirimGonder();
+    }
+  }, 30 * 1000); // 30 saniye
+  
+  console.log('⏰ Günlük bildirim zamanlayıcısı başlatıldı (20:00).');
+}
+
+// Test butonu için
+window.testGunlukBildirim = function() {
+  const ozet = gunlukOzetHazirla();
+  if (!('Notification' in window)) {
+    toast('Tarayıcınız bildirimleri desteklemiyor.', 'warn');
+    return;
+  }
+  if (Notification.permission !== 'granted') {
+    Notification.requestPermission().then(p => {
+      if (p === 'granted') {
+        new Notification('Test: Günlük Rapor', { body: ozet, icon: 'eba-logo.png' });
+        toast('✅ Test bildirimi gönderildi.', 'success');
+      }
+    });
+  } else {
+    new Notification('Test: Günlük Rapor', { body: ozet, icon: 'eba-logo.png' });
+    toast('✅ Test bildirimi gönderildi.', 'success');
+  }
+};
+
+// ==========================================
+// MEVCUT FONKSİYONLAR DEVAM EDİYOR
+// ==========================================
 
 function waMesajiOlustur(tip, o) {
   const musteri = o.adSoyad || '';
@@ -4667,7 +4898,7 @@ async function baslatUygulama() {
     formTaslakDinleyicileri();
     musteriRehberiGuncelle();
     render(); renderDashboard(); renderCiro(); takvimCiz(); renderAyarlar(); renderTrash();
-    renderHizliNotlar(); renderAktiviteAkisi(); renderUzunListesi(); renderBulut(); renderMobilAnasayfa();
+    renderHizliNotlar(); renderAktiviteAkisi(); renderBulut(); renderMobilAnasayfa();
     personelSecenekleriGuncelle('f-personel');
     personelSecenekleriGuncelle('filterPersonel');
     mobilFiltreSayisiniGuncelle();
@@ -4679,13 +4910,13 @@ async function baslatUygulama() {
     setInterval(kurCek, 60*60*1000);
     setInterval(() => {
       if (document.visibilityState === 'visible') {
-        renderDashboard(); renderAktiviteAkisi(); renderUzunListesi();
+        renderDashboard(); renderAktiviteAkisi();
       }
     }, 5*60*1000);
     setInterval(yedekDurumGuncelle, 60*60*1000);
     gercekZamanliDinle();
     mobilTabbarGuncelle();
-    console.log('✅ v9.5 hazır — ' + state.orders.length + ' sipariş');
+    console.log('✅ v9.6 hazır — ' + state.orders.length + ' sipariş');
   } catch(e) { console.error('baslatUygulama:', e); }
 }
 
