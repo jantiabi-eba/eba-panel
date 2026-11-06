@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Eskişehir Baskı Atölyesi — Yönetim Paneli v9.6</title>
+<title>Eskişehir Baskı Atölyesi — Yönetim Paneli v9.7</title>
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#000000">
 <link rel="icon" type="image/png" href="eba-logo.png">
@@ -404,10 +404,6 @@ table.mini tr:hover{background:var(--neon-soft)}
 .aktivite-item .ai-tip.fatura{background:rgba(168,85,247,.15);color:#c084fc}
 .aktivite-item .ai-saat{font-size:10px;color:var(--dim);font-weight:700}
 .aktivite-item .ai-metin{font-size:11.5px;color:var(--text);font-weight:600;line-height:1.4}
-.uzun-item{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 10px;background:var(--card2);border-radius:6px;margin-bottom:5px}
-.uzun-item .ui-main{flex:1;min-width:0}
-.uzun-item .ui-ad{font-size:12px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.uzun-item .ui-gun{font-size:10.5px;color:var(--warn);font-weight:700;margin-top:2px}
 .not-yazma{width:100%;min-height:60px;font-size:12.5px;padding:9px 11px;background:var(--card2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:inherit;resize:vertical}
 .not-yazma:focus{outline:none;border-color:var(--neon)}
 .not-item-hizli{padding:8px 10px;background:var(--card2);border-radius:6px;margin-bottom:6px;font-size:11.5px;line-height:1.4;position:relative}
@@ -772,7 +768,7 @@ main{padding-bottom:calc(14px + env(safe-area-inset-bottom))}
       </div>
       <div>
         <h1>ESKİŞEHİR BASKI ATÖLYESİ</h1>
-        <div class="ver">YÖNETİM PANELİ · v9.6</div>
+        <div class="ver">YÖNETİM PANELİ · v9.7</div>
       </div>
     </div>
     <div class="head-tools">
@@ -911,7 +907,6 @@ main{padding-bottom:calc(14px + env(safe-area-inset-bottom))}
             <h3><span class="drag-handle">⋮⋮</span> <span class="ic">📋</span> Son Aktiviteler <span class="badge-mini" id="aktiviteSayi">0</span></h3>
             <div id="aktiviteAkisi" style="max-height:280px;overflow-y:auto"></div>
           </div>
-          <!-- Uzun Liste Kaldırıldı -->
           <div class="mini-card" draggable="true" data-drag-id="hizliNot">
             <h3><span class="drag-handle">⋮⋮</span> <span class="ic">📝</span> Hızlı Notlar</h3>
             <textarea id="hizliNotInput" class="not-yazma" placeholder="Not yaz..." rows="3"></textarea>
@@ -1663,8 +1658,8 @@ const HAVA_CACHE_KEY = 'eba_hava_cache';
 const KUR_CACHE_KEY = 'eba_kur_cache';
 const SENKRON_DURUM_KEY = 'eba_senkron_durum';
 const DND_ORDER_KEY = 'eba_dnd_order_v1';
-const HATIRLATMA_OKUNDU_KEY = 'eba_hatirlatma_okundu'; // Yeni: Okunan bildirimler
-const LAST_DAILY_NOTIFY_KEY = 'eba_last_daily_notify'; // Yeni: Son günlük bildirim zamanı
+const HATIRLATMA_OKUNDU_KEY = 'eba_hatirlatma_okundu'; 
+const LAST_DAILY_NOTIFY_KEY = 'eba_last_daily_notify'; 
 
 const FS_META = ['eba_v2', 'meta'];
 const FS_ORDERS = 'eba_v2_siparisler';
@@ -1707,7 +1702,7 @@ let takvimSeciliGun = null;
 let kurVerisi = { USD:{alis:0,satis:0}, EUR:{alis:0,satis:0}, GBP:{alis:0,satis:0} };
 let aktifMobilTab = 'anasayfa';
 let aktifWaTipi = 'siparis';
-let hatirlatmaOkundu = {}; // Okunan hatırlatmaların ID'lerini tutar
+let hatirlatmaOkundu = {}; 
 
 let dirty = { orders: new Set(), musteriler: new Set(), sablonlar: new Set(), personel: new Set(), trash: new Set(), notlar: new Set() };
 let deleted = { orders: new Set(), musteriler: new Set(), sablonlar: new Set(), personel: new Set(), trash: new Set(), notlar: new Set() };
@@ -1718,7 +1713,7 @@ let cloudSyncTimer = null;
 let syncInProgress = false;
 let unsubscribers = [];
 let senkronDurum = 'bekliyor';
-let gunlukBildirimTimer = null; // Yeni: Günlük bildirim zamanlayıcısı
+let gunlukBildirimTimer = null; 
 
 function senkronDurumGuncelle(durum, mesaj) {
   senkronDurum = durum;
@@ -1954,7 +1949,7 @@ if (fbHazir) {
       if ($('mobilMenuMail')) $('mobilMenuMail').textContent = kullanici.email || '—';
       if ($('loginOverlay')) $('loginOverlay').classList.add('hidden');
       baslatUygulama();
-      gunlukBildirimBaslat(); // Günlük bildirim zamanlayıcısını başlat
+      gunlukBildirimBaslat(); 
     } else {
       aktifKullanici = null;
       uygulamaBaslatildi = false;
@@ -2284,7 +2279,7 @@ function yedekUyariGoster() {
 
 window.yedekIndir = function() {
   try {
-    const data = { version: '9.6.0', tarih: new Date().toISOString(), orders: state.orders, musteriler, sablonlar, personel, hedef, trash, hizliNotlar, ayarlar };
+    const data = { version: '9.7.0', tarih: new Date().toISOString(), orders: state.orders, musteriler, sablonlar, personel, hedef, trash, hizliNotlar, ayarlar };
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
@@ -3529,7 +3524,6 @@ function musteriCariPopupAc(tel, siparisId) {
   if ($('cariQuickToplam')) $('cariQuickToplam').textContent = fmt(o.netTutar);
   if ($('cariQuickKalan')) $('cariQuickKalan').textContent = fmt(kalan);
   
-  // Kalan Bakiye Tamamla Butonu Kontrolü
   const btnKalan = $('btnKalanBakiyeTamamla');
   if (btnKalan) {
     if (kalan > 0 && o.odemeDurumu !== 'alindi') {
@@ -3595,7 +3589,6 @@ document.addEventListener('input', e => {
     const kalan = Math.max(0, net - kapora);
     if ($('cariQuickKalan')) $('cariQuickKalan').textContent = fmt(kalan);
     
-    // Buton durumunu güncelle
     const btnKalan = $('btnKalanBakiyeTamamla');
     if (btnKalan) {
       if (kalan > 0 && o.odemeDurumu !== 'alindi') {
@@ -3608,7 +3601,6 @@ document.addEventListener('input', e => {
   }
 });
 
-// Yeni Fonksiyon: Kalan Bakiyeyi Tamamla
 window.kalanBakiyeTamamla = function() {
   const o = state.orders.find(x => String(x.id) === String(seciliCariSiparisId));
   if (!o) return;
@@ -3616,7 +3608,6 @@ window.kalanBakiyeTamamla = function() {
   
   o.odemeDurumu = 'alindi';
   o.kalanBakiye = 0;
-  // Kaporayı toplam tutara eşitle (tam ödendi demek)
   o.kapora = Number(o.netTutar) || 0;
   o.guncelleme = Date.now();
   
@@ -4150,9 +4141,8 @@ function hatirlatmalariHesapla() {
   state.orders.forEach(o => {
     if (!o) return;
     
-    // Okundu kontrolü için ID oluştur (sipariş ID + tip)
     const hId = o.id + '_' + (o.teslimTarihi || '') + '_' + (o.odemeDurumu || '');
-    if (hatirlatmaOkundu[hId]) return; // Eğer bu hatırlatma okunduysa atla
+    if (hatirlatmaOkundu[hId]) return; 
 
     const teslimD = o.teslimTarihi ? new Date(o.teslimTarihi) : null;
     if (teslimD) teslimD.setHours(0, 0, 0, 0);
@@ -4189,7 +4179,6 @@ function renderHatirlatmaPanel() {
   if (list.length) { if (bs) { bs.textContent = list.length; bs.style.display = ''; } if (btn) btn.classList.add('pulse'); }
   else { if (bs) bs.style.display = 'none'; if (btn) btn.classList.remove('pulse'); }
   
-  // Panel açık/kapalı durumu için localStorage kontrolü
   const isCollapsed = localStorage.getItem('eba_hatirlatma_collapsed') === 'true';
   
   if (!list.length) { 
@@ -4213,7 +4202,6 @@ function renderHatirlatmaPanel() {
   `;
 }
 
-// Hatırlatma panelini açıp kapatma fonksiyonu
 window.toggleHatirlatmaPanel = function() {
   const kart = document.querySelector('.hatirlatma-kart');
   if (!kart) return;
@@ -4222,7 +4210,6 @@ window.toggleHatirlatmaPanel = function() {
   localStorage.setItem('eba_hatirlatma_collapsed', isCollapsed);
 };
 
-// Tüm hatırlatmaları okundu say
 window.tumHatirlatmalariOkunduYap = function() {
   const list = hatirlatmalariHesapla();
   if (!list.length) return;
@@ -4230,7 +4217,7 @@ window.tumHatirlatmalariOkunduYap = function() {
     hatirlatmaOkundu[h.id] = true;
   });
   localStorage.setItem(HATIRLATMA_OKUNDU_KEY, JSON.stringify(hatirlatmaOkundu));
-  renderHatirlatmaPanel(); // Paneli yenile
+  renderHatirlatmaPanel(); 
   hatirlatmalarKapat();
   toast('✅ Tüm hatırlatmalar okundu olarak işaretlendi', 'success');
 };
@@ -4256,7 +4243,7 @@ window.bildirimIzinAl = function() {
 };
 
 // ==========================================
-// YENİ: GÜNLÜK BİLDİRİM FONKSİYONLARI
+// GÜNLÜK BİLDİRİM FONKSİYONLARI
 // ==========================================
 
 function gunlukOzetHazirla() {
@@ -4286,7 +4273,7 @@ function gunlukOzetHazirla() {
          `📦 Bugün Alınan İş: ${bugunGirilen}\n` +
          `💰 Bu Ay Ciro: ${fmt(aylikCiro)}\n` +
          `🎯 ${hedefMetin}\n` +
-         `⏳ Bekleyen Aktif İş: ${bekleyenIpler}\n\n` +
+         `⏳ Bekleyen Aktif İş: ${bekleyenIsler}\n\n` + 
          `İyi akşamlar dileriz! 👋`;
 }
 
@@ -4323,44 +4310,52 @@ function gunlukBildirimGonder() {
 function gunlukBildirimBaslat() {
   if (gunlukBildirimTimer) clearInterval(gunlukBildirimTimer);
   
-  // Her 30 saniyede bir kontrol et (saat 20:00'ı kaçırmamak için)
   gunlukBildirimTimer = setInterval(() => {
     const now = new Date();
     const saat = now.getHours();
     const dakika = now.getMinutes();
     
-    // Saat 18:00 - 18:05 arasındaysa ve o gün henüz gönderilmediyse gönder
-    if (saat === 18 && dakika >= 0 && dakika <= 5) {
+    if (saat === 18 && dakika >= 0 && dakika <= 5) { 
       gunlukBildirimGonder();
     }
-  }, 30 * 1000); // 30 saniye
+  }, 30 * 1000); 
   
   console.log('⏰ Günlük bildirim zamanlayıcısı başlatıldı (18:00).');
 }
 
-// Test butonu için
 window.testGunlukBildirim = function() {
   const ozet = gunlukOzetHazirla();
+  
   if (!('Notification' in window)) {
     toast('Tarayıcınız bildirimleri desteklemiyor.', 'warn');
     return;
   }
-  if (Notification.permission !== 'granted') {
+
+  if (Notification.permission === 'granted') {
+    try {
+      new Notification('Test: Günlük Rapor', { body: ozet, icon: 'eba-logo.png' });
+      toast('✅ Test bildirimi gönderildi.', 'success');
+    } catch(e) {
+      toast('❌ Bildirim gönderilemedi: ' + e.message, 'error');
+      console.error(e);
+    }
+  } else if (Notification.permission !== 'denied') {
     Notification.requestPermission().then(p => {
       if (p === 'granted') {
-        new Notification('Test: Günlük Rapor', { body: ozet, icon: 'eba-logo.png' });
-        toast('✅ Test bildirimi gönderildi.', 'success');
+        try {
+          new Notification('Test: Günlük Rapor', { body: ozet, icon: 'eba-logo.png' });
+          toast('✅ Test bildirimi gönderildi.', 'success');
+        } catch(e) {
+          toast('❌ Bildirim gönderilemedi.', 'error');
+        }
+      } else {
+        toast('⚠️ Bildirim izni verilmedi.', 'warn');
       }
     });
   } else {
-    new Notification('Test: Günlük Rapor', { body: ozet, icon: 'eba-logo.png' });
-    toast('✅ Test bildirimi gönderildi.', 'success');
+    toast('⚠️ Bildirimler tarayıcı ayarlarından engellenmiş! İzin vermeniz gerekiyor.', 'error');
   }
 };
-
-// ==========================================
-// MEVCUT FONKSİYONLAR DEVAM EDİYOR
-// ==========================================
 
 function waMesajiOlustur(tip, o) {
   const musteri = o.adSoyad || '';
@@ -4916,7 +4911,7 @@ async function baslatUygulama() {
     setInterval(yedekDurumGuncelle, 60*60*1000);
     gercekZamanliDinle();
     mobilTabbarGuncelle();
-    console.log('✅ v9.6 hazır — ' + state.orders.length + ' sipariş');
+    console.log('✅ v9.7 hazır — ' + state.orders.length + ' sipariş');
   } catch(e) { console.error('baslatUygulama:', e); }
 }
 
@@ -4945,7 +4940,6 @@ function initDragAndDrop() {
       draggedItem = card;
       card.classList.add('dragging');
       e.dataTransfer.effectAllowed = 'move';
-      // Firefox için gerekli
       e.dataTransfer.setData('text/plain', card.dataset.dragId);
     });
 
@@ -5022,11 +5016,9 @@ function loadDragOrder() {
   } catch(e) { console.warn('loadDragOrder:', e); }
 }
 
-// Başlangıçta sırayı yükle ve dinleyicileri kur
 setTimeout(() => {
   loadDragOrder();
   initDragAndDrop();
-  // renderDashboard sonrası yeniden bağlanması gerekirse diye MutationObserver
   const observer = new MutationObserver(() => {
     if (!document.querySelector('.dragging')) {
       initDragAndDrop();
