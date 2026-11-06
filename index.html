@@ -4329,13 +4329,13 @@ function gunlukBildirimBaslat() {
     const saat = now.getHours();
     const dakika = now.getMinutes();
     
-    // Saat 20:00 - 20:05 arasındaysa ve o gün henüz gönderilmediyse gönder
-    if (saat === 20 && dakika >= 0 && dakika <= 5) {
+    // Saat 18:00 - 18:05 arasındaysa ve o gün henüz gönderilmediyse gönder
+    if (saat === 18 && dakika >= 0 && dakika <= 5) {
       gunlukBildirimGonder();
     }
   }, 30 * 1000); // 30 saniye
   
-  console.log('⏰ Günlük bildirim zamanlayıcısı başlatıldı (20:00).');
+  console.log('⏰ Günlük bildirim zamanlayıcısı başlatıldı (18:00).');
 }
 
 // Test butonu için
