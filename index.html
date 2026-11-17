@@ -73,6 +73,28 @@ body{font-family:'Segoe UI',system-ui,-apple-system,Roboto,Arial,sans-serif;back
   text-shadow: 0 0 8px var(--neon);
 }
 
+  /* ============ YENİ MASAÜSTÜ TEMALARI (v9.8) ============ */
+[data-theme="midnight"]{--bg:#060b14;--bg2:#0a1320;--card:#0d1825;--card2:#13202f;--border:#1f3247;--border-soft:rgba(120,180,255,.06);--text:#e6f1ff;--muted:#8ba3c7;--dim:#4f6784;--neon:#3b82f6;--neon-hover:#2563eb;--neon-soft:rgba(59,130,246,.14);--success:#22c55e;--warn:#f59e0b;--danger:#ef4444;--info:#38bdf8;--purple:#818cf8;--shadow:0 12px 32px rgba(0,20,60,.55);color-scheme:dark}
+[data-theme="midnight"] body{background-image:radial-gradient(circle at 20% 10%,rgba(59,130,246,.10),transparent 40%),radial-gradient(circle at 80% 90%,rgba(129,140,248,.08),transparent 40%)}
+[data-theme="midnight"] header,[data-theme="midnight"] nav.tabs{background:#040910}
+
+[data-theme="sunset"]{--bg:#140a06;--bg2:#1c0f08;--card:#221208;--card2:#2e1a0d;--border:#4a2a15;--border-soft:rgba(255,180,100,.08);--text:#fff2e6;--muted:#d4a882;--dim:#8a6a4f;--neon:#f97316;--neon-hover:#ea580c;--neon-soft:rgba(249,115,22,.15);--success:#84cc16;--warn:#fbbf24;--danger:#ef4444;--info:#22d3ee;--purple:#e879f9;--shadow:0 12px 32px rgba(60,20,0,.6);color-scheme:dark}
+[data-theme="sunset"] body{background-image:radial-gradient(circle at 10% 0%,rgba(249,115,22,.14),transparent 35%),radial-gradient(circle at 90% 100%,rgba(232,121,249,.10),transparent 40%)}
+[data-theme="sunset"] header,[data-theme="sunset"] nav.tabs{background:#0f0603}
+
+[data-theme="nord"]{--bg:#0d1117;--bg2:#131a22;--card:#18222e;--card2:#1f2b3a;--border:#2e3d4f;--border-soft:rgba(136,192,208,.10);--text:#e5eef7;--muted:#8aa0b8;--dim:#5a7089;--neon:#88c0d0;--neon-hover:#63a7ba;--neon-soft:rgba(136,192,208,.14);--success:#a3be8c;--warn:#ebcb8b;--danger:#bf616a;--info:#81a1c1;--purple:#b48ead;--shadow:0 12px 32px rgba(0,10,20,.55);color-scheme:dark}
+[data-theme="nord"] body{background-image:radial-gradient(circle at 0% 0%,rgba(136,192,208,.08),transparent 40%),radial-gradient(circle at 100% 100%,rgba(180,142,173,.07),transparent 40%)}
+[data-theme="nord"] header,[data-theme="nord"] nav.tabs{background:#080c10}
+
+[data-theme="coffee"]{--bg:#15100c;--bg2:#1d1712;--card:#241c16;--card2:#2e241c;--border:#40332a;--border-soft:rgba(200,150,100,.08);--text:#f5ebe0;--muted:#b8a390;--dim:#7a6552;--neon:#c8a165;--neon-hover:#a8854e;--neon-soft:rgba(200,161,101,.15);--success:#8fbc6a;--warn:#e0b155;--danger:#cf5c5c;--info:#7fb3c4;--purple:#b48ead;--shadow:0 12px 32px rgba(0,0,0,.6);color-scheme:dark}
+[data-theme="coffee"] body{background-image:radial-gradient(circle at 15% 10%,rgba(200,161,101,.10),transparent 40%),radial-gradient(circle at 85% 90%,rgba(160,90,40,.08),transparent 40%)}
+[data-theme="coffee"] header,[data-theme="coffee"] nav.tabs{background:#0e0a07}
+
+[data-theme="neon-pulse"]{--bg:#050a05;--bg2:#081208;--card:#0b1a0b;--card2:#0f2410;--border:#1f4d21;--border-soft:rgba(0,255,140,.10);--text:#e8ffe8;--muted:#7fc97f;--dim:#4a7a4a;--neon:#00ff88;--neon-hover:#00cc6a;--neon-soft:rgba(0,255,136,.15);--success:#00ff88;--warn:#ffea00;--danger:#ff3860;--info:#00d9ff;--purple:#b967ff;--shadow:0 0 24px rgba(0,255,136,.15);color-scheme:dark}
+[data-theme="neon-pulse"] body{background-image:radial-gradient(circle at 20% 20%,rgba(0,255,136,.12),transparent 35%),radial-gradient(circle at 80% 80%,rgba(185,103,255,.12),transparent 35%)}
+[data-theme="neon-pulse"] header,[data-theme="neon-pulse"] nav.tabs{background:#020602}
+[data-theme="neon-pulse"] .tab.active{color:#00ff88;border-bottom-color:#00ff88;text-shadow:0 0 10px #00ff88}
+/* ============ YENİ TEMALAR SON ============ */
 body.gizli-mod .gizli{display:none!important}
 ::-webkit-scrollbar{width:8px;height:8px}
 ::-webkit-scrollbar-track{background:var(--bg2)}
@@ -785,11 +807,17 @@ main{padding-bottom:calc(14px + env(safe-area-inset-bottom))}
       <button class="btn sm" onclick="kurtarEsitle()">🔄 Eşitle</button>
       <button class="btn-gizle" id="gizleBtn" onclick="toggleGizliMod()"><span id="gizleIcon">👁️</span> <span id="gizleText">Göster</span></button>
       <div class="theme-switch">
-        <button data-theme-btn="dark" class="active">🌙</button>
-        <button data-theme-btn="light">☀️</button>
-        <button data-theme-btn="galaxy">🌌</button>
-        <button data-theme-btn="forest">🌲</button>
-        <button data-theme-btn="cyber">⚡</button>
+     <button data-theme-btn="dark" class="active" title="Karanlık">🌙</button>
+  <button data-theme-btn="light" title="Aydınlık">☀️</button>
+  <button data-theme-btn="galaxy" title="Galaksi">🌌</button>
+  <button data-theme-btn="forest" title="Orman">🌲</button>
+  <button data-theme-btn="cyber" title="Cyber">⚡</button>
+  <button data-theme-btn="midnight" title="Midnight">🌃</button>
+  <button data-theme-btn="sunset" title="Sunset">🌅</button>
+  <button data-theme-btn="nord" title="Nord">❄️</button>
+  <button data-theme-btn="coffee" title="Coffee">☕</button>
+  <button data-theme-btn="neon-pulse" title="Neon Pulse">🟢</button>
+</div>
       </div>
     </div>
   </div>
@@ -5044,6 +5072,41 @@ if (window.caches) {
     if (keys.length) console.log('🧹 ' + keys.length + ' cache temizlendi');
   }).catch(() => {});
 }
+</script>
+<script>
+// ===== TEMA DEĞİŞTİRİCİ (v9.8 EKLENTİSİ) =====
+document.addEventListener('DOMContentLoaded', () => {
+  const themeButtons = document.querySelectorAll('[data-theme-btn]');
+  
+  themeButtons.forEach(btn => {
+    // Eğer bu butona daha önce tıklama özelliği eklenmediyse ekle
+    if (!btn.dataset.listenerAttached) {
+      btn.addEventListener('click', function() {
+        const theme = this.dataset.themeBtn;
+        
+        // Temayı değiştir
+        document.documentElement.setAttribute('data-theme', theme);
+        localStorage.setItem('eba-theme', theme);
+        
+        // Aktif butonu güncelle
+        document.querySelectorAll('[data-theme-btn]').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+      });
+      
+      // İşaretle ki iki kere eklenmesin
+      btn.dataset.listenerAttached = 'true';
+    }
+  });
+
+  // Sayfa açıldığında son seçilen temayı yükle
+  const savedTheme = localStorage.getItem('eba-theme');
+  if (savedTheme) {
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    document.querySelectorAll('[data-theme-btn]').forEach(b => {
+      b.classList.toggle('active', b.dataset.themeBtn === savedTheme);
+    });
+  }
+});
 </script>
 </body>
 </html>
