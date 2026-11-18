@@ -851,6 +851,136 @@ main{padding-bottom:calc(14px + env(safe-area-inset-bottom))}
   align-items: center;
   gap: 6px;
 }
+/* =========================================
+   🌙 WEBARCH TARZI MODERN KARANLIK TEMA
+   (Sadece Görünüm - Verilere Etki Etmez)
+   ========================================= */
+
+/* 1. Genel Arka Plan ve Geçişler */
+body {
+  transition: all 0.3s ease;
+}
+
+/* 2. Kartlar, Paneller ve Pencereler (Yumuşak Köşeler, Hafif Şeffaflık) */
+.card, .mini-card, .table-panel, .dash-list-card, .stat, .dash-card, .hedef-box {
+  background: #111317 !important; /* Webarch'ın koyu gri/mavi tonu */
+  border-radius: 12px !important; /* Yumuşak köşeler */
+  border: 1px solid rgba(255, 255, 255, 0.05) !important; /* Çok ince, silik kenarlık */
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2) !important; /* Sade, derin olmayan gölge */
+}
+
+/* Kart başlıkları (Sade ve şık) */
+.card h2, .mini-card h3, .dash-list-card h3 {
+  color: #e2e8f0;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+
+/* 3. Butonlar (Webarch "Soft" Buton Stili) */
+.btn {
+  border-radius: 8px !important;
+  font-weight: 500;
+  border: 1px solid transparent;
+  transition: all 0.2s ease-in-out;
+}
+.btn:hover {
+  transform: translateY(-1px);
+}
+
+/* Ana Butonlar (Primary) */
+.btn.primary {
+  background: #3b82f6 !important; /* Webarch mavisi */
+  border-color: #3b82f6 !important;
+  color: #ffffff !important;
+  box-shadow: 0 2px 6px rgba(59, 130, 246, 0.3) !important;
+}
+.btn.primary:hover {
+  background: #2563eb !important; /* Hover olunca biraz koyulaş */
+  border-color: #2563eb !important;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4) !important;
+}
+
+/* İkincil Butonlar (Ghost / Default) */
+.btn:not(.primary):not(.danger):not(.success):not(.warn) {
+  background: rgba(255, 255, 255, 0.03) !important;
+  color: #94a3b8 !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+}
+.btn:not(.primary):not(.danger):not(.success):not(.warn):hover {
+  background: rgba(255, 255, 255, 0.08) !important;
+  color: #ffffff !important;
+}
+
+/* 4. Sekmeler (Tabs) - Sadece Alt Çizgi Değil, Yumuşak Kutu */
+nav.tabs {
+  border-bottom: none;
+  background: transparent;
+}
+.tab {
+  border-radius: 8px 8px 0 0 !important;
+  border-bottom: 2px solid transparent;
+  margin: 0 4px;
+}
+.tab:hover {
+  background: rgba(255, 255, 255, 0.03) !important;
+  color: #fff;
+}
+.tab.active {
+  background: #111317 !important;
+  color: #3b82f6 !important; /* Mavi vurgu */
+  border-bottom: 2px solid #3b82f6 !important;
+  box-shadow: 0 -4px 15px rgba(0,0,0,0.1);
+}
+
+/* 5. Tablolar (Ferah ve Temiz) */
+.table-wrap {
+  border-radius: 12px;
+  background: #111317;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+.table-wrap thead th {
+  background: rgba(0, 0, 0, 0.2) !important;
+  color: #94a3b8 !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+  font-weight: 600;
+  padding: 14px 16px;
+}
+.table-wrap tbody td {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03) !important;
+}
+.table-wrap tbody tr {
+  transition: background 0.2s ease;
+}
+.table-wrap tbody tr:hover {
+  background: rgba(255, 255, 255, 0.03) !important; /* Hover olunca hafif aydınlan */
+}
+
+/* 6. Giriş Alanları (Input, Select) */
+input, select, textarea {
+  border-radius: 8px !important;
+  background: rgba(0, 0, 0, 0.2) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  color: #e2e8f0 !important;
+  transition: all 0.2s ease;
+}
+input:focus, select:focus, textarea:focus {
+  background: rgba(0, 0, 0, 0.3) !important;
+  border-color: #3b82f6 !important; /* Odaklanınca mavi kenarlık */
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15) !important;
+}
+
+/* 7. Vurgu Renklerini Webarch Mavisine Çevirme (Kırmızı yerine) */
+:root, [data-theme="dark"] {
+  --neon: #3b82f6; /* Kırmızı yerine modern mavi */
+  --neon-hover: #2563eb;
+  --neon-soft: rgba(59, 130, 246, 0.15);
+}
+
+/* Sidebar, Header ve Navbar renkleri */
+header, nav.tabs {
+  background: #0b0e14 !important; /* Webarch'ın çok koyu lacivert/siyah tonu */
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
 </style>
 </head>
 <body>
